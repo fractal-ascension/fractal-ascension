@@ -1,13 +1,12 @@
-import './main.scss'
+import "./main.scss";
 
 function Main() {
   return (
     <>
-    <div>
-        <p>Test</p>
-    </div>
+      <div id="main">
+      </div>
     </>
-  )
+  );
 }
 
-export default Main
+export default Main;

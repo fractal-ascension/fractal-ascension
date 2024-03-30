@@ -1,34 +1,17 @@
 #footer {
-	display: flex;
-	position: fixed;
-	width: 100%;
-	height: 40px;
-	background-image: linear-gradient(to right, #232f47, #15152d);
-	border-top: 3px solid #0e0e25;
-	bottom: 0;
-	left: 0;
+  display: flex;
+  width: 100%;
+  background-image: linear-gradient(to right, #2c3e61, #000000);
+  text-align: center;
 }
 
-.sl_button {
-	width: fit-content;
-	padding: 10px 10px;
-	height: 20px;
-	background-image: linear-gradient(to left, #232f47, #15152d);
-	color: white;
-	cursor: pointer;
-	text-align: center;
-	display: inline-block;
-}
-
-.game_info a{
-	width: fit-content;
-	padding: 10px 10px;
-	height: 20px;
-	background-image: linear-gradient(to left, #232f47, #15152d);
-	color: white;
-	cursor: pointer;
-	text-align: center;
-	display: inline-block;
-	text-decoration: none;
-
+.footer_button {
+  width: fit-content;
+  padding: 10px 10px;
+  margin: 100;
+  background-color: #0f143b;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #32456c;
 }
