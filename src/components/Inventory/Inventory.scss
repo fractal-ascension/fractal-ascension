@@ -1,0 +1,50 @@
+.inventory-container {
+    color: white;
+    text-shadow: 1px 1px #000;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #283149;
+    border: 1px solid #404b69;
+  }
+  
+  .category-filter {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .category-button,
+  .sort-button {
+    background: #333366;
+    border: 1px solid #555599;
+    color: white;
+    padding: 5px 10px;
+    
+    &:hover {
+      background: #555599;
+    }
+  }
+  
+  .inventory-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    max-height: 300px;
+    color: white;
+  }
+  
+  .item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #555599;
+    padding: 5px 0;
+  }
+  
+  .sort-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
