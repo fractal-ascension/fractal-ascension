@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFilter, setSort, SortCriteria } from "./inventorySlice";
 import { RootState } from "../../store";
 import "./Inventory.scss";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css"; // default styles
 
 const Inventory = () => {
   const dispatch = useDispatch();
@@ -18,15 +20,11 @@ const Inventory = () => {
 
     switch (sortCriteria) {
       case "AZ":
-        return sortDirection === "DESC"
-          ? b.name.localeCompare(a.name)
-          : a.name.localeCompare(b.name);
+        return sortDirection === "DESC" ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
       case "09":
         return sortDirection === "DESC" ? b.amount - a.amount : a.amount - b.amount;
       case "TYPE":
-        return sortDirection === "DESC"
-          ? b.type.localeCompare(a.type)
-          : a.type.localeCompare(b.type);
+        return sortDirection === "DESC" ? b.type.localeCompare(a.type) : a.type.localeCompare(b.type);
       case "VAL":
         return sortDirection === "DESC" ? b.value - a.value : a.value - b.value;
       default:
@@ -35,6 +33,7 @@ const Inventory = () => {
   });
 
   interface Currency {
+    symbol: string;
     value: string;
     color: string;
     fullName: string; // Added full name of the currency
@@ -44,75 +43,69 @@ const Inventory = () => {
     if (value === 0)
       return [
         {
-          value: "0C",
+          value: "0",
           color: "#b87333",
           fullName: "Copper",
+          symbol: `C`,
         },
       ];
 
-    const mythril = Math.floor(value / 10000000000);
-    const diamond = Math.floor((value % 10000000000) / 100000000);
-    const platinum = Math.floor((value % 100000000) / 1000000);
-    const gold = Math.floor((value % 1000000) / 10000);
-    const silver = Math.floor((value % 10000) / 100);
-    const copper = Math.floor((value % 100) / 1);
+    // Convert the value to an array of Currency objects for all denominations
+    const currencyBreakdown = [
+      { divisor: 100000000000000, symbol: "F", fullName: "Fractal", color: "#c50101" },
+      { divisor: 1000000000000, symbol: "E", fullName: "Essence", color: "#fff2b9" },
+      { divisor: 10000000000, symbol: "M", fullName: "Mythril", color: "#bcb9ff" },
+      { divisor: 100000000, symbol: "D", fullName: "Diamond", color: "#b9f2ff" },
+      { divisor: 1000000, symbol: "P", fullName: "Platinum", color: "#e5e4e2" },
+      { divisor: 10000, symbol: "G", fullName: "Gold", color: "#ffd700" },
+      { divisor: 100, symbol: "S", fullName: "Silver", color: "#c0c0c0" },
+      { divisor: 1, symbol: "C", fullName: "Copper", color: "#b87333" },
+    ];
 
-    const currency: Currency[] = [];
-    if (mythril > 0)
-      currency.push({
-        value: `${mythril}M`,
-        color: "#bcb9ff",
-        fullName: "Mythril",
-      });
-    if (diamond > 0 || (mythril > 0 && currency.length < 3))
-      currency.push({
-        value: `${diamond}D`,
-        color: "#b9f2ff",
-        fullName: "Diamond",
-      });
-    if (platinum > 0 || (diamond > 0 && currency.length < 3))
-      currency.push({
-        value: `${platinum}P`,
-        color: "#e5e4e2",
-        fullName: "Platinum",
-      });
-    if (gold > 0 && currency.length < 3)
-      currency.push({
-        value: `${gold}G`,
-        color: "#ffd700",
-        fullName: "Gold",
-      });
-    if (silver > 0 && currency.length < 3)
-      currency.push({
-        value: `${silver}S`,
-        color: "#c0c0c0",
-        fullName: "Silver",
-      });
-    if (copper > 0 && currency.length < 3)
-      currency.push({
-        value: `${copper}C`,
-        color: "#b87333",
-        fullName: "Copper",
-      });
-    return currency.slice(0, 3); // Ensure only up to 3 tiers are shown
+    return currencyBreakdown
+      .map(({ divisor, symbol, fullName, color }) => {
+        const amount = Math.floor((value % (divisor * 100)) / divisor);
+        return {
+          value: `${amount}`,
+          symbol,
+          color,
+          fullName,
+        };
+      })
+      .filter(({ value }) => value !== "0"); // Only include currencies with a non-zero amount
   }
 
-  function CurrencyDisplay(value: number) {
+  // Tooltip content component
+  const TooltipContent = ({ currencyComponents }: { currencyComponents: Currency[] }) => (
+    <div>
+      {currencyComponents.map((cc, index) => (
+        <div key={index} style={{ color: cc.color, fontSize: '18px', }}>
+          {cc.value}
+          {cc.symbol} ({cc.fullName})
+        </div>
+      ))}
+    </div>
+  );
+
+  function CurrencyDisplay({ value }: { value: number }) {
     const currencyComponents = convertToCurrency(value);
 
     return (
       <>
-        {currencyComponents.map((currency, index) => (
-          <span
+        {currencyComponents.slice(0, 3).map((currency, index) => (
+          <Tippy
             key={index}
-            style={{
-              color: currency.color,
-              marginRight: index < currencyComponents.length - 1 ? "5px" : "0",
-            }}
-            title={`Full Name: ${currency.fullName}, Value: ${currency.value}`}
+            content={<TooltipContent currencyComponents={currencyComponents} />}
+            delay={[200, 0]} // Adjust as needed. First value is show delay, second value is hide delay.
+            animation="scale"
+            interactive={true} // Allows interaction with the tooltip content
+            allowHTML={true} // Allow HTML rendering inside tooltip
           >
-            {currency.value}
-          </span>
+            <span style={{ color: currency.color, marginRight: "2.5px", marginLeft: "2.5px" }}>
+              {currency.value}
+              <span>{currency.symbol}</span>
+            </span>
+          </Tippy>
         ))}
       </>
     );
@@ -144,7 +137,7 @@ const Inventory = () => {
               [{item.type}] {item.name}
             </span>
             <span>
-              ({CurrencyDisplay(item.value)}) x{item.amount}
+              ({CurrencyDisplay({ value: item.value })}) x{item.amount}
             </span>
           </li>
         ))}
