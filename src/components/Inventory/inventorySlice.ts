@@ -4,13 +4,14 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // Define specific types for item types and filter/sort options
 type ItemType = 'WPN' | 'USE' | 'EQP' | 'OTHER';
 type FilterType = 'ALL' | ItemType;
-export type SortCriteria = 'AZ' | '09' | 'TPE';
+export type SortCriteria = 'AZ' | '09' | 'TYPE' | 'VAL';
 type SortType = 'NONE' | `${SortCriteria}_ASC` | `${SortCriteria}_DESC`;
 
 interface InventoryItem {
   name: string;
   amount: number;
   type: ItemType;
+  value: number;
 }
 
 interface InventoryState {
@@ -21,14 +22,14 @@ interface InventoryState {
 
 const initialState: InventoryState = {
   items: [
-    { name: 'A Stick', amount: 1, type: 'WPN' },
-    { name: 'Cure Grass', amount: 15, type: 'USE' },
-    { name: 'Iron Sword', amount: 2, type: 'WPN' },
-    { name: 'Healing Potion', amount: 5, type: 'USE' },
-    { name: 'Leather Armor', amount: 1, type: 'EQP' },
-    { name: 'Mystery Ore', amount: 3, type: 'OTHER' },
-    { name: 'Silver Dagger', amount: 1, type: 'WPN' },
-    { name: 'Mana Potion', amount: 7, type: 'USE' },
+    { name: 'A Stick', amount: 1, type: 'WPN', value: 1 },
+    { name: 'Cure Grass', amount: 15, type: 'USE', value: 100 },
+    { name: 'Iron Sword', amount: 2, type: 'WPN', value: 123 },
+    { name: 'Healing Potion', amount: 5, type: 'USE', value: 12323 },
+    { name: 'Leather Armor', amount: 1, type: 'EQP', value: 12222222 },
+    { name: 'Mystery Ore', amount: 3, type: 'OTHER', value: 122222221 },
+    { name: 'Silver Dagger', amount: 1, type: 'WPN', value: 0 },
+    { name: 'Mana Potion', amount: 7, type: 'USE', value: 112312312311232 },
   ],
   filter: 'ALL',
   sort: 'NONE',

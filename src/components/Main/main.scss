@@ -1,5 +1,15 @@
 #main {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Creates 3 columns */
+  gap: 10px; /* Adjust gap between columns */
+  position: relative; /* Establishes a positioning context */
+  height: 100vh; /* Adjust based on your app's design */
+  padding: 20px;
+}
+
+.column {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
   height: 100%;
-  padding: 20px
 }

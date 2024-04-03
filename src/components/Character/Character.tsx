@@ -4,6 +4,12 @@ import "./Character.scss";
 import { updateCharacterName } from "./characterSlice";
 import { RootState } from "../../store";
 
+type ExtendedCSSProperties = React.CSSProperties & {
+  "--bar-width"?: string;
+  "--start-color"?: string;
+  "--end-color"?: string;
+};
+
 const Character = () => {
   const character = useSelector((state: RootState) => state.character);
   const dispatch = useDispatch();
@@ -98,25 +104,30 @@ const Character = () => {
       <div className="bar-container">
         <div
           className="bar"
-          style={{
-            background: `linear-gradient(to right, ${"#ff9999"} ${hpWidth}%, ${"#b20000"} ${
-              100 - hpWidth
-            }%)`,
-          }}
+          style={
+            {
+              "--bar-width": `${100 - hpWidth}%`,
+              "--start-color": "#750000",
+              "--end-color": "#ff4444",
+            } as ExtendedCSSProperties
+          }
         >
           <span>
             HP: {character.stats.hp}/{character.stats.maxHp}
           </span>
         </div>
       </div>
+
       <div className="bar-container">
         <div
           className="bar"
-          style={{
-            background: `linear-gradient(to right, ${"#99ff99"} ${spWidth}%, ${"#006600"} ${
-              100 - spWidth
-            }%)`,
-          }}
+          style={
+            {
+              "--bar-width": `${100 - spWidth}%`,
+              "--start-color": "#006600",
+              "--end-color": "#99ff99",
+            } as ExtendedCSSProperties
+          }
         >
           <span>
             SP: {character.stats.sp}/{character.stats.maxSp}
@@ -126,11 +137,13 @@ const Character = () => {
       <div className="bar-container">
         <div
           className="bar"
-          style={{
-            background: `linear-gradient(to right, ${"#9999ff"} ${mpWidth}%, ${"#000066"} ${
-              100 - mpWidth
-            }%)`,
-          }}
+          style={
+            {
+              "--bar-width": `${100 - mpWidth}%`,
+              "--start-color": "#000066",
+              "--end-color": "#9999ff",
+            } as ExtendedCSSProperties
+          }
         >
           <span>
             MP: {character.stats.mp}/{character.stats.maxMp}
@@ -140,11 +153,13 @@ const Character = () => {
       <div className="bar-container">
         <div
           className="bar"
-          style={{
-            background: `linear-gradient(to right, ${"#ffff99"} ${energyWidth}%, ${"#cc9900"} ${
-              100 - energyWidth
-            }%)`,
-          }}
+          style={
+            {
+              "--bar-width": `${100 - energyWidth}%`,
+              "--start-color": "#cc9900",
+              "--end-color": "#ffff53",
+            } as ExtendedCSSProperties
+          }
         >
           <span>
             Energy: {character.stats.energy}/{character.stats.maxEnergy}
@@ -154,11 +169,13 @@ const Character = () => {
       <div className="bar-container">
         <div
           className="bar"
-          style={{
-            background: `linear-gradient(to right, ${"#cc99ff"} ${expWidth}%, ${"#660066"} ${
-              100 - expWidth
-            }%)`,
-          }}
+          style={
+            {
+              "--bar-width": `${100 - expWidth}%`,
+              "--start-color": "#660066",
+              "--end-color": "#cc99ff",
+            } as ExtendedCSSProperties
+          }
         >
           <span>
             EXP: {character.stats.experience}/
@@ -177,7 +194,9 @@ const Character = () => {
 
       {/* Display combat stats */}
       <div className="stats-line">
-        {`Hit Chance: ${character.combat.hitChance} | Dodge Chance: ${character.combat.dodgeChance} | Critical Chance: ${character.combat.criticalChance}`}
+        {`Hit Chance: ${character.combat.hitChance * 100}% | Dodge Chance: ${
+          character.combat.dodgeChance * 100
+        }% | Critical Chance: ${character.combat.criticalChance * 100}%`}
       </div>
 
       {/* Display equipment */}

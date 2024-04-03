@@ -1,6 +1,6 @@
 .character-container {
   color: white;
-  text-shadow: 1px 1px #000;
+  text-shadow: 1.5px 1px #000;
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -22,39 +22,19 @@
   }
 }
 
-.info-box,
-.bar-container,
-.stats-grid,
-.equipment-grid {
+.info-box {
   background: #4b5c77;
+  text-align: center;
   padding: 5px;
   margin-bottom: 5px;
   border-radius: 5px;
+}
 
-  &.bar-container {
-    background: #3b3e4d;
-    overflow: hidden;
-  }
-
-  &.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 5px;
-    background-color: #3c415e;
-  }
-
-  &.equipment-grid {
-    background-color: #3c415e;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-    margin-top: 5px;
-  }
-
-  &.info-box {
-    text-align: center;
-  }
+.bar-container {
+  background: #3b3e4d;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 5px;
 }
 
 .bar {
@@ -63,13 +43,14 @@
   position: relative;
   height: 20px;
 
-  &::before {
+  &:before {
     content: "";
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
-    background: linear-gradient(to right, var(--startColor), var(--endColor));
+    right: var(--bar-width);
+    background: linear-gradient(to right, var(--start-color), var(--end-color));
     border-radius: 5px;
     z-index: 1;
   }
@@ -84,22 +65,47 @@
   }
 }
 
-.stat-box,
-.equipment-slot {
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #3c415e;
+}
+
+.stat-box {
   background-color: #50597b;
   color: white;
   padding: 5px;
   border-radius: 5px;
   text-align: center;
   border: 1px solid #002244;
-
-  &.equipment-slot {
-    background: var(--slotBackground);
-    opacity: var(--slotOpacity);
-    color: var(--slotColor);
-  }
 }
 
 .stats-line {
   text-align: center;
+}
+
+.equipment-grid {
+  background-color: #3c415e;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  padding: 5px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+.equipment-slot {
+  padding: 10px;
+  color: var(--slot-color, white);
+  border: 1px solid #002244;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--slot-background, #556080);
+  opacity: var(--slot-opacity, 1);
 }
