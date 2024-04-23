@@ -1,11 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, Middleware } from "@reduxjs/toolkit";
 import characterReducer, { initialState as characterInitialState } from "./components/Character/characterSlice";
 import inventoryReducer, { initialState as inventoryInitialState } from "./components/Inventory/inventorySlice";
 import { useDispatch } from "react-redux";
-import { autoSaveMiddleware } from "./middleware";
 
 export const b64Encode = (value: string): string => btoa(value);
-
 export const b64Decode = (value: string): string => atob(value);
 
 export const loadState = (key: string, initialState: unknown) => {
@@ -25,6 +23,14 @@ export const saveState = (key: string, state: unknown) => {
   } catch (error) {
     console.error("Failed to save or encode state:", error);
   }
+};
+
+const autoSaveMiddleware: Middleware = (store) => (next) => (action) => {
+  const result = next(action);
+  const state = store.getState();
+  saveState("characterState", state.character);
+  saveState("inventoryState", state.inventory);
+  return result;
 };
 
 export const store = configureStore({
