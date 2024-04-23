@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setFilter, setSort, SortCriteria } from "./inventorySlice";
+import { removeItem, setFilter, setSort, SortCriteria } from "./inventorySlice";
 import { RootState } from "../../store";
+// import stick from "../../assets/Stick.png";
 import "./Inventory.scss";
-import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css"; // default styles
 
 const Inventory = () => {
   const dispatch = useDispatch();
@@ -31,85 +30,7 @@ const Inventory = () => {
         return 0;
     }
   });
-
-  interface Currency {
-    symbol: string;
-    value: string;
-    color: string;
-    fullName: string; // Added full name of the currency
-  }
-
-  function convertToCurrency(value: number): Currency[] {
-    if (value === 0)
-      return [
-        {
-          value: "0",
-          color: "#b87333",
-          fullName: "Copper",
-          symbol: `C`,
-        },
-      ];
-
-    // Convert the value to an array of Currency objects for all denominations
-    const currencyBreakdown = [
-      { divisor: 100000000000000, symbol: "F", fullName: "Fractal", color: "#c50101" },
-      { divisor: 1000000000000, symbol: "E", fullName: "Essence", color: "#fff2b9" },
-      { divisor: 10000000000, symbol: "M", fullName: "Mythril", color: "#bcb9ff" },
-      { divisor: 100000000, symbol: "D", fullName: "Diamond", color: "#b9f2ff" },
-      { divisor: 1000000, symbol: "P", fullName: "Platinum", color: "#e5e4e2" },
-      { divisor: 10000, symbol: "G", fullName: "Gold", color: "#ffd700" },
-      { divisor: 100, symbol: "S", fullName: "Silver", color: "#c0c0c0" },
-      { divisor: 1, symbol: "C", fullName: "Copper", color: "#b87333" },
-    ];
-
-    return currencyBreakdown
-      .map(({ divisor, symbol, fullName, color }) => {
-        const amount = Math.floor((value % (divisor * 100)) / divisor);
-        return {
-          value: `${amount}`,
-          symbol,
-          color,
-          fullName,
-        };
-      })
-      .filter(({ value }) => value !== "0"); // Only include currencies with a non-zero amount
-  }
-
-  // Tooltip content component
-  const TooltipContent = ({ currencyComponents }: { currencyComponents: Currency[] }) => (
-    <div>
-      {currencyComponents.map((cc, index) => (
-        <div key={index} style={{ color: cc.color, fontSize: '18px', }}>
-          {cc.value}
-          {cc.symbol} ({cc.fullName})
-        </div>
-      ))}
-    </div>
-  );
-
-  function CurrencyDisplay({ value }: { value: number }) {
-    const currencyComponents = convertToCurrency(value);
-
-    return (
-      <>
-        {currencyComponents.slice(0, 3).map((currency, index) => (
-          <Tippy
-            key={index}
-            content={<TooltipContent currencyComponents={currencyComponents} />}
-            delay={[200, 0]} // Adjust as needed. First value is show delay, second value is hide delay.
-            animation="scale"
-            interactive={true} // Allows interaction with the tooltip content
-            allowHTML={true} // Allow HTML rendering inside tooltip
-          >
-            <span style={{ color: currency.color, marginRight: "2.5px", marginLeft: "2.5px" }}>
-              {currency.value}
-              <span>{currency.symbol}</span>
-            </span>
-          </Tippy>
-        ))}
-      </>
-    );
-  }
+  // <img src={stick} alt="Stick" width="30"/>
 
   return (
     <div className="inventory-container">
@@ -123,21 +44,32 @@ const Inventory = () => {
         <button className="category-button" onClick={() => dispatch(setFilter("EQP"))}>
           EQP
         </button>
+        <button className="category-button" onClick={() => dispatch(setFilter("TOOL"))}>
+          TOOL
+        </button>
         <button className="category-button" onClick={() => dispatch(setFilter("USE"))}>
           USE
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter("OTHER"))}>
-          OTHER
+        <button className="category-button" onClick={() => dispatch(setFilter("CMBT"))}>
+          CMBT
+        </button>
+        <button className="category-button" onClick={() => dispatch(setFilter("ETC"))}>
+          ETC
         </button>
       </div>
       <ul className="inventory-list">
         {sortedFilteredItems.map((item, index) => (
           <li className="item" key={index}>
-            <span>
+            <span style={{ width: "350px" }}>
               [{item.type}] {item.name}
             </span>
-            <span>
-              ({CurrencyDisplay({ value: item.value })}) x{item.amount}
+            <span style={{ width: "10px" }}>x{item.amount.toLocaleString("en-US")}</span>
+            <span style={{ marginLeft: "65px" }}>
+              <button
+                className="delete-button"
+                style={{ height: "25px", width: "25px" }}
+                onClick={() => dispatch(removeItem({ name: item.name, type: item.type }))}
+              >X</button>
             </span>
           </li>
         ))}

@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { RootState } from "../../store";
 
 interface Stats {
   hp: number;
@@ -25,10 +26,10 @@ interface Equipment {
   weapon: string | null;
   shield: string | null;
   head: string | null;
-  leftArm: string | null;
-  rightArm: string | null;
   body: string | null;
+  arms: string | null;
   legs: string | null;
+  feet: string | null;
   accessory: string | null;
   amulet: string | null;
   cybernetic: string | null;
@@ -49,7 +50,7 @@ interface CharacterState {
   combat: Combat;
 }
 
-const initialState: CharacterState = {
+export const initialState: CharacterState = {
   name: "You",
   title: "Nobody",
   level: 1,
@@ -77,10 +78,10 @@ const initialState: CharacterState = {
     weapon: null,
     shield: null,
     head: null,
-    leftArm: null,
-    rightArm: null,
     body: null,
+    arms: null,
     legs: null,
+    feet: null,
     accessory: null,
     amulet: "// LOCKED //",
     cybernetic: "// LOCKED //",
@@ -92,6 +93,12 @@ const initialState: CharacterState = {
   },
 };
 
+// Define an async thunk for saving character data
+export const saveCharacter = createAsyncThunk("character/saveCharacter", async (_, { getState }) => {
+  const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
+  localStorage.setItem("characterState", JSON.stringify(state.character));
+});
+
 export const characterSlice = createSlice({
   name: "character",
   initialState,
@@ -100,32 +107,21 @@ export const characterSlice = createSlice({
       state.stats.hp = Math.max(state.stats.hp - action.payload, 0);
     },
     heal: (state, action: PayloadAction<number>) => {
-      state.stats.hp = Math.min(
-        state.stats.hp + action.payload,
-        state.stats.maxHp
-      );
+      state.stats.hp = Math.min(state.stats.hp + action.payload, state.stats.maxHp);
     },
     gainExperience: (state, action: PayloadAction<number>) => {
       state.stats.experience += action.payload;
       while (state.stats.experience >= state.stats.nextLevelExperience) {
         state.stats.experience -= state.stats.nextLevelExperience;
         state.level += 1;
-        state.stats.nextLevelExperience = calculateNextLevelExperience(
-          state.level
-        );
+        state.stats.nextLevelExperience = calculateNextLevelExperience(state.level);
         state.stats.maxHp += 10;
         state.stats.hp = state.stats.maxHp;
       }
     },
-    equipItem: (
-      state,
-      action: PayloadAction<{ slot: keyof Equipment; item: string }>
-    ) => {
+    equipItem: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
       const { slot, item } = action.payload;
-      if (
-        state.equipment[slot] === null ||
-        state.equipment[slot] === "// LOCKED //"
-      ) {
+      if (state.equipment[slot] === null || state.equipment[slot] === "// LOCKED //") {
         state.equipment[slot] = item;
       }
     },
@@ -155,15 +151,5 @@ function calculateNextLevelExperience(level: number): number {
   return Math.floor(100 * Math.pow(1.1, level));
 }
 
-export const {
-  takeDamage,
-  heal,
-  gainExperience,
-  equipItem,
-  unequipItem,
-  unlockSlot,
-  lockSlot,
-  updateCharacterName,
-} = characterSlice.actions;
-
+export const { takeDamage, heal, gainExperience, equipItem, unequipItem, unlockSlot, lockSlot, updateCharacterName } = characterSlice.actions;
 export default characterSlice.reducer;

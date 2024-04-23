@@ -7,7 +7,9 @@
   background-color: #283149;
   border: 1px solid #404b69;
   overflow-y: auto; /* Allows scrolling within the Inventory component if content overflows */
-  flex-grow: 1; /* Allows the inventory container to fill available space */
+  height: 420px;
+  width: 550px;
+  display: grid;
 }
 
 .category-filter {
@@ -22,7 +24,7 @@
   border: 1px solid #555599;
   color: white;
   padding: 5px 10px;
-  margin: 0 2px;
+  margin: 5px 5px;
   &:hover {
     background: #555599;
   }
@@ -35,22 +37,42 @@
   padding-left: 12px;
   margin: 0;
   overflow-y: auto;
+  min-height: 300px;
   max-height: 300px;
   color: white;
 }
 
 .item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   border-bottom: 1px solid #555599;
   padding: 5px 0;
+  &:hover {
+    background: #333366;
+  }
 }
 
 .sort-buttons {
-  justify-content: space-between;
   margin-top: 10px;
 }
 
-.tippy-box {
-  border: 1px solid #474747;
+.delete-button {
+  &:hover {
+    background: #8b1b1b;
+  }
 }
+
+/* Hide the delete button by default, but maintain its layout space */
+.item .delete-button {
+  visibility: hidden;
+  opacity: 0; /* Use opacity for a fade-in effect if desired */
+  transition: opacity 0.3s; /* Smooth transition for the opacity change */
+}
+
+/* Show the delete button when the item is hovered */
+.item:hover .delete-button {
+  visibility: visible;
+  opacity: 1; /* Fully opaque to make it visible */
+}
+
+

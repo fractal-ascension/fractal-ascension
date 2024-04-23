@@ -1,8 +1,13 @@
 #footer {
   display: flex;
-  width: 100%;
   background-image: linear-gradient(to right, #2c3e61, #000000);
   text-align: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  /* Add more styling here */
 }
 
 .footer_button {

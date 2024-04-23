@@ -95,7 +95,7 @@ const Character = () => {
           >
             {character.name || "You"}
           </div>
-          <div>
+          <div className="text">
             Lvl: {character.level} '{character.title}'
           </div>
         </div>
@@ -192,22 +192,15 @@ const Character = () => {
         ))}
       </div>
 
-      {/* Display combat stats */}
-      <div className="stats-line">
-        {`Hit Chance: ${character.combat.hitChance * 100}% | Dodge Chance: ${
-          character.combat.dodgeChance * 100
-        }% | Critical Chance: ${character.combat.criticalChance * 100}%`}
-      </div>
-
       {/* Display equipment */}
       <div className="equipment-grid">
         {renderEquipmentSlot("Weapon", character.equipment.weapon)}
         {renderEquipmentSlot("Shield", character.equipment.shield)}
         {renderEquipmentSlot("Head", character.equipment.head)}
         {renderEquipmentSlot("Body", character.equipment.body)}
-        {renderEquipmentSlot("L. Arm", character.equipment.leftArm)}
-        {renderEquipmentSlot("R. Arm", character.equipment.rightArm)}
+        {renderEquipmentSlot("Arms", character.equipment.arms)}
         {renderEquipmentSlot("Legs", character.equipment.legs)}
+        {renderEquipmentSlot("Feet", character.equipment.feet)}
         {renderEquipmentSlot("Accessory", character.equipment.accessory)}
         {renderEquipmentSlot("Amulet", character.equipment.amulet)}
         {renderEquipmentSlot("Cybernetic", character.equipment.cybernetic)}
