@@ -1,0 +1,42 @@
+.display-container {
+    color: white;
+    text-shadow: 1px 1px #000;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #283149;
+    border: 1px solid #404b69;
+    min-height: 1012px;
+    width: 550px;
+    display: grid;
+  }
+  
+  .display-header {
+    padding: 10px;
+    border-bottom: 1px solid #fff;
+  }
+  
+  .display-header p {
+    margin: 5px 0;
+  }
+  
+  .display-actions {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .display-action {
+    padding: 10px;
+    border-bottom: 1px solid #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .display-action:hover {
+    background-color: #333;
+  }
+  
+  .display-action:not(:last-child) {
+    border-bottom: 1px solid #555;
+  }
+  

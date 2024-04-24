@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { saveState, store, useAppDispatch } from "../../store";
 import { saveCharacter } from "../Character/characterSlice";
 import { saveInventory } from "../Inventory/inventorySlice";
-import Main from "../Main/main";
+import Main from "../Main/Main";
 import Footer from "../Footer/footer";
 import "./App.scss";
 

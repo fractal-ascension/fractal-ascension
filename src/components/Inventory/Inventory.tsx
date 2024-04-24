@@ -69,7 +69,9 @@ const Inventory = () => {
                 className="delete-button"
                 style={{ height: "25px", width: "25px" }}
                 onClick={() => dispatch(removeItem({ name: item.name, type: item.type }))}
-              >X</button>
+              >
+                X
+              </button>
             </span>
           </li>
         ))}

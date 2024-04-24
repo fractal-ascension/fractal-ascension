@@ -1,6 +1,7 @@
 import Character from "../Character/Character";
 import Inventory from "../Inventory/Inventory";
-import "./main.scss";
+import Display from "../Display/Display";
+import "./Main.scss";
 
 function Main() {
   return (
@@ -11,8 +12,7 @@ function Main() {
           <Inventory />
         </div>
         <div className="column">
-          <div className="combat">Combat Component Placeholder</div>
-          <div className="actions">Actions Component Placeholder</div>
+          <Display />
         </div>
         <div className="column">
           <div className="messages">Messages Component Placeholder</div>

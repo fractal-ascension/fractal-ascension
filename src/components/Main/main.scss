@@ -1,13 +1,10 @@
 #main {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* Creates 3 columns */
-  gap: 10px; /* Adjust gap between columns */
-  position: relative; /* Establishes a positioning context */
   padding: 20px;
 }
 
 .column {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }

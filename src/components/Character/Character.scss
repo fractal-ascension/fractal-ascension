@@ -6,8 +6,9 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #283149;
   border: 1px solid #404b69;
-  height: 530px;
-  width: 550px;
+  width: 700px;
+  display: grid;
+  margin-bottom: 20px;
 }
 
 .editable-text {
@@ -30,21 +31,27 @@
   padding: 5px;
   margin-bottom: 8px;
   border-radius: 5px;
-  height: 45px;
 }
 
 .bar-container {
   background: #3b3e4d;
   border-radius: 5px;
   overflow: hidden;
-  margin-bottom: 8px;
+  margin: 5px;
+}
+
+.bar-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 4fr); /* Creates 3 columns */
 }
 
 .bar {
   background: #555;
   border-radius: 5px;
   position: relative;
-  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:before {
     content: "";
@@ -59,10 +66,7 @@
   }
 
   span {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    line-height: 20px;
+    position: relative;
     color: white;
     z-index: 2;
   }
@@ -86,7 +90,6 @@
   border-radius: 5px;
   text-align: center;
   border: 1px solid #002244;
-  height: 20px;
 }
 
 .equipment-grid {
@@ -96,16 +99,14 @@
   gap: 5px;
   padding: 5px;
   border-radius: 5px;
-  height: 230px;
 }
 
 .equipment-slot {
-  padding: 10px;
+  padding: 5px;
   color: var(--slot-color, white);
   border: 1px solid #002244;
   text-align: center;
-  border-radius: 4px;
+  border-radius: 5px;
   background: var(--slot-background, #556080);
   opacity: var(--slot-opacity, 1);
-  height: 20px;
 }
