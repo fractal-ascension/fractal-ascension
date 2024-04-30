@@ -43,6 +43,17 @@ const Character = () => {
     );
   };
 
+  document.addEventListener("DOMContentLoaded", function() {
+    const isChrome = /Chrome/.test(navigator.userAgent);
+    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  
+    if (isChrome) {
+      document.body.classList.add("chrome");
+    } else if (isFirefox) {
+      document.body.classList.add("firefox");
+    }
+  });
+
   return (
     <div className="character-container">
       <div className="player-container">
@@ -196,6 +207,14 @@ const Character = () => {
         {renderEquipmentSlot("Legs", character.equipment.legs)}
         {renderEquipmentSlot("Feet", character.equipment.feet)}
         {renderEquipmentSlot("Accessory", character.equipment.accessory)}
+      </div>
+
+      <div className="status-grid">
+        {Object.entries(stats).map(([statName, statValue]) => (
+          <div className="status-box" key={statName}>
+            {statName}: {statValue}
+          </div>
+        ))}
       </div>
     </div>
   );

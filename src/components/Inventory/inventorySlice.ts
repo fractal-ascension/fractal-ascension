@@ -41,6 +41,10 @@ export const initialState: InventoryState = {
     { name: "Stone", amount: 7, type: "USE", value: 1 },
     { name: "Stone", amount: 7, type: "USE", value: 1 },
     { name: "Stone", amount: 7, type: "USE", value: 1 },
+    { name: "Stone", amount: 7, type: "USE", value: 1 },
+    { name: "Stone", amount: 7, type: "USE", value: 1 },
+    { name: "Stone", amount: 7, type: "USE", value: 1 },
+    { name: "Stone", amount: 7, type: "USE", value: 1 },
 
   ],
   filter: "ALL",

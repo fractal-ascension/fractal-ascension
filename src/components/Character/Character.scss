@@ -1,27 +1,30 @@
 $primary-bg-color: #283149;
-$secondary-bg-color: #4b5c77;
-$tertiary-bg-color: #3c415e;
+$secondary-bg-color: #3c415e;
 $border-color: #404b69;
 $detail-border-color: #002244;
 $hover-border-color: white;
+$border-radius: 5px;
+$margin-bottom: 8px;
+$padding: 5px;
+$gap: 5px;
 
 .character-container {
   background-color: $primary-bg-color;
   border: 1px solid $border-color;
-  border-radius: 5px;
+  border-radius: $border-radius;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   color: white;
-  margin-bottom: 1vh;
-  padding: 1vh;
+  margin-bottom: 10px; // Container margin, matching main
+  padding: 10px;
   text-shadow: 1.5px 1px #000;
-  height: 40vh;
-  width: 45vh;
+  height: 540px;
+  width: 600px;
 }
 
 .info-box {
-  background: $secondary-bg-color;
-  border-radius: 5px;
-  margin-bottom: .5vh;
+  background: lighten($secondary-bg-color, 10%);
+  border-radius: $border-radius;
+  margin-bottom: $margin-bottom;
   text-align: center;
 }
 
@@ -40,21 +43,21 @@ $hover-border-color: white;
 .bar-grid {
   display: grid;
   grid-template-columns: repeat(2, 4fr); // Adjust comment or remove it if it's a typo and should be repeat(2, 1fr)
-  gap: .5vh;
-  margin-bottom: .5vh;
+  gap: $gap;
+  margin-bottom: $margin-bottom;
 }
 
 .bar {
   align-items: center;
   background: #555;
-  border-radius: 5px;
+  border-radius: $border-radius;
   display: flex;
   justify-content: center;
   position: relative;
 
   &:before {
     background: linear-gradient(to right, var(--start-color), var(--end-color));
-    border-radius: 5px;
+    border-radius: $border-radius;
     bottom: 0;
     left: 0;
     top: 0;
@@ -72,40 +75,62 @@ $hover-border-color: white;
 }
 
 .stats-grid {
-  background-color: $tertiary-bg-color;
-  border-radius: 5px;
+  background-color: $secondary-bg-color;
+  border-radius: $border-radius;
   display: grid;
-  gap: .5vh;
+  gap: $gap;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  margin-bottom: .5vh;
-  padding: .5vh;
+  margin-bottom: $margin-bottom;
+  padding: $padding;
 }
 
 .stat-box {
-  background-color: lighten($tertiary-bg-color, 10%);
+  background-color: lighten($secondary-bg-color, 10%);
   border: 1px solid $detail-border-color;
-  border-radius: 5px;
+  border-radius: $border-radius;
   color: white;
-  padding: .5vh;
+  padding: $padding;
   text-align: center;
 }
 
 .equipment-grid {
-  background-color: $tertiary-bg-color;
-  border-radius: 5px;
+  background-color: $secondary-bg-color;
+  border-radius: $border-radius;
   display: grid;
-  gap: .5vh;
+  gap: $gap;
   grid-template-columns: repeat(2, 1fr);
-  padding: .5vh;
+  padding: $padding;
+  margin-bottom: $margin-bottom;
 }
 
 .equipment-slot {
-  background: var(--slot-background, #556080);
+  background: var(--slot-background, lighten($secondary-bg-color, 10%));
   border: 1px solid $detail-border-color;
-  border-radius: 5px;
+  border-radius: $border-radius;
   color: var(--slot-color, white);
   opacity: var(--slot-opacity, 1);
-  padding: .5vh;
+  padding: $padding;
   text-align: center;
+}
+
+.status-grid {
+  background-color: $secondary-bg-color;
+  border-radius: $border-radius;
+  display: flex;
+  flex-wrap: nowrap; /* Prevents wrapping of items */
+  overflow-x: auto; /* Enables horizontal scrolling */
+  gap: $gap; /* Maintains gap between items */
+  padding: $padding;
+  scrollbar-width: thin; /* makes the scrollbar thinner */
+  scrollbar-color: lighten($secondary-bg-color, 10%); /* thumb and track color */
+}
+
+.status-box {
+  background-color: lighten($secondary-bg-color, 10%);
+  border: 1px solid $detail-border-color;
+  border-radius: $border-radius;
+  color: white;
+  padding: 0.5vh;
+  text-align: center;
+  min-width: 150px; /* Optional: sets a minimum width for each box */
 }
