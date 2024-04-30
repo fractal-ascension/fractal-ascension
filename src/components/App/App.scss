@@ -1,0 +1,45 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh; /* Ensure it covers at least the entire height of the viewport */
+}
+
+#main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 1vb;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  padding-right: 1vw; /* Padding based on viewport width */
+}
+
+#footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3vh; /* Height based on viewport height */
+  background-image: linear-gradient(to right, #2c3e61, #000000);
+}
+
+.footer_button {
+  width: fit-content;
+  padding: 0.3vh 0.5vh; /* Padding based on viewport width */
+  background-color: #0f143b;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #32456c;
+  font-size: 1.7vh; /* Font size based on viewport width */
+}
+
+.reset-button {
+  margin-left: auto; /* This will push the reset button to the right */
+}

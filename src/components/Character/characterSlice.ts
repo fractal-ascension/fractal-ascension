@@ -4,13 +4,19 @@ import { RootState } from "../../store";
 interface Stats {
   hp: number;
   maxHp: number;
+  hunger: number;
+  maxHunger: number;
   sp: number;
   maxSp: number;
+  thirst: number;
+  maxThirst: number;
   mp: number;
   maxMp: number;
+  sleep: number;
+  maxSleep: number;
   energy: number;
   maxEnergy: number;
-  experience: number;
+  xp: number;
   nextLevelExperience: number;
   strength: number;
   vitality: number;
@@ -55,14 +61,20 @@ export const initialState: CharacterState = {
   stats: {
     hp: 4,
     maxHp: 10,
+    hunger: 40,
+    maxHunger: 100,
     sp: 4,
     maxSp: 10,
+    thirst: 40,
+    maxThirst: 100,
     mp: 4,
     maxMp: 10,
+    sleep: 40,
+    maxSleep: 100,
     energy: 40,
     maxEnergy: 100,
-    experience: 0,
-    nextLevelExperience: 10,
+    xp: 40,
+    nextLevelExperience: 100,
     strength: 1,
     vitality: 1,
     agility: 1,
@@ -106,9 +118,9 @@ export const characterSlice = createSlice({
       state.stats.hp = Math.min(state.stats.hp + action.payload, state.stats.maxHp);
     },
     gainExperience: (state, action: PayloadAction<number>) => {
-      state.stats.experience += action.payload;
-      while (state.stats.experience >= state.stats.nextLevelExperience) {
-        state.stats.experience -= state.stats.nextLevelExperience;
+      state.stats.xp += action.payload;
+      while (state.stats.xp >= state.stats.nextLevelExperience) {
+        state.stats.xp -= state.stats.nextLevelExperience;
         state.level += 1;
         state.stats.nextLevelExperience = calculateNextLevelExperience(state.level);
         state.stats.maxHp += 10;

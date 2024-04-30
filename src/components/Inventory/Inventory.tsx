@@ -1,12 +1,36 @@
 import { useDispatch, useSelector } from "react-redux";
 import { removeItem, setFilter, setSort, SortCriteria } from "./inventorySlice";
 import { RootState } from "../../store";
-// import stick from "../../assets/Stick.png";
 import "./Inventory.scss";
+import { useEffect, useState } from "react";
 
 const Inventory = () => {
   const dispatch = useDispatch();
   const { items, filter, sort } = useSelector((state: RootState) => state.inventory);
+  const [itemWidth, setItemWidth] = useState({ width: "32vh" });
+  const [inventoryHeight, setInventoryHeight] = useState({ height: "49.5vh" });
+  const [inventoryListHeight, setInventoryListHeight] = useState({ height: "40vh" });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const hasScrollbar = window.innerHeight > document.documentElement.clientHeight;
+
+      if (hasScrollbar) {
+        setItemWidth({ width: "31vh" });
+        setInventoryHeight({ height: "48.5vh" });
+        setInventoryListHeight({ height: "39vh" });
+      } else {
+        setItemWidth({ width: "32vh" });
+        setInventoryHeight({ height: "49.5vh" });
+        setInventoryListHeight({ height: "40vh" });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Initialize on component mount
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const filteredItems = filter === "ALL" ? items : items.filter((item) => item.type === filter);
 
@@ -33,7 +57,7 @@ const Inventory = () => {
   // <img src={stick} alt="Stick" width="30"/>
 
   return (
-    <div className="inventory-container">
+    <div className="inventory-container" style={inventoryHeight}>
       <div className="category-filter">
         <button className="category-button" onClick={() => dispatch(setFilter("ALL"))}>
           ALL
@@ -57,17 +81,18 @@ const Inventory = () => {
           ETC
         </button>
       </div>
-      <ul className="inventory-list">
+      <ul className="inventory-list" style={inventoryListHeight}>
         {sortedFilteredItems.map((item, index) => (
           <li className="item" key={index}>
-            <span style={{ width: "350px" }}>
-              [{item.type}] {item.name}
+            <span style={itemWidth}>
+              <span className={`item-type-label item-type-${item.type}`}>[{item.type}] </span>
+              {item.name}
             </span>
-            <span style={{ width: "10px" }}>x{item.amount.toLocaleString("en-US")}</span>
-            <span style={{ marginLeft: "65px" }}>
+            <span>x{item.amount.toLocaleString("en-US")}</span>
+            <span className="delete-button-container">
               <button
                 className="delete-button"
-                style={{ height: "25px", width: "25px" }}
+                style={{ height: "1.7vh", width: "1.7vh", fontSize: "1vh" }}
                 onClick={() => dispatch(removeItem({ name: item.name, type: item.type }))}
               >
                 X

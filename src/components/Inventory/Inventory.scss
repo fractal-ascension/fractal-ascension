@@ -1,77 +1,124 @@
+$inventory-bg-color: #283149;
+$button-bg-color: #333366;
+$button-hover-bg-color: #555599;
+$border-color: #404b69;
+$button-border-color: #555599;
+$error-color: #8b1b1b;
+$text-color: white;
+$text-shadow-color: #000;
+
 .inventory-container {
   color: white;
   text-shadow: 1px 1px #000;
-  padding: 10px;
+  padding: 1vh;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #283149;
   border: 1px solid #404b69;
-  overflow-y: auto; /* Allows scrolling within the Inventory component if content overflows */
-  width: 550px;
-  display: grid;
+  width: 45vh;
 }
 
 .category-filter {
-  justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 1vh;
+  width: 100%;
+}
+
+.button-shared-styles {
+  background: $button-bg-color;
+  border: 1px solid $button-border-color;
+  color: $text-color;
+  font: 1em MS Gothic;
+  padding: 0.5vh 0.5vh;
+  width: 5vh;
+  &:hover {
+    background: $button-hover-bg-color;
+  }
 }
 
 .category-button,
 .sort-button {
-  background: #333366;
-  font: 1em MS Gothic;
-  border: 1px solid #555599;
-  color: white;
-  padding: 5px 10px;
-  margin: 5px 5px;
-  &:hover {
-    background: #555599;
-  }
+  @extend .button-shared-styles;
 }
 
 .inventory-list {
+  color: $text-color;
   list-style-type: none;
-  padding: 0;
-  padding-right: 12px;
-  padding-left: 12px;
   margin: 0;
   overflow-y: auto;
-  min-height: 300px;
-  max-height: 300px;
-  color: white;
+  padding: 0.5vh;
+  font-size: 1.7vh;
 }
 
 .item {
+  border-bottom: 1px solid $button-border-color;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border-bottom: 1px solid #555599;
-  padding: 5px 0;
+  padding: 0.1vh 0;
+
   &:hover {
-    background: #333366;
+    background: $button-bg-color;
+
+    .delete-button {
+      opacity: 1; // Fully opaque to make it visible
+      visibility: visible;
+    }
+  }
+}
+
+.delete-button {
+  background: $error-color;
+  opacity: 0; // Use opacity for a fade-in effect if desired
+  transition: opacity 0.3s; // Smooth transition for opacity change
+  visibility: hidden;
+  &:hover {
+    background: darken($error-color, 10%);
   }
 }
 
 .sort-buttons {
-  margin-top: 10px;
+  margin-top: 1vh;
+  width: 100%; // Ensures it spans the full width
 }
 
-.delete-button {
-  &:hover {
-    background: #8b1b1b;
-  }
+.item-type-label {
+  &.item-type-WPN {
+    color: #f44336;
+  } // Red for weapons
+  &.item-type-EQP {
+    color: #2196f3;
+  } // Blue for equipment
+  &.item-type-TOOL {
+    color: #ffc107;
+  } // Green for tools
+  &.item-type-USE {
+    color: #4caf50;
+  } // Amber for usable items
+  &.item-type-CMBT {
+    color: #9c27b0;
+  } // Purple for combat items
+  &.item-type-ETC {
+    color: #607d8b;
+  } // Blue Grey for miscellaneous items
 }
 
-/* Hide the delete button by default, but maintain its layout space */
-.item .delete-button {
-  visibility: hidden;
-  opacity: 0; /* Use opacity for a fade-in effect if desired */
-  transition: opacity 0.3s; /* Smooth transition for the opacity change */
+.delete-button-container {
+  margin-left: 3.5vh;
 }
 
-/* Show the delete button when the item is hovered */
-.item:hover .delete-button {
-  visibility: visible;
-  opacity: 1; /* Fully opaque to make it visible */
-}
+// @media (max-height: 1314px) {
+//   .item-label {
+//     width: 32vh;
+//   }
 
+//   .inventory-list {
+//     max-height: 39vh;
+//   }
 
+//   .inventory-container {
+//     height: 48.4vh;
+//   }
+
+//   .delete-button-container {
+//     margin-left: 3vh;
+//   }
+// }

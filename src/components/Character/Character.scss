@@ -1,112 +1,111 @@
+$primary-bg-color: #283149;
+$secondary-bg-color: #4b5c77;
+$tertiary-bg-color: #3c415e;
+$border-color: #404b69;
+$detail-border-color: #002244;
+$hover-border-color: white;
+
 .character-container {
-  color: white;
-  text-shadow: 1.5px 1px #000;
-  padding: 10px;
+  background-color: $primary-bg-color;
+  border: 1px solid $border-color;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  background-color: #283149;
-  border: 1px solid #404b69;
-  width: 700px;
-  display: grid;
-  margin-bottom: 20px;
-}
-
-.editable-text {
-  display: inline-block;
-  margin: 0;
-  border-bottom: 1px solid transparent;
   color: white;
-  cursor: text;
-
-  &:hover,
-  &:focus {
-    outline: none;
-    border-bottom: 1px solid white;
-  }
+  margin-bottom: 1vh;
+  padding: 1vh;
+  text-shadow: 1.5px 1px #000;
+  height: 40vh;
+  width: 45vh;
 }
 
 .info-box {
-  background: #4b5c77;
-  text-align: center;
-  padding: 5px;
-  margin-bottom: 8px;
+  background: $secondary-bg-color;
   border-radius: 5px;
+  margin-bottom: .5vh;
+  text-align: center;
 }
 
-.bar-container {
-  background: #3b3e4d;
-  border-radius: 5px;
-  overflow: hidden;
-  margin: 5px;
+.editable-text {
+  border-bottom: 1px solid transparent;
+  color: white;
+  cursor: text;
+  display: inline-block;
+  &:hover,
+  &:focus {
+    border-bottom: 1px solid $hover-border-color;
+    outline: none;
+  }
 }
 
 .bar-grid {
   display: grid;
-  grid-template-columns: repeat(2, 4fr); /* Creates 3 columns */
+  grid-template-columns: repeat(2, 4fr); // Adjust comment or remove it if it's a typo and should be repeat(2, 1fr)
+  gap: .5vh;
+  margin-bottom: .5vh;
 }
 
 .bar {
+  align-items: center;
   background: #555;
   border-radius: 5px;
-  position: relative;
   display: flex;
-  align-items: center;
   justify-content: center;
+  position: relative;
 
   &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: var(--bar-width);
     background: linear-gradient(to right, var(--start-color), var(--end-color));
     border-radius: 5px;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    content: "";
+    position: absolute;
+    right: var(--bar-width);
     z-index: 1;
   }
 
   span {
-    position: relative;
     color: white;
+    position: relative;
     z-index: 2;
   }
 }
 
 .stats-grid {
+  background-color: $tertiary-bg-color;
+  border-radius: 5px;
   display: grid;
+  gap: .5vh;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 5px;
-  margin-bottom: 8px;
-  padding: 5px;
-  border-radius: 5px;
-  background-color: #3c415e;
+  margin-bottom: .5vh;
+  padding: .5vh;
 }
 
 .stat-box {
-  background-color: #50597b;
-  color: white;
-  padding: 5px;
+  background-color: lighten($tertiary-bg-color, 10%);
+  border: 1px solid $detail-border-color;
   border-radius: 5px;
+  color: white;
+  padding: .5vh;
   text-align: center;
-  border: 1px solid #002244;
 }
 
 .equipment-grid {
-  background-color: #3c415e;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
-  padding: 5px;
+  background-color: $tertiary-bg-color;
   border-radius: 5px;
+  display: grid;
+  gap: .5vh;
+  grid-template-columns: repeat(2, 1fr);
+  padding: .5vh;
 }
 
 .equipment-slot {
-  padding: 5px;
-  color: var(--slot-color, white);
-  border: 1px solid #002244;
-  text-align: center;
-  border-radius: 5px;
   background: var(--slot-background, #556080);
+  border: 1px solid $detail-border-color;
+  border-radius: 5px;
+  color: var(--slot-color, white);
   opacity: var(--slot-opacity, 1);
+  padding: .5vh;
+  text-align: center;
 }
