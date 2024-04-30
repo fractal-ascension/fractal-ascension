@@ -45,13 +45,22 @@ interface Combat {
   criticalChance: number;
 }
 
-interface CharacterState {
+export interface StatusEffect {
+  id: string;
+  name: string;
+  duration: number;
+  effectType: string;
+  effectAmount: number;
+}
+
+export interface CharacterState {
   name: string;
   title: string;
   level: number;
   stats: Stats;
   equipment: Equipment;
   combat: Combat;
+  statuses: StatusEffect[];
 }
 
 export const initialState: CharacterState = {
@@ -85,7 +94,7 @@ export const initialState: CharacterState = {
     luck: 1,
   },
   equipment: {
-    lefthand: "Item",
+    lefthand: null,
     righthand: null,
     head: null,
     body: null,
@@ -99,6 +108,7 @@ export const initialState: CharacterState = {
     dodgeChance: 0.001,
     criticalChance: 0.001,
   },
+  statuses: [],
 };
 
 // Define an async thunk for saving character data
@@ -106,6 +116,15 @@ export const saveCharacter = createAsyncThunk("character/saveCharacter", async (
   const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
   localStorage.setItem("characterState", JSON.stringify(state.character));
 });
+
+const applyEffect = (character: CharacterState, effect: StatusEffect) => {
+  switch (effect.effectType) {
+    case "reduceHp":
+      character.stats.hp = Math.max(character.stats.hp - effect.effectAmount, 0);
+      break;
+    // Add more cases as needed for different types of effects
+  }
+};
 
 export const characterSlice = createSlice({
   name: "character",
@@ -140,6 +159,22 @@ export const characterSlice = createSlice({
     updateCharacterName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
     },
+    addStatus: (state, action) => {
+      state.statuses.push(action.payload);
+    },
+    removeStatus: (state, action: PayloadAction<string>) => {
+      state.statuses = state.statuses.filter((status) => status.id !== action.payload);
+    },
+    updateStatuses: (state) => {
+      state.statuses.forEach((status) => {
+        if (status.duration > 0) {
+          status.duration -= 1; // Decrement the duration
+          applyEffect(state, status); // Apply the effect based on the status details
+        }
+      });
+      // Remove expired statuses
+      state.statuses = state.statuses.filter((status) => status.duration !== 0);
+    },
   },
 });
 
@@ -147,5 +182,6 @@ function calculateNextLevelExperience(level: number): number {
   return Math.floor(100 * Math.pow(1.1, level));
 }
 
-export const { takeDamage, heal, gainExperience, equipItem, unequipItem, updateCharacterName } = characterSlice.actions;
+export const { takeDamage, heal, gainExperience, equipItem, unequipItem, updateCharacterName, addStatus, removeStatus, updateStatuses } =
+  characterSlice.actions;
 export default characterSlice.reducer;

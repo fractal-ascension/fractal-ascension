@@ -65,10 +65,7 @@ const Inventory = () => {
             </span>
             <span>x{item.amount.toLocaleString("en-US")}</span>
             <span className="delete-button-container">
-              <button
-                className="delete-button"
-                onClick={() => dispatch(removeItem({ name: item.name, type: item.type }))}
-              >
+              <button className="delete-button" onClick={() => dispatch(removeItem({ name: item.name, type: item.type }))}>
                 X
               </button>
             </span>

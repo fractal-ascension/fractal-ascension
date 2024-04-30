@@ -21,6 +21,14 @@ $gap: 5px;
   width: 600px;
 }
 
+.character-container.chrome {
+  height: 480px;
+}
+
+.character-container.edge-chromium {
+  height: 480px;
+}
+
 .info-box {
   background: lighten($secondary-bg-color, 10%);
   border-radius: $border-radius;

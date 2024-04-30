@@ -1,9 +1,11 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./Character.scss";
 import { RootState } from "../../store";
 import CharacterName from "./CharacterName";
-import { initialState } from "./characterSlice";
+import { addStatus, initialState } from "./characterSlice";
+import { detectBrowser } from "../../utils/browserUtil";
+import { poisonEffect } from "../../utils/statusEffects";
 
 type ExtendedCSSProperties = React.CSSProperties & {
   "--bar-width"?: string;
@@ -12,7 +14,15 @@ type ExtendedCSSProperties = React.CSSProperties & {
 };
 
 const Character = () => {
+  const dispatch = useDispatch();
+  const browser = React.useMemo(() => detectBrowser(), []);
   const character = useSelector((state: RootState) => state.character);
+
+  // Function to simulate eating poisoned food
+  const eatFood = () => {
+    // Assuming `poisonEffect` is a valid StatusEffect object
+    dispatch(addStatus(poisonEffect));
+  };
 
   const stats = {
     STR: character.stats.strength || initialState.stats.strength,
@@ -43,19 +53,8 @@ const Character = () => {
     );
   };
 
-  document.addEventListener("DOMContentLoaded", function() {
-    const isChrome = /Chrome/.test(navigator.userAgent);
-    const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-  
-    if (isChrome) {
-      document.body.classList.add("chrome");
-    } else if (isFirefox) {
-      document.body.classList.add("firefox");
-    }
-  });
-
   return (
-    <div className="character-container">
+    <div className={`character-container ${browser}`}>
       <div className="player-container">
         <div className="info-box">
           <div>
@@ -188,7 +187,6 @@ const Character = () => {
           </div>
         </div>
       </div>
-
       <div className="stats-grid">
         {Object.entries(stats).map(([statName, statValue]) => (
           <div className="stat-box" key={statName}>
@@ -196,7 +194,6 @@ const Character = () => {
           </div>
         ))}
       </div>
-
       {/* Display equipment */}
       <div className="equipment-grid">
         {renderEquipmentSlot("L. Hand", character.equipment.lefthand)}
@@ -208,14 +205,14 @@ const Character = () => {
         {renderEquipmentSlot("Feet", character.equipment.feet)}
         {renderEquipmentSlot("Accessory", character.equipment.accessory)}
       </div>
-
       <div className="status-grid">
-        {Object.entries(stats).map(([statName, statValue]) => (
-          <div className="status-box" key={statName}>
-            {statName}: {statValue}
+        {character.statuses?.map((status) => (
+          <div key={status.id} className="status-box">
+            {status.name} (Remaining: {status.duration > 0 ? `${status.duration} ticks` : "Permanent"})
           </div>
         ))}
       </div>
+      <button onClick={() => eatFood()}>Eat Food</button>;
     </div>
   );
 };
