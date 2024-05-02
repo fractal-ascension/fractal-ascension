@@ -1,0 +1,25 @@
+export const Icons = () => {
+  const iconList = [
+    { id: "strength", icon: "💪" },
+    { id: "vitality", icon: "❤️" },
+    { id: "agility", icon: "🏃" },
+    { id: "dexterity", icon: "🎯" },
+    { id: "intelligence", icon: "🧠" },
+    { id: "wisdom", icon: "📚" },
+    { id: "speed", icon: "🏃" },
+    { id: "luck", icon: "🍀" },
+    { id: "hp", icon: "❤️" },
+    { id: "hunger", icon: "🍔" },
+    { id: "sp", icon: "⚡" },
+    { id: "thirst", icon: "💧" },
+    { id: "mp", icon: "🔮" },
+    { id: "sleep", icon: "😴" },
+    { id: "energy", icon: "🔋" },
+    { id: "xp", icon: "🌟" },
+    { id: "nextLevelExperience", icon: "🌟" },
+    { id: "hitChance", icon: "🎯" },
+    { id: "dodgeChance", icon: "🛡️" },
+    { id: "criticalChance", icon: "💥" },
+    { id: "perception", icon: "👁️" },
+  ];
+};

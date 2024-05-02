@@ -1,42 +1,76 @@
+$primary-bg-color: #283149;
+$secondary-bg-color: #3c415e;
+$border-color: #404b69;
+$detail-border-color: #002244;
+$hover-border-color: white;
+$border-radius: 5px;
+$margin-bottom: 8px;
+$padding: 5px;
+$gap: 5px;
+
 .display-container {
-    color: white;
-    text-shadow: 1px 1px #000;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    background-color: #283149;
-    border: 1px solid #404b69;
-    min-height: 94.7vh;
-    width: 50vh;
-    display: grid;
-  }
-  
-  .display-header {
-    padding: 1vh;
-    border-bottom: 1px solid #fff;
-  }
-  
-  .display-header p {
-    margin: 5px 0;
-  }
-  
-  .display-actions {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .display-action {
-    padding: 10px;
-    border-bottom: 1px solid #555;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-  
-  .display-action:hover {
-    background-color: #333;
-  }
-  
-  .display-action:not(:last-child) {
-    border-bottom: 1px solid #555;
-  }
-  
+  background-color: $primary-bg-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  color: white;
+  margin-bottom: 10px; // Container margin, matching main
+  padding: 10px;
+  text-shadow: 1.5px 1px #000;
+  width: 600px;
+}
+
+.display-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: lighten($secondary-bg-color, 10%);
+  border-radius: $border-radius;
+  margin-bottom: $margin-bottom;
+  height: 55px;
+  align-items: center; // This centers the children vertically
+}
+
+.display-header p {
+  margin: 15px;
+}
+
+.display-header p:nth-child(2) {
+  justify-self: end;
+}
+
+.display-img {
+  max-height: 400px;
+  overflow-y: hidden;
+  margin-bottom: 10px;
+}
+
+.display-text {
+  border-top: #fff 1px solid;
+  border-bottom: #fff 1px solid;
+  padding: 0px 10px 0px 10px;
+  margin: 0px;
+  border-radius: $border-radius;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.display-actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.display-action {
+  padding: 10px;
+  border-bottom: 1px solid #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.display-action:hover {
+  background-color: #333;
+}
+
+.display-action:not(:last-child) {
+  border-bottom: 1px solid #555;
+}

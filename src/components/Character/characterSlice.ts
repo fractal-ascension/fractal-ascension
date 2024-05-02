@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
-interface Stats {
+interface Parameters {
   hp: number;
   maxHp: number;
   hunger: number;
@@ -18,6 +18,9 @@ interface Stats {
   maxEnergy: number;
   xp: number;
   nextLevelExperience: number;
+}
+
+interface Stats {
   strength: number;
   vitality: number;
   agility: number;
@@ -56,6 +59,7 @@ export interface StatusEffect {
 export interface CharacterState {
   name: string;
   title: string;
+  parameters: Parameters;
   level: number;
   stats: Stats;
   equipment: Equipment;
@@ -67,7 +71,7 @@ export const initialState: CharacterState = {
   name: "You",
   title: "Nobody",
   level: 1,
-  stats: {
+  parameters: {
     hp: 4,
     maxHp: 10,
     hunger: 40,
@@ -84,6 +88,8 @@ export const initialState: CharacterState = {
     maxEnergy: 100,
     xp: 40,
     nextLevelExperience: 100,
+  },
+  stats: {
     strength: 1,
     vitality: 1,
     agility: 1,
@@ -111,6 +117,8 @@ export const initialState: CharacterState = {
   statuses: [],
 };
 
+const calculateNextLevelExperience = (level: number): number => Math.floor(100 * Math.pow(1.1, level));
+
 // Define an async thunk for saving character data
 export const saveCharacter = createAsyncThunk("character/saveCharacter", async (_, { getState }) => {
   const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
@@ -120,7 +128,7 @@ export const saveCharacter = createAsyncThunk("character/saveCharacter", async (
 const applyEffect = (character: CharacterState, effect: StatusEffect) => {
   switch (effect.effectType) {
     case "reduceHp":
-      character.stats.hp = Math.max(character.stats.hp - effect.effectAmount, 0);
+      character.parameters.hp = Math.max(character.parameters.hp - effect.effectAmount, 0);
       break;
     // Add more cases as needed for different types of effects
   }
@@ -131,19 +139,19 @@ export const characterSlice = createSlice({
   initialState,
   reducers: {
     takeDamage: (state, action: PayloadAction<number>) => {
-      state.stats.hp = Math.max(state.stats.hp - action.payload, 0);
+      state.parameters.hp = Math.max(state.parameters.hp - action.payload, 0);
     },
     heal: (state, action: PayloadAction<number>) => {
-      state.stats.hp = Math.min(state.stats.hp + action.payload, state.stats.maxHp);
+      state.parameters.hp = Math.min(state.parameters.hp + action.payload, state.parameters.maxHp);
     },
     gainExperience: (state, action: PayloadAction<number>) => {
-      state.stats.xp += action.payload;
-      while (state.stats.xp >= state.stats.nextLevelExperience) {
-        state.stats.xp -= state.stats.nextLevelExperience;
+      state.parameters.xp += action.payload;
+      while (state.parameters.xp >= state.parameters.nextLevelExperience) {
+        state.parameters.xp -= state.parameters.nextLevelExperience;
         state.level += 1;
-        state.stats.nextLevelExperience = calculateNextLevelExperience(state.level);
-        state.stats.maxHp += 10;
-        state.stats.hp = state.stats.maxHp;
+        state.parameters.nextLevelExperience = calculateNextLevelExperience(state.level);
+        state.parameters.maxHp += 10;
+        state.parameters.hp = state.parameters.maxHp;
       }
     },
     equipItem: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
@@ -177,10 +185,6 @@ export const characterSlice = createSlice({
     },
   },
 });
-
-function calculateNextLevelExperience(level: number): number {
-  return Math.floor(100 * Math.pow(1.1, level));
-}
 
 export const { takeDamage, heal, gainExperience, equipItem, unequipItem, updateCharacterName, addStatus, removeStatus, updateStatuses } =
   characterSlice.actions;

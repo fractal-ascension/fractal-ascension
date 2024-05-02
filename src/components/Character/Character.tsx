@@ -35,14 +35,14 @@ const Character = () => {
     LCK: character.stats.luck || initialState.stats.luck,
   };
 
-  const hpWidth = (character.stats.hp / character.stats.maxHp) * 100;
-  const hungerWidth = (character.stats.hunger / character.stats.maxHunger) * 100;
-  const spWidth = (character.stats.sp / character.stats.maxSp) * 100;
-  const thirstWidth = (character.stats.thirst / character.stats.maxThirst) * 100;
-  const mpWidth = (character.stats.mp / character.stats.maxMp) * 100;
-  const sleepWidth = (character.stats.sleep / character.stats.maxSleep) * 100;
-  const energyWidth = (character.stats.energy / character.stats.maxEnergy) * 100;
-  const xpWidth = (character.stats.xp / character.stats.nextLevelExperience) * 100;
+  const hpWidth = (character.parameters.hp / character.parameters.maxHp) * 100;
+  const hungerWidth = (character.parameters.hunger / character.parameters.maxHunger) * 100;
+  const spWidth = (character.parameters.sp / character.parameters.maxSp) * 100;
+  const thirstWidth = (character.parameters.thirst / character.parameters.maxThirst) * 100;
+  const mpWidth = (character.parameters.mp / character.parameters.maxMp) * 100;
+  const sleepWidth = (character.parameters.sleep / character.parameters.maxSleep) * 100;
+  const energyWidth = (character.parameters.energy / character.parameters.maxEnergy) * 100;
+  const xpWidth = (character.parameters.xp / character.parameters.nextLevelExperience) * 100;
 
   const renderEquipmentSlot = (label: string, item: string | null) => {
     const isEmpty = !item;
@@ -55,136 +55,134 @@ const Character = () => {
 
   return (
     <div className={`character-container ${browser}`}>
-      <div className="player-container">
-        <div className="info-box">
-          <div>
-            <CharacterName />
-            <div className="text">
-              Lvl: {character.level} '{character.title}'
-            </div>
+      <div className="info-box">
+        <div>
+          <CharacterName />
+          <div className="text">
+            Lvl: {character.level} '{character.title}'
           </div>
         </div>
+      </div>
 
-        <div className="bar-grid">
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - hpWidth}%`,
-                "--start-color": "#750000",
-                "--end-color": "#9c0000",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              HP: {character.stats.hp}/{character.stats.maxHp}
-            </span>
-          </div>
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - hungerWidth}%`,
-                "--start-color": "#750000",
-                "--end-color": "#9c0000",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              Hunger: {character.stats.hunger}/{character.stats.maxHunger}
-            </span>
-          </div>
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - spWidth}%`,
-                "--start-color": "#006600",
-                "--end-color": "#008700",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              SP: {character.stats.sp}/{character.stats.maxSp}
-            </span>
-          </div>
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - thirstWidth}%`,
-                "--start-color": "#006600",
-                "--end-color": "#008700",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              Thirst: {character.stats.thirst}/{character.stats.maxThirst}
-            </span>
-          </div>
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - mpWidth}%`,
-                "--start-color": "#000066",
-                "--end-color": "#00008c",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              MP: {character.stats.mp}/{character.stats.maxMp}
-            </span>
-          </div>
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - sleepWidth}%`,
-                "--start-color": "#000066",
-                "--end-color": "#00008c",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              Sleep: {character.stats.sleep}/{character.stats.maxSleep}
-            </span>
-          </div>
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - xpWidth}%`,
-                "--start-color": "#660066",
-                "--end-color": "#880088",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              XP: {character.stats.xp}/{character.stats.nextLevelExperience}
-            </span>
-          </div>
-          <div
-            className="bar"
-            style={
-              {
-                "--bar-width": `${100 - energyWidth}%`,
-                "--start-color": "#cc9900",
-                "--end-color": "#e7ad00",
-              } as ExtendedCSSProperties
-            }
-          >
-            <span>
-              {/* 
+      <div className="bar-grid">
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - hpWidth}%`,
+              "--start-color": "#750000",
+              "--end-color": "#9c0000",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            HP: {character.parameters.hp}/{character.parameters.maxHp}
+          </span>
+        </div>
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - hungerWidth}%`,
+              "--start-color": "#750000",
+              "--end-color": "#9c0000",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            Hunger: {character.parameters.hunger}/{character.parameters.maxHunger}
+          </span>
+        </div>
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - spWidth}%`,
+              "--start-color": "#006600",
+              "--end-color": "#008700",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            SP: {character.parameters.sp}/{character.parameters.maxSp}
+          </span>
+        </div>
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - thirstWidth}%`,
+              "--start-color": "#006600",
+              "--end-color": "#008700",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            Thirst: {character.parameters.thirst}/{character.parameters.maxThirst}
+          </span>
+        </div>
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - mpWidth}%`,
+              "--start-color": "#000066",
+              "--end-color": "#00008c",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            MP: {character.parameters.mp}/{character.parameters.maxMp}
+          </span>
+        </div>
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - sleepWidth}%`,
+              "--start-color": "#000066",
+              "--end-color": "#00008c",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            Sleep: {character.parameters.sleep}/{character.parameters.maxSleep}
+          </span>
+        </div>
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - xpWidth}%`,
+              "--start-color": "#660066",
+              "--end-color": "#880088",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            XP: {character.parameters.xp}/{character.parameters.nextLevelExperience}
+          </span>
+        </div>
+        <div
+          className="bar"
+          style={
+            {
+              "--bar-width": `${100 - energyWidth}%`,
+              "--start-color": "#cc9900",
+              "--end-color": "#e7ad00",
+            } as ExtendedCSSProperties
+          }
+        >
+          <span>
+            {/* 
               Energy is affected by Hunger, Thirst, and Sleep.
               Survival stats above 50 provide 1 energy per second per 25 points.
               Survival stats at or below 50 drains 1 energy per second per 25 points.
               Survival stats at 0 drain 3 more energy per second, maxing at -15 energy per second.
               Survival stats at or below 50 increase resistance skills for the specific stat.
               */}
-              Energy: {character.stats.energy}/{character.stats.maxEnergy}
-            </span>
-          </div>
+            Energy: {character.parameters.energy}/{character.parameters.maxEnergy}
+          </span>
         </div>
       </div>
       <div className="stats-grid">
@@ -212,7 +210,6 @@ const Character = () => {
           </div>
         ))}
       </div>
-      <button onClick={() => eatFood()}>Eat Food</button>;
     </div>
   );
 };

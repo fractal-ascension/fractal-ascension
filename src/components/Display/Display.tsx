@@ -1,15 +1,15 @@
-import './Display.scss';
+import "./Display.scss";
 
 const Display = () => {
   const activities = [
-    { name: 'Talk to the village elder', icon: '🗨️' },
-    { name: 'Trade with village trader', icon: '🛒' },
-    { name: 'Work on the fields', icon: '🌾' },
-    { name: 'Go for a run around the village', icon: '🏃' },
-    { name: 'Try to carry some bags of grain', icon: '🎒' },
-    { name: 'Go to Shack', icon: '🏚️' },
-    { name: 'Go to Nearby cave', icon: '🕳️' },
-    { name: 'Enter the Infested field', icon: '🐀' },
+    { name: "Talk to the village elder", icon: "🗨️" },
+    { name: "Trade with village trader", icon: "🛒" },
+    { name: "Work on the fields", icon: "🌾" },
+    { name: "Go for a run around the village", icon: "🏃" },
+    { name: "Try to carry some bags of grain", icon: "🎒" },
+    { name: "Go to Shack", icon: "🏚️" },
+    { name: "Go to Nearby cave", icon: "🕳️" },
+    { name: "Enter the Infested field", icon: "🐀" },
   ];
 
   const handleActivityClick = (activityName: string) => {
@@ -20,19 +20,21 @@ const Display = () => {
   return (
     <div className="display-container">
       <div className="display-header">
-        <p>Saturday 21/09/1000 16:58⛅</p>
-        <p>Village</p>
+        <p>Forest Clearing</p>
+        <p>Fire 01/01/825 06:00</p>
+      </div>
+      <div className="display-img">
+        <img src={Forest_Clearing} width={600} alt="Forest Clearing" />
+      </div>
+      <div className="display-text">
         <p>
-          Medium-sized village built near a small river. It's surrounded by many fields, a few of them infested by huge rats which, while an annoyance, don't seem possible to fully eradicate. Other than that, there's nothing interesting around
+          Your eyes open. The bright blue sky and waving trees greet you. A jolt of pain pierces through your head as you push your hands against the
+          moist dirt and sharp grass in an effort to stand up. Wobbling, you manage to right yourself. Where are you? Who are you?
         </p>
       </div>
       <div className="display-actions">
         {activities.map((activity) => (
-          <div
-            key={activity.name}
-            className="display-action"
-            onClick={() => handleActivityClick(activity.name)}
-          >
+          <div key={activity.name} className="display-action" onClick={() => handleActivityClick(activity.name)}>
             {activity.icon} {activity.name}
           </div>
         ))}
