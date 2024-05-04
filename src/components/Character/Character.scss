@@ -18,6 +18,7 @@ $gap: 5px;
   padding: 10px;
   text-shadow: 1.5px 1px #000;
   width: 600px;
+  height: 545px
 }
 
 .character-container.chrome {
@@ -129,7 +130,7 @@ $gap: 5px;
   gap: $gap; /* Maintains gap between items */
   padding: $padding;
   scrollbar-width: thin; /* makes the scrollbar thinner */
-  scrollbar-color: lighten($secondary-bg-color, 10%); /* thumb and track color */
+  height: 30px;
 }
 
 .status-box {

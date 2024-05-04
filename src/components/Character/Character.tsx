@@ -203,6 +203,7 @@ const Character = () => {
         {renderEquipmentSlot("Feet", character.equipment.feet)}
         {renderEquipmentSlot("Accessory", character.equipment.accessory)}
       </div>
+      <span style={{fontSize: ".7em", color: "gray"}}>Status</span>
       <div className="status-grid">
         {character.statuses?.map((status) => (
           <div key={status.id} className="status-box">
@@ -210,6 +211,7 @@ const Character = () => {
           </div>
         ))}
       </div>
+      {/* <button onClick={eatFood}>Eat Poisoned Food</button> */}
     </div>
   );
 };

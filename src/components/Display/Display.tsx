@@ -1,16 +1,11 @@
 import "./Display.scss";
+import { ForestClearing } from "../../location/forestClearing";
 
 const Display = () => {
-  const activities = [
-    { name: "Talk to the village elder", icon: "🗨️" },
-    { name: "Trade with village trader", icon: "🛒" },
-    { name: "Work on the fields", icon: "🌾" },
-    { name: "Go for a run around the village", icon: "🏃" },
-    { name: "Try to carry some bags of grain", icon: "🎒" },
-    { name: "Go to Shack", icon: "🏚️" },
-    { name: "Go to Nearby cave", icon: "🕳️" },
-    { name: "Enter the Infested field", icon: "🐀" },
-  ];
+  const activities = [...ForestClearing.activities];
+  const title = ForestClearing.title;
+  const image = ForestClearing.img;
+  const description = ForestClearing.description;
 
   const handleActivityClick = (activityName: string) => {
     console.log(`${activityName} was clicked.`);
@@ -20,16 +15,15 @@ const Display = () => {
   return (
     <div className="display-container">
       <div className="display-header">
-        <p>Forest Clearing</p>
+        <p>{title}</p>
         <p>Fire 01/01/825 06:00</p>
       </div>
       <div className="display-img">
-        <img src={Forest_Clearing} width={600} alt="Forest Clearing" />
+        <img src={image} width={600} alt="Forest Clearing" />
       </div>
       <div className="display-text">
         <p>
-          Your eyes open. The bright blue sky and waving trees greet you. A jolt of pain pierces through your head as you push your hands against the
-          moist dirt and sharp grass in an effort to stand up. Wobbling, you manage to right yourself. Where are you? Who are you?
+          {description[0].desc}
         </p>
       </div>
       <div className="display-actions">

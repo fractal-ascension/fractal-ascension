@@ -3,12 +3,12 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
 // Define specific types for item types and filter/sort options
-type ItemType = "WPN" | "USE" | "CMBT" | "EQP" | "TOOL" | "ETC";
+export type ItemType = "WPN" | "USE" | "CMBT" | "EQP" | "TOOL" | "ETC";
 type FilterType = "ALL" | ItemType;
 export type SortCriteria = "AZ" | "09" | "TYPE" | "VAL";
 type SortType = "NONE" | `${SortCriteria}_ASC` | `${SortCriteria}_DESC`;
 
-interface InventoryItem {
+export interface InventoryItem {
   name: string;
   amount: number;
   type: ItemType;

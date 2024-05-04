@@ -1,5 +1,5 @@
-export const Icons = () => {
-  const iconList = [
+const Icons = {
+  iconList: [
     { id: "strength", icon: "💪" },
     { id: "vitality", icon: "❤️" },
     { id: "agility", icon: "🏃" },
@@ -21,5 +21,11 @@ export const Icons = () => {
     { id: "dodgeChance", icon: "🛡️" },
     { id: "criticalChance", icon: "💥" },
     { id: "perception", icon: "👁️" },
-  ];
+  ],
 };
+
+export const getIconById = (id: string) => {
+    const icon = Icons.iconList.find(iconItem => iconItem.id === id);
+    return icon ? icon.icon : ""; // Returns an empty string if no icon is found
+  };
+  
