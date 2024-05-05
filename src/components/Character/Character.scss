@@ -78,11 +78,13 @@ $gap: 5px;
   span {
     color: white;
     position: relative;
-    z-index: 2;
+    z-index: 1;
   }
 }
 
 .stats-grid {
+  position: relative; // This establishes a new stacking context
+  z-index: 1; // You might adjust this based on other elements in your layout
   background-color: $secondary-bg-color;
   border-radius: $border-radius;
   display: grid;
@@ -141,4 +143,9 @@ $gap: 5px;
   padding: $padding;
   text-align: center;
   min-width: 150px; /* Optional: sets a minimum width for each box */
+}
+
+.tooltip {
+  z-index: 1000; // Ensure this is higher than any other element within the same stacking context
+  position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
 }

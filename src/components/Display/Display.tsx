@@ -1,5 +1,5 @@
 import "./Display.scss";
-import { ForestClearing } from "../../location/forestClearing";
+import { ForestClearing } from "../../Locations/ForestClearing/forestClearing";
 
 const Display = () => {
   const activities = [...ForestClearing.activities];
@@ -28,7 +28,7 @@ const Display = () => {
       </div>
       <div className="display-actions">
         {activities.map((activity) => (
-          <div key={activity.name} className="display-action" onClick={() => handleActivityClick(activity.name)}>
+          <div key={activity.name} className="display-action" onClick={() => handleActivityClick(activities[0].name)}>
             {activity.icon} {activity.name}
           </div>
         ))}

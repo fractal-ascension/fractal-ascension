@@ -6,7 +6,7 @@ const Icons = {
     { id: "dexterity", icon: "🎯" },
     { id: "intelligence", icon: "🧠" },
     { id: "wisdom", icon: "📚" },
-    { id: "speed", icon: "🏃" },
+    { id: "perception", icon: "👁️" },
     { id: "luck", icon: "🍀" },
     { id: "hp", icon: "❤️" },
     { id: "hunger", icon: "🍔" },
@@ -20,7 +20,7 @@ const Icons = {
     { id: "hitChance", icon: "🎯" },
     { id: "dodgeChance", icon: "🛡️" },
     { id: "criticalChance", icon: "💥" },
-    { id: "perception", icon: "👁️" },
+    { id: "book", icon: "📖" },
   ],
 };
 

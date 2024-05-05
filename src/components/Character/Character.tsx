@@ -4,8 +4,11 @@ import "./Character.scss";
 import { RootState } from "../../store";
 import CharacterName from "./CharacterName";
 import { addStatus, initialState } from "./characterSlice";
-import { detectBrowser } from "../../utils/browserUtil";
-import { poisonEffect } from "../../utils/statusEffects";
+import { detectBrowser } from "../../Utils/browserUtil";
+import { poisonEffect } from "../../Utils/statusEffects";
+import { Tooltip } from "react-tooltip";
+import { Stats, fullStatNames, statAbbreviations } from "../../Interfaces/stats";
+import ReactDOMServer from "react-dom/server";
 
 type ExtendedCSSProperties = React.CSSProperties & {
   "--bar-width"?: string;
@@ -13,7 +16,7 @@ type ExtendedCSSProperties = React.CSSProperties & {
   "--end-color"?: string;
 };
 
-const Character = () => {
+const Character: React.FC = () => {
   const dispatch = useDispatch();
   const browser = React.useMemo(() => detectBrowser(), []);
   const character = useSelector((state: RootState) => state.character);
@@ -24,15 +27,15 @@ const Character = () => {
     dispatch(addStatus(poisonEffect));
   };
 
-  const stats = {
-    STR: character.stats.strength || initialState.stats.strength,
-    VIT: character.stats.vitality || initialState.stats.vitality,
-    AGL: character.stats.agility || initialState.stats.agility,
-    DEX: character.stats.dexterity || initialState.stats.dexterity,
-    INT: character.stats.intelligence || initialState.stats.intelligence,
-    WIS: character.stats.wisdom || initialState.stats.wisdom,
-    SPD: character.stats.speed || initialState.stats.speed,
-    LCK: character.stats.luck || initialState.stats.luck,
+  const stats: Stats = {
+    strength: character.stats.strength || initialState.stats.strength,
+    vitality: character.stats.vitality || initialState.stats.vitality,
+    agility: character.stats.agility || initialState.stats.agility,
+    dexterity: character.stats.dexterity || initialState.stats.dexterity,
+    intelligence: character.stats.intelligence || initialState.stats.intelligence,
+    wisdom: character.stats.wisdom || initialState.stats.wisdom,
+    perception: character.stats.perception || initialState.stats.perception,
+    luck: character.stats.luck || initialState.stats.luck,
   };
 
   const hpWidth = (character.parameters.hp / character.parameters.maxHp) * 100;
@@ -186,12 +189,34 @@ const Character = () => {
         </div>
       </div>
       <div className="stats-grid">
-        {Object.entries(stats).map(([statName, statValue]) => (
-          <div className="stat-box" key={statName}>
-            {statName}: {statValue}
-          </div>
-        ))}
+        {Object.entries(stats).map(([statName, statValue]) => {
+          const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
+          const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
+
+          // Define the tooltip content directly here
+          const tooltipContent = (
+            <div>
+              <strong>{fullName}</strong>
+              <hr />- Effect 1 for {fullName}
+              <br />- Effect 2 for {fullName}
+              <br />- Effect 3 for {fullName}
+            </div>
+          );
+
+          return (
+            <div
+              key={statName}
+              className="stat-box"
+              data-tooltip-id="stats-tooltip"
+              data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}
+            >
+              {abbreviation}: {statValue}
+            </div>
+          );
+        })}
+        <Tooltip id="stats-tooltip" className="tooltip" />
       </div>
+
       {/* Display equipment */}
       <div className="equipment-grid">
         {renderEquipmentSlot("L. Hand", character.equipment.lefthand)}
@@ -203,7 +228,7 @@ const Character = () => {
         {renderEquipmentSlot("Feet", character.equipment.feet)}
         {renderEquipmentSlot("Accessory", character.equipment.accessory)}
       </div>
-      <span style={{fontSize: ".7em", color: "gray"}}>Status</span>
+      <span style={{ fontSize: ".7em", color: "gray" }}>Status</span>
       <div className="status-grid">
         {character.statuses?.map((status) => (
           <div key={status.id} className="status-box">

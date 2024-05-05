@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
+import { Stats } from "../../Interfaces/stats";
 
 interface Parameters {
   hp: number;
@@ -20,17 +21,6 @@ interface Parameters {
   nextLevelExperience: number;
 }
 
-interface Stats {
-  strength: number;
-  vitality: number;
-  agility: number;
-  dexterity: number;
-  intelligence: number;
-  wisdom: number;
-  speed: number;
-  luck: number;
-}
-
 interface Equipment {
   lefthand: string | null;
   righthand: string | null;
@@ -42,10 +32,43 @@ interface Equipment {
   accessory: string | null;
 }
 
-interface Combat {
-  hitChance: number;
-  dodgeChance: number;
+// Combination elements would combine and add based on player's base element values.
+// Like, Steam would be Water * Fire, so if player has 10 Water and 5 Fire, Steam would be 15 damage.
+interface OffensiveCombatParameters {
+  weaponType: {
+    meleeDamage: DamageParameters;
+    rangedDamage: DamageParameters;
+    magicDamage: DamageParameters;
+  };
+  damageType: {
+    slashing: DamageParameters;
+    piercing: DamageParameters;
+    blunt: DamageParameters;
+    arcane: DamageParameters;
+    fire: DamageParameters;
+    water: DamageParameters;
+    earth: DamageParameters;
+    air: DamageParameters;
+    light: DamageParameters;
+    dark: DamageParameters;
+  };
+  weightType: {
+    feather: DamageParameters;
+    light: DamageParameters;
+    medium: DamageParameters;
+    heavy: DamageParameters;
+    titanic: DamageParameters;
+  };
+}
+
+interface DamageParameters {
+  damage: number;
+  attackSpeed: number;
   criticalChance: number;
+  criticalMultiplier: number;
+  hitChance: number;
+  armorPenetration: number;
+  magicPenetration: number;
 }
 
 export interface StatusEffect {
@@ -63,7 +86,7 @@ export interface CharacterState {
   level: number;
   stats: Stats;
   equipment: Equipment;
-  combat: Combat;
+  combat: OffensiveCombatParameters;
   statuses: StatusEffect[];
 }
 
@@ -96,7 +119,7 @@ export const initialState: CharacterState = {
     dexterity: 1,
     intelligence: 1,
     wisdom: 1,
-    speed: 1,
+    perception: 1,
     luck: 1,
   },
   equipment: {
@@ -116,6 +139,11 @@ export const initialState: CharacterState = {
   },
   statuses: [],
 };
+
+interface ModifyStatPayload {
+  statName: keyof Stats;
+  value: number;
+}
 
 const calculateNextLevelExperience = (level: number): number => Math.floor(100 * Math.pow(1.1, level));
 
@@ -154,6 +182,12 @@ export const characterSlice = createSlice({
         state.parameters.hp = state.parameters.maxHp;
       }
     },
+    modifyStat: (state, action: PayloadAction<ModifyStatPayload>) => {
+      const { statName, value } = action.payload;
+      const currentStatValue = state.stats[statName];
+      const newStatValue = currentStatValue + value;
+      state.stats[statName] = newStatValue;
+    },
     equipItem: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
       const { slot, item } = action.payload;
       if (state.equipment[slot] === null) {
@@ -186,6 +220,16 @@ export const characterSlice = createSlice({
   },
 });
 
-export const { takeDamage, heal, gainExperience, equipItem, unequipItem, updateCharacterName, addStatus, removeStatus, updateStatuses } =
-  characterSlice.actions;
+export const {
+  takeDamage,
+  heal,
+  gainExperience,
+  equipItem,
+  unequipItem,
+  updateCharacterName,
+  addStatus,
+  removeStatus,
+  updateStatuses,
+  modifyStat,
+} = characterSlice.actions;
 export default characterSlice.reducer;

@@ -65,9 +65,16 @@ const App: React.FC = () => {
     };
     const encodedState = btoa(JSON.stringify(state));
     const blob = new Blob([encodedState], { type: "text/plain;charset=utf-8" });
+  
+    // Generate the timestamp
+    const now = new Date();
+    const date = now.toLocaleDateString('en-GB').replace(/\//g, '-'); // Converts date to dd-mm-yyyy format
+    const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).replace(/:/g, '-'); // Converts time to HH-mm format
+  
+    // Create the download link with the timestamp
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.download = "gameState.txt";
+    link.download = `fractal-ascension-save (${date} ${time}).txt`; // Adjust the filename format
     link.click();
   };
 
