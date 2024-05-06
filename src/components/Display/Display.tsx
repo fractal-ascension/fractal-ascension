@@ -3,6 +3,8 @@ import { ForestClearing } from "../../Locations/ForestClearing/ForestClearing";
 import { ForestClearingDescription } from "../../Locations/ForestClearing/ForestClearingDescription";
 import { ForestClearingActivity } from "../../Locations/ForestClearing/ForestClearingActivity";
 import { useGlobalTime } from "../../Utils/GlobalTime";
+import ReactDOMServer from "react-dom/server";
+import { Tooltip } from "react-tooltip";
 
 const Display = () => {
   const activities = [...ForestClearingActivity.activities];
@@ -10,15 +12,26 @@ const Display = () => {
   const image = ForestClearing.img;
   const description = ForestClearingDescription.description;
 
-  const { day, weekDay, week, month, year, hour, minute } = useGlobalTime(825, 6);
+  const { day, weekDay, month, year, hour, minute } = useGlobalTime(825, 6);
 
   return (
     <div className="display-container">
       <div className="display-header">
         <p>{title}</p>
-        <p>{`${day} ${weekDay}/${month}/${year} ${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`}</p>
+        <p
+          data-tooltip-id="my-tooltip"
+          data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
+            <div>
+              <b>Day of {day}</b>
+              <hr />
+            </div>
+          )}
+        >
+          {`${day} ${weekDay}/${month}/${year} ${hour.toString().padStart(2, "0")}:${minute
+            .toString()
+            .padStart(2, "0")}`}
+        </p>
+        <Tooltip id="my-tooltip" className="tooltip" />
       </div>
       <div className="display-img">
         <img src={image} alt="Forest Clearing" />

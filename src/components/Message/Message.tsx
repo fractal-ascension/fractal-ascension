@@ -14,18 +14,7 @@ const Message = () => {
 
   return (
     <div className="message-container">
-      <div className="message-header">
-        <p>{title}</p>
-        <p>{`${day} ${weekDay}/${month}/${year} ${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`}</p>
-      </div>
-      <div className="message-img">
-        <img src={image} width={600} alt="Forest Clearing" />
-      </div>
-      <div className="message-text">
-        <p>{description[0].desc}</p>
-      </div>
+      LOL
     </div>
   );
 };

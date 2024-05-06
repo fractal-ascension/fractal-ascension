@@ -88,3 +88,8 @@ img {
 .display-action:not(:last-child) {
   border-bottom: 1px solid #555;
 }
+
+.tooltip {
+  z-index: 1000; // Ensure this is higher than any other element within the same stacking context
+  position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
+}

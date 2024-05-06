@@ -14,8 +14,13 @@ type DateState = {
 };
 
 const daysOfWeek = ["Fire", "Water", "Earth", "Air", "Arcane"];
-const weeksOfMonth = ["First", "Second", "Third", "Fourth", "Fifth"];
-const monthsOfYear = ["January", "February", "March", "April", "May"];
+const daysOfWeekEffects = [
+  {
+    fire: {},
+  },
+];
+const weeksOfMonth = ["Warlord", "Healer", "Architect", "Explorer", "Scholar"];
+const monthsOfYear = ["Inferno", "Deluge", "Harvest", "Gale", "Cosmos"];
 
 export const useGlobalTime = (initialYear: number, initialHour: number) => {
   const [date, setDate] = useState<DateState>({
