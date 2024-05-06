@@ -7,7 +7,7 @@ import { addStatus, initialState } from "./characterSlice";
 import { detectBrowser } from "../../Utils/browserUtil";
 import { poisonEffect } from "../../Utils/statusEffects";
 import { Tooltip } from "react-tooltip";
-import { Stats, fullStatNames, statAbbreviations } from "../../Interfaces/stats";
+import { Stats, fullStatNames, statAbbreviations } from "../../Interfaces/Stats";
 import ReactDOMServer from "react-dom/server";
 
 type ExtendedCSSProperties = React.CSSProperties & {

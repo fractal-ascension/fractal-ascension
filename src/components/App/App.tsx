@@ -6,6 +6,7 @@ import "./App.scss";
 import Character from "../Character/Character";
 import Inventory from "../Inventory/Inventory";
 import Display from "../Display/Display";
+import Message from "../Message/Message";
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -114,7 +115,7 @@ const App: React.FC = () => {
           <Display />
         </div>
         <div className="column">
-          <div className="messages">Messages Component Placeholder</div>
+          <Message />
         </div>
       </div>
       <div id="footer" className="footer-container">

@@ -1,10 +1,10 @@
-import "./Display.scss";
+import "./Message.scss";
 import { ForestClearing } from "../../Locations/ForestClearing/ForestClearing";
 import { ForestClearingDescription } from "../../Locations/ForestClearing/ForestClearingDescription";
 import { ForestClearingActivity } from "../../Locations/ForestClearing/ForestClearingActivity";
 import { useGlobalTime } from "../../Utils/GlobalTime";
 
-const Display = () => {
+const Message = () => {
   const activities = [...ForestClearingActivity.activities];
   const title = ForestClearing.title;
   const image = ForestClearing.img;
@@ -13,28 +13,21 @@ const Display = () => {
   const { day, weekDay, week, month, year, hour, minute } = useGlobalTime(825, 6);
 
   return (
-    <div className="display-container">
-      <div className="display-header">
+    <div className="message-container">
+      <div className="message-header">
         <p>{title}</p>
         <p>{`${day} ${weekDay}/${month}/${year} ${hour.toString().padStart(2, "0")}:${minute
           .toString()
           .padStart(2, "0")}`}</p>
       </div>
-      <div className="display-img">
-        <img src={image} alt="Forest Clearing" />
-        <div className="display-text">
-          <p>{description[0].desc}</p>
-        </div>
+      <div className="message-img">
+        <img src={image} width={600} alt="Forest Clearing" />
       </div>
-      <div className="display-actions">
-        {activities.map((activity) => (
-          <div key={activity.name} className="display-action">
-            {activity.icon} {activity.name}
-          </div>
-        ))}
+      <div className="message-text">
+        <p>{description[0].desc}</p>
       </div>
     </div>
   );
 };
 
-export default Display;
+export default Message;

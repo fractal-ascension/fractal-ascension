@@ -1,20 +1,23 @@
 .app {
   display: flex;
   flex-direction: column;
+  max-width: 100%; /* Ensures that the app does not exceed the width of the viewport */
 }
 
 #main {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1.25fr 1fr; /* Allocate more space to the middle column */
+  gap: 10px; /* Keeps a fixed gap between the columns */
   padding: 10px;
+  justify-content: center; /* Centers the columns if there is extra space */
+  max-width: 2488px; /* Adjust based on your preferred maximum width */
+  margin: 0 auto; /* Centers the grid in the parent container */
 }
 
 .column {
   display: flex;
   flex-direction: column;
-  padding-right: 10px; /* Padding based on viewport width */
-  width: 622px;
 }
 
 #footer {

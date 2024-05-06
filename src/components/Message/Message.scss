@@ -8,7 +8,7 @@ $margin-bottom: 8px;
 $padding: 5px;
 $gap: 5px;
 
-.display-container {
+.message-container {
   background-color: $primary-bg-color;
   border: 1px solid $border-color;
   border-radius: $border-radius;
@@ -17,11 +17,11 @@ $gap: 5px;
   margin-bottom: 10px; // Container margin, matching main
   padding: 10px;
   text-shadow: 1.5px 1px #000;
-  width: 756px;
+  width: 600px;
   height: 1242px;
 }
 
-.display-header {
+.message-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: lighten($secondary-bg-color, 10%);
@@ -31,49 +31,44 @@ $gap: 5px;
   align-items: center; // This centers the children vertically
 }
 
-.display-header p {
+.message-header p {
   margin: 15px;
 }
 
-.display-header p:nth-child(2) {
+.message-header p:nth-child(2) {
   justify-self: end;
 }
 
-.display-img {
-  position: relative;
-  height: 660px; // Set a fixed height or adjust as necessary
-  overflow: hidden; // This ensures nothing spills outside
+.message-img {
+  max-height: 400px;
+  overflow-y: hidden;
   margin-bottom: 10px;
 }
 
-img {
-  width: 100%; // Ensure the image covers the whole container width
-  height: 100%; // Cover the whole container height
-  object-fit: cover; // This resizes the image to cover the area, useful if aspect ratios vary
-}
-
-.display-text {
-  position: absolute;
-  height: 200px; // Ensure this height still makes sense with the new image size
-  bottom: 0px; // Adjust this as needed to fit the new image size
-  left: 0;
-  right: 0;
-  background-color: rgba(60, 65, 94, .90); // Semi-transparent background
-  padding: 10px;
+.message-text {
+  border-top: #fff 1px solid;
+  border-bottom: #fff 1px solid;
+  padding: 0px 10px 0px 10px;
+  margin: 0px;
   border-radius: $border-radius;
-  text-align: center;
+  height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin; /* makes the scrollbar thinner */
+  display: flex; /* Changed from inline-block to flex */
+  justify-content: center; /* Horizontally centers content (if needed) */
+  align-items: center; /* Vertically centers the text */
 }
 
-.display-text p {
+.message-text p {
   margin: 5px;
 }
 
-.display-actions {
+.message-actions {
   display: flex;
   flex-direction: column;
 }
 
-.display-action {
+.message-action {
   padding: 10px;
   border-bottom: 1px solid #555;
   cursor: pointer;
@@ -81,10 +76,10 @@ img {
   align-items: center;
 }
 
-.display-action:hover {
+.message-action:hover {
   background-color: #333;
 }
 
-.display-action:not(:last-child) {
+.message-action:not(:last-child) {
   border-bottom: 1px solid #555;
 }

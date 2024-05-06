@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { Stats } from "../../Interfaces/stats";
+import { Stats } from "../../Interfaces/Stats";
 
 interface Parameters {
   hp: number;
@@ -95,8 +95,8 @@ export const initialState: CharacterState = {
   title: "Nobody",
   level: 1,
   parameters: {
-    hp: 4,
-    maxHp: 10,
+    hp: 40,
+    maxHp: 100,
     hunger: 40,
     maxHunger: 100,
     sp: 4,
