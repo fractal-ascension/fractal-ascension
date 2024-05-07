@@ -23,63 +23,31 @@ $gap: 5px;
 
 .message-header {
   display: grid;
-  grid-template-columns: 1fr 1fr;
   background: lighten($secondary-bg-color, 10%);
   border-radius: $border-radius;
   margin-bottom: $margin-bottom;
   height: 55px;
   align-items: center; // This centers the children vertically
+  text-align: center;
 }
 
 .message-header p {
   margin: 15px;
 }
 
-.message-header p:nth-child(2) {
-  justify-self: end;
-}
-
-.message-img {
-  max-height: 400px;
-  overflow-y: hidden;
-  margin-bottom: 10px;
-}
-
-.message-text {
-  border-top: #fff 1px solid;
-  border-bottom: #fff 1px solid;
-  padding: 0px 10px 0px 10px;
-  margin: 0px;
+.message-body {
+  position: relative; // This establishes a new stacking context
+  z-index: 1; // You might adjust this based on other elements in your layout
+  background-color: $secondary-bg-color;
   border-radius: $border-radius;
-  height: 200px;
-  overflow-y: auto;
-  scrollbar-width: thin; /* makes the scrollbar thinner */
-  display: flex; /* Changed from inline-block to flex */
-  justify-content: center; /* Horizontally centers content (if needed) */
-  align-items: center; /* Vertically centers the text */
-}
-
-.message-text p {
-  margin: 5px;
-}
-
-.message-actions {
   display: flex;
   flex-direction: column;
+  gap: $gap;
+  margin-bottom: $margin-bottom;
+  padding: $padding;
 }
 
-.message-action {
-  padding: 10px;
-  border-bottom: 1px solid #555;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.message-action:hover {
-  background-color: #333;
-}
-
-.message-action:not(:last-child) {
-  border-bottom: 1px solid #555;
+.message-body p {
+  margin: 0;
+  border-bottom: #000 1px solid;
 }

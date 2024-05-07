@@ -1,6 +1,13 @@
 import { configureStore, Middleware } from "@reduxjs/toolkit";
-import characterReducer, { initialState as characterInitialState } from "./components/Character/characterSlice";
-import inventoryReducer, { initialState as inventoryInitialState } from "./components/Inventory/inventorySlice";
+import characterReducer, {
+  initialState as characterInitialState,
+} from "./components/Character/characterSlice";
+import inventoryReducer, {
+  initialState as inventoryInitialState,
+} from "./components/Inventory/inventorySlice";
+import messageReducer, {
+  initialState as messageInitialState,
+} from "./components/Message/messageSlice";
 import { useDispatch } from "react-redux";
 
 export const b64Encode = (value: string): string => btoa(value);
@@ -30,6 +37,7 @@ const autoSaveMiddleware: Middleware = (store) => (next) => (action) => {
   const state = store.getState();
   saveState("characterState", state.character);
   saveState("inventoryState", state.inventory);
+  saveState("messageState", state.message);
   return result;
 };
 
@@ -37,11 +45,13 @@ export const store = configureStore({
   reducer: {
     character: characterReducer,
     inventory: inventoryReducer,
+    message: messageReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(autoSaveMiddleware),
   preloadedState: {
     character: loadState("characterState", characterInitialState),
     inventory: loadState("inventoryState", inventoryInitialState),
+    message: loadState("messageState", messageInitialState),
   },
 });
 

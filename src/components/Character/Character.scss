@@ -34,6 +34,7 @@ $gap: 5px;
   border-radius: $border-radius;
   margin-bottom: $margin-bottom;
   text-align: center;
+  height: 55px;
 }
 
 .editable-text {
@@ -60,8 +61,10 @@ $gap: 5px;
   background: #555;
   border-radius: $border-radius;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   position: relative;
+  padding: 0 10px;
+  font-size: 0.9em;
 
   &:before {
     background: linear-gradient(to right, var(--start-color), var(--end-color));

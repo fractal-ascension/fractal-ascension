@@ -7,7 +7,7 @@ import { addStatus, initialState } from "./characterSlice";
 import { detectBrowser } from "../../Utils/browserUtil";
 import { poisonEffect } from "../../Utils/statusEffects";
 import { Tooltip } from "react-tooltip";
-import { Stats, fullStatNames, statAbbreviations } from "../../Interfaces/Stats";
+import { Stats, fullStatNames, statAbbreviations, statEffects } from "../../Interfaces/Stats";
 import ReactDOMServer from "react-dom/server";
 
 type ExtendedCSSProperties = React.CSSProperties & {
@@ -38,20 +38,114 @@ const Character: React.FC = () => {
     luck: character.stats.luck || initialState.stats.luck,
   };
 
-  const hpWidth = (character.parameters.hp / character.parameters.maxHp) * 100;
-  const hungerWidth = (character.parameters.hunger / character.parameters.maxHunger) * 100;
-  const spWidth = (character.parameters.sp / character.parameters.maxSp) * 100;
-  const thirstWidth = (character.parameters.thirst / character.parameters.maxThirst) * 100;
-  const mpWidth = (character.parameters.mp / character.parameters.maxMp) * 100;
-  const sleepWidth = (character.parameters.sleep / character.parameters.maxSleep) * 100;
-  const energyWidth = (character.parameters.energy / character.parameters.maxEnergy) * 100;
-  const xpWidth = (character.parameters.xp / character.parameters.nextLevelExperience) * 100;
-
   const renderEquipmentSlot = (label: string, item: string | null) => {
     const isEmpty = !item;
     return (
       <div className={"equipment-slot"} key={label}>
         {isEmpty ? label : item}
+      </div>
+    );
+  };
+
+  const renderBar = (
+    label: string,
+    value: number,
+    maxValue: number,
+    regen: number | null,
+    startColor: string,
+    endColor: string
+  ) => {
+    const barWidth = ((maxValue - value) / maxValue) * 100;
+    return (
+      <div
+        className="bar"
+        style={
+          {
+            "--bar-width": `${barWidth}%`,
+            "--start-color": startColor,
+            "--end-color": endColor,
+          } as ExtendedCSSProperties
+        }
+      >
+        <div style={{ textAlign: "left" }}>
+          <span>
+            {label}: {value}/{maxValue}
+          </span>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <span>{regen ? regen + "/s" : ""}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const renderBars = () => {
+    return (
+      <div className="bar-grid">
+        {renderBar(
+          "HP",
+          character.parameters.hp,
+          character.parameters.maxHp,
+          character.parameters.hpRegen,
+          "#750000",
+          "#9c0000"
+        )}
+        {renderBar(
+          "Hunger",
+          character.parameters.hunger,
+          character.parameters.maxHunger,
+          character.parameters.hungerRegen,
+          "#750000",
+          "#9c0000"
+        )}
+        {renderBar(
+          "SP",
+          character.parameters.sp,
+          character.parameters.maxSp,
+          character.parameters.spRegen,
+          "#006600",
+          "#008700"
+        )}
+        {renderBar(
+          "Thirst",
+          character.parameters.thirst,
+          character.parameters.maxThirst,
+          character.parameters.thirstRegen,
+          "#006600",
+          "#008700"
+        )}
+        {renderBar(
+          "MP",
+          character.parameters.mp,
+          character.parameters.maxMp,
+          character.parameters.mpRegen,
+          "#000066",
+          "#00008c"
+        )}
+        {renderBar(
+          "Sleep ",
+          character.parameters.sleep,
+          character.parameters.maxSleep,
+          character.parameters.sleepRegen,
+          "#000066",
+          "#00008c"
+        )}
+        {renderBar(
+          "XP",
+          character.parameters.xp,
+          character.parameters.nextLevelExperience,
+          null,
+          "#660066",
+          "#880088"
+        )}
+        {renderBar(
+          "Energy",
+          character.parameters.energy,
+          character.parameters.maxEnergy,
+          character.parameters.energyRegen,
+          "#cc9900",
+          "#e7ad00"
+        )}
       </div>
     );
   };
@@ -67,141 +161,24 @@ const Character: React.FC = () => {
         </div>
       </div>
 
-      <div className="bar-grid">
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - hpWidth}%`,
-              "--start-color": "#750000",
-              "--end-color": "#9c0000",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            HP: {character.parameters.hp}/{character.parameters.maxHp}
-          </span>
-        </div>
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - hungerWidth}%`,
-              "--start-color": "#750000",
-              "--end-color": "#9c0000",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            Hunger: {character.parameters.hunger}/{character.parameters.maxHunger}
-          </span>
-        </div>
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - spWidth}%`,
-              "--start-color": "#006600",
-              "--end-color": "#008700",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            SP: {character.parameters.sp}/{character.parameters.maxSp}
-          </span>
-        </div>
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - thirstWidth}%`,
-              "--start-color": "#006600",
-              "--end-color": "#008700",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            Thirst: {character.parameters.thirst}/{character.parameters.maxThirst}
-          </span>
-        </div>
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - mpWidth}%`,
-              "--start-color": "#000066",
-              "--end-color": "#00008c",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            MP: {character.parameters.mp}/{character.parameters.maxMp}
-          </span>
-        </div>
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - sleepWidth}%`,
-              "--start-color": "#000066",
-              "--end-color": "#00008c",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            Sleep: {character.parameters.sleep}/{character.parameters.maxSleep}
-          </span>
-        </div>
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - xpWidth}%`,
-              "--start-color": "#660066",
-              "--end-color": "#880088",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            XP: {character.parameters.xp}/{character.parameters.nextLevelExperience}
-          </span>
-        </div>
-        <div
-          className="bar"
-          style={
-            {
-              "--bar-width": `${100 - energyWidth}%`,
-              "--start-color": "#cc9900",
-              "--end-color": "#e7ad00",
-            } as ExtendedCSSProperties
-          }
-        >
-          <span>
-            {/* 
-              Energy is affected by Hunger, Thirst, and Sleep.
-              Survival stats above 50 provide 1 energy per second per 25 points.
-              Survival stats at or below 50 drains 1 energy per second per 25 points.
-              Survival stats at 0 drain 3 more energy per second, maxing at -15 energy per second.
-              Survival stats at or below 50 increase resistance skills for the specific stat.
-              */}
-            Energy: {character.parameters.energy}/{character.parameters.maxEnergy}
-          </span>
-        </div>
-      </div>
+      {renderBars()}
+
       <div className="stats-grid">
         {Object.entries(stats).map(([statName, statValue]) => {
           const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
           const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
 
           // Define the tooltip content directly here
-          const tooltipContent = (
+            const tooltipContent = (
             <div>
               <strong>{fullName}</strong>
-              <hr />- Effect 1 for {fullName}
-              <br />- Effect 2 for {fullName}
-              <br />- Effect 3 for {fullName}
+              {statEffects
+              .find((effect) => effect.id === statName)
+              ?.effects.map((effect) => (
+                <div key={effect}>• {effect}</div>
+              ))}
             </div>
-          );
+            );
 
           return (
             <div
@@ -232,7 +209,8 @@ const Character: React.FC = () => {
       <div className="status-grid">
         {character.statuses?.map((status) => (
           <div key={status.id} className="status-box">
-            {status.name} (Remaining: {status.duration > 0 ? `${status.duration} ticks` : "Permanent"})
+            {status.name} (Remaining:{" "}
+            {status.duration > 0 ? `${status.duration} ticks` : "Permanent"})
           </div>
         ))}
       </div>

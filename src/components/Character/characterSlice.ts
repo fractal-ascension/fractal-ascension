@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { OffensiveCombatParameters, BaseParameters, Stats } from "../../Interfaces/Stats";
-
-
+import { CombatDamageParameters, BaseParameters, Stats } from "../../Interfaces/Stats";
 
 interface Equipment {
   lefthand: string | null;
@@ -17,7 +15,6 @@ interface Equipment {
 
 // Combination elements would combine and add based on player's base element values.
 // Like, Steam would be Water * Fire, so if player has 10 Water and 5 Fire, Steam would be 15 damage.
-
 
 export interface StatusEffect {
   id: string;
@@ -34,7 +31,7 @@ export interface CharacterState {
   level: number;
   stats: Stats;
   equipment: Equipment;
-  combat: OffensiveCombatParameters;
+  combatDamageParameters: CombatDamageParameters;
   statuses: StatusEffect[];
 }
 
@@ -54,28 +51,28 @@ const initialStats: Stats = {
 // Mages use spells and mana for survival stats.
 const calculateBaseParameters = (level: number, stats: Stats): BaseParameters => ({
   hp: 100,
-  hpRegen: 1 + (level * 1) + (stats.vitality * 2),
-  maxHp: 100 + (level * 10) + (stats.vitality * 5) + (stats.strength * 2),
+  hpRegen: 1 + level * 1 + stats.vitality * 1,
+  maxHp: 100 + level * 10 + stats.vitality * 5 + stats.strength * 2,
   hunger: 100,
   hungerRegen: -0.1,
-  maxHunger: 100 + (level * 10) + (stats.vitality * 5),
+  maxHunger: 100 + level * 10 + stats.vitality * 5,
   sp: 100,
-  spRegen: 1 + (level * 1) + (stats.vitality * 2),
-  maxSp: 100 + (level * 10) + (stats.vitality * 5) + (stats.strength * 2),
+  spRegen: 1 + level * 1 + stats.vitality * 1,
+  maxSp: 100 + level * 10 + stats.vitality * 5 + stats.strength * 2,
   thirst: 100,
   thirstRegen: -0.1,
-  maxThirst: 100 + (level * 10) + (stats.vitality * 5),
-  mp: 4,
-  mpRegen: 1 + level + 2 * stats.wisdom,
-  maxMp: 100 + 10 * level + 5 * stats.wisdom + 2 * stats.intelligence,
-  sleep: 40,
+  maxThirst: 100 + level * 10 + stats.vitality * 5,
+  mp: 100,
+  mpRegen: 1 + level * 1 + stats.wisdom * 1,
+  maxMp: 100 + level * 10 + stats.wisdom * 5 + stats.intelligence * 2,
+  sleep: 100,
   sleepRegen: -0.1,
-  maxSleep: 100 + 10 * level + 5 * stats.vitality,
-  energy: 40,
+  maxSleep: 100 + level * 10 + stats.vitality * 5,
+  energy: 100,
   energyRegen: -0.1,
-  maxEnergy: 100 + 10 * level + 5 * stats.vitality,
-  xp: 40,
-  nextLevelExperience: 100 * Math.pow(1.1, level),
+  maxEnergy: 100 + level * 10 + stats.vitality * 5,
+  xp: 0,
+  nextLevelExperience: 99 + Math.pow(1.1, level),
 });
 
 export const initialState: CharacterState = {
@@ -94,10 +91,193 @@ export const initialState: CharacterState = {
     feet: null,
     accessory: null,
   },
-  combat: {
-    hitChance: 0.1,
-    dodgeChance: 0.001,
-    criticalChance: 0.001,
+  combatDamageParameters: {
+    combatType: {
+      meleeDamage: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      rangedDamage: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      magicDamage: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+    },
+    damageType: {
+      physical: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      slashing: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      piercing: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      blunt: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      magical: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      arcane: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      fire: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      water: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      earth: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      air: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      light: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      dark: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+    },
+    weightType: {
+      feather: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      light: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      medium: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      heavy: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      titanic: {
+        damage: 0,
+        attackSpeed: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+    },
   },
   statuses: [],
 };
