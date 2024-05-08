@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { loadState, saveState, store, useAppDispatch } from "../../store";
+import { RootState, loadState, saveState, store, useAppDispatch } from "../../store";
 import { saveCharacter } from "../Character/characterSlice";
 import { saveInventory } from "../Inventory/inventorySlice";
+import { saveMessage } from "../Message/messageSlice";
+import { saveGlobalTime } from "../../Utils/globalTimeSlice";
 import "./App.scss";
 import Character from "../Character/Character";
 import Inventory from "../Inventory/Inventory";
 import Display from "../Display/Display";
 import Message from "../Message/Message";
+import { useGlobalTime } from "../../Utils/globalTimeSlice";
+import { useSelector } from "react-redux";
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
 
+  let globalTime = useSelector((state: RootState) => state.globalTime);
+  if (globalTime) {
+    globalTime = useGlobalTime(globalTime.year, globalTime.month, globalTime.week, globalTime.day, globalTime.hour, globalTime.minute, globalTime.weekDay, globalTime.weekName, globalTime.monthName, globalTime.ampm);
+  } else {
+    globalTime = useGlobalTime();
+  }
   useEffect(() => {
     // Simulate a loading process.
     setTimeout(() => {
@@ -18,19 +29,24 @@ const App: React.FC = () => {
     }, 1000); // Adjust time based on your actual load time
   }, []);
 
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
     const intervalId = setInterval(() => {
       dispatch(saveCharacter());
       dispatch(saveInventory());
+      dispatch(saveMessage());
+      dispatch(saveGlobalTime());
 
       // Waiting for state updates to complete, then saving encoded state to local storage
       setTimeout(() => {
         const characterState = store.getState().character;
         const inventoryState = store.getState().inventory;
+        const messageState = store.getState().message;
+        const globalTimeState = store.getState().globalTime;
+
         saveState("characterState", characterState);
         saveState("inventoryState", inventoryState);
+        saveState("messageState", messageState);
+        saveState("globalTimeState", globalTimeState);
       }, 500); // Delay to ensure state is updated in the Redux store before saving
     }, 300000); // 300,000 milliseconds = 5 minutes
 
@@ -39,7 +55,16 @@ const App: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ backgroundColor: "black", color: "white", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          backgroundColor: "black",
+          color: "white",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         Loading...
       </div>
     );
@@ -49,13 +74,20 @@ const App: React.FC = () => {
     // Dispatching the Redux actions to update the state before saving
     dispatch(saveCharacter());
     dispatch(saveInventory());
+    dispatch(saveMessage());
+    dispatch(saveGlobalTime());
 
     // Waiting for state updates to complete, then saving encoded state to local storage
     setTimeout(() => {
       const characterState = store.getState().character;
       const inventoryState = store.getState().inventory;
+      const messageState = store.getState().message;
+      const globalTimeState = store.getState().globalTime;
+
       saveState("characterState", characterState);
       saveState("inventoryState", inventoryState);
+      saveState("messageState", messageState);
+      saveState("globalTimeState", globalTimeState);
     }, 500); // Delay to ensure state is updated in the Redux store before saving
   };
 
@@ -63,15 +95,19 @@ const App: React.FC = () => {
     const state = {
       character: loadState("characterState", store.getState().character),
       inventory: loadState("inventoryState", store.getState().inventory),
+      message: loadState("messageState", store.getState().message),
+      globalTime: loadState("globalTimeState", store.getState().globalTime),
     };
     const encodedState = btoa(JSON.stringify(state));
     const blob = new Blob([encodedState], { type: "text/plain;charset=utf-8" });
-  
+
     // Generate the timestamp
     const now = new Date();
-    const date = now.toLocaleDateString('en-GB').replace(/\//g, '-'); // Converts date to dd-mm-yyyy format
-    const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).replace(/:/g, '-'); // Converts time to HH-mm format
-  
+    const date = now.toLocaleDateString("en-GB").replace(/\//g, "-"); // Converts date to dd-mm-yyyy format
+    const time = now
+      .toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false })
+      .replace(/:/g, "-"); // Converts time to HH-mm format
+
     // Create the download link with the timestamp
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
@@ -89,6 +125,8 @@ const App: React.FC = () => {
           const decodedState = JSON.parse(atob(text));
           saveState("characterState", decodedState.character);
           saveState("inventoryState", decodedState.inventory);
+          saveState("messageState", decodedState.message);
+          saveState("globalTimeState", decodedState.globalTime);
           window.location.reload();
         }
       };
@@ -100,6 +138,8 @@ const App: React.FC = () => {
     if (window.confirm("Are you sure you want to reset the game? All data will be lost.")) {
       localStorage.removeItem("characterState");
       localStorage.removeItem("inventoryState");
+      localStorage.removeItem("messageState");
+      localStorage.removeItem("globalTimeState");
       window.location.reload();
     }
   };
@@ -112,10 +152,21 @@ const App: React.FC = () => {
           <Inventory />
         </div>
         <div className="column">
-          <Display />
+          <Display
+            day={globalTime.day}
+            weekDay={globalTime.weekDay}
+            weekName={globalTime.weekName}
+            week={globalTime.week}
+            monthName={globalTime.monthName}
+            month={globalTime.month}
+            year={globalTime.year}
+            hour={globalTime.hour}
+            minute={globalTime.minute}
+            ampm={globalTime.ampm}
+          />
         </div>
         <div className="column">
-          <Message />
+          <Message hour={globalTime.hour} minute={globalTime.minute} />
         </div>
       </div>
       <div id="footer" className="footer-container">

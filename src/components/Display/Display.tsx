@@ -2,11 +2,24 @@ import "./Display.scss";
 import { ForestClearing } from "../../Locations/ForestClearing/ForestClearing";
 import { ForestClearingDescription } from "../../Locations/ForestClearing/ForestClearingDescription";
 import { ForestClearingActivity } from "../../Locations/ForestClearing/ForestClearingActivity";
-import { dayEffects, monthEffects, useGlobalTime, weekEffects } from "../../Utils/globalTime";
+import { dayEffects, monthEffects, weekEffects } from "../../Utils/globalTimeSlice";
 import ReactDOMServer from "react-dom/server";
 import { Tooltip } from "react-tooltip";
 
-const Display = () => {
+interface DisplayTimeProps {
+  day: string;
+  weekDay: number;
+  weekName: string;
+  week: number;
+  monthName: string;
+  month: number;
+  year: number;
+  hour: number;
+  minute: number;
+  ampm: string;
+}
+
+const Display = ({ day, weekName, weekDay, monthName, month, year, hour, minute, ampm }: DisplayTimeProps) => {
   const activities = [...ForestClearingActivity.activities];
   const title = ForestClearing.title;
   const image = ForestClearing.img;
@@ -16,7 +29,6 @@ const Display = () => {
   const type = ForestClearing.type;
   const areaDescription = ForestClearing.description;
 
-  const { day, weekName, weekDay, monthName, month, year, hour, minute } = useGlobalTime(825, 6);
   const currentDay = day;
   return (
     <div className="display-container">
@@ -32,7 +44,7 @@ const Display = () => {
               <br />
               Level: [ {levelRange} ]
               <br />
-              Type :  [ {type} ]
+              Type : [ {type} ]
               <hr />
               {areaDescription}
               <hr />
@@ -77,7 +89,7 @@ const Display = () => {
         >
           {`[${day}] ${weekDay}/${month}/${year} ${hour.toString().padStart(2, "0")}:${minute
             .toString()
-            .padStart(2, "0")}`}
+            .padStart(2, "0")} ${ampm}`}
           <Tooltip id="date-tooltip" className="tooltip" />
         </p>
       </div>

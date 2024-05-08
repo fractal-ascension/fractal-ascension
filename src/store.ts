@@ -8,6 +8,9 @@ import inventoryReducer, {
 import messageReducer, {
   initialState as messageInitialState,
 } from "./components/Message/messageSlice";
+import globalTimeReducer, {
+  initialState as globalTimeInitialState,
+} from "./Utils/globalTimeSlice";
 import { useDispatch } from "react-redux";
 
 export const b64Encode = (value: string): string => btoa(value);
@@ -38,6 +41,7 @@ const autoSaveMiddleware: Middleware = (store) => (next) => (action) => {
   saveState("characterState", state.character);
   saveState("inventoryState", state.inventory);
   saveState("messageState", state.message);
+  saveState("globalTimeState", state.globalTime);
   return result;
 };
 
@@ -46,12 +50,14 @@ export const store = configureStore({
     character: characterReducer,
     inventory: inventoryReducer,
     message: messageReducer,
+    globalTime: globalTimeReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(autoSaveMiddleware),
   preloadedState: {
     character: loadState("characterState", characterInitialState),
     inventory: loadState("inventoryState", inventoryInitialState),
     message: loadState("messageState", messageInitialState),
+    globalTime: loadState("globalTimeState", globalTimeInitialState),
   },
 });
 

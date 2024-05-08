@@ -1,8 +1,9 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../../store";
 
 export interface Message {
   id: number;
-  timestamp: Date;
+  timestamp: string;
   message: string;
 }
 
@@ -13,23 +14,25 @@ export interface MessageState {
 }
 
 export const initialState: MessageState = {
-  messages: [
-    { id: 1, timestamp: new Date(), message: "Welcome to the chat!" },
-    { id: 2, timestamp: new Date(), message: "Hello, world!" },
-    { id: 3, timestamp: new Date(), message: "How are you today?" },
-  ],
+  messages: [],
   maxMessages: 500,
   showTimestamp: true,
 };
+
+// Define an async thunk for saving character data
+export const saveMessage = createAsyncThunk("message/saveMessage", async (_, { getState }) => {
+    const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
+    localStorage.setItem("messageState", JSON.stringify(state.message));
+  });
 
 export const messageSlice = createSlice({
   name: "message",
   initialState,
   reducers: {
-    addMessage: (state, action: PayloadAction<{ id: number; message: string }>) => {
+    addMessage: (state, action: PayloadAction<{ id: number; timestamp: string, message: string }>) => {
       const newMessage: Message = {
         id: action.payload.id,
-        timestamp: new Date(), // Create the timestamp at the moment the message is added
+        timestamp: action.payload.timestamp, // Create the timestamp at the moment the message is added
         message: action.payload.message,
       };
       state.messages.push(newMessage);

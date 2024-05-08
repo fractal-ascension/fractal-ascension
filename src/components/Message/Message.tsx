@@ -1,19 +1,16 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./Message.scss";
 import { RootState } from "../../store";
-import {
-  Message as MessageType,
-  initialState,
-  toggleTimestamp,
-  addMessage,
-} from "./messageSlice"; // Rename to avoid conflict with component name
+import { Message as MessageType, toggleTimestamp, addMessage } from "./messageSlice"; // Rename to avoid conflict with component name
 
-const Message = () => {
+interface MessageTimeProps {
+  hour: number;
+  minute: number;
+}
+
+const Message = ({ hour, minute }: MessageTimeProps) => {
   const dispatch = useDispatch();
-  let { messages, showTimestamp } = useSelector((state: RootState) => state.message);
-
-  messages = messages ? messages : initialState.messages;
-  showTimestamp = showTimestamp ? showTimestamp : initialState.showTimestamp;
+  const messages = useSelector((state: RootState) => state.message);
 
   return (
     <div className="message-container">
@@ -21,13 +18,11 @@ const Message = () => {
         <p>Message Log</p>
       </div>
       <div className="message-body">
-        {messages.map((message: MessageType) => (
+        {messages.messages.map((message: MessageType) => (
           <div key={message.id} className="message-item">
             <p>
-              {showTimestamp && (
-                <span style={{ color: "GrayText" }}>
-                  [{new Date(message.timestamp).toLocaleTimeString()}]{" "}
-                </span>
+              {messages.showTimestamp && (
+                <span style={{ color: "GrayText" }}>[{message.timestamp}] </span>
               )}
               {message.message}
             </p>
@@ -35,8 +30,22 @@ const Message = () => {
         ))}
       </div>
       <button onClick={() => dispatch(toggleTimestamp())}>Toggle Timestamp</button>
-      <button onClick={() => console.log(messages)}>Console</button>
-      <button onClick={() => dispatch(addMessage({ id: 1, message: "test" }))}>Add Message</button>
+      <button onClick={() => console.log(messages.messages)}>Console</button>
+      <button
+        onClick={() =>
+          dispatch(
+            addMessage({
+              id: 1,
+              timestamp: `${hour.toString().padStart(2, "0")}:${minute
+                .toString()
+                .padStart(2, "0")}`,
+              message: "test",
+            })
+          )
+        }
+      >
+        Add Message
+      </button>
     </div>
   );
 };
