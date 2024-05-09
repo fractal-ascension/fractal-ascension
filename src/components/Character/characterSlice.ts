@@ -91,11 +91,17 @@ export const initialState: CharacterState = {
     feet: null,
     accessory: null,
   },
+  // If the same type of damage is applied, sum and divide by overlap.
+  // For example, if both physical and magic, sum and divide by 2.
+  // If both slashing, arcane, and fire, sum and divide by 3.
+  // If different type, apply both.
+  // For example, physical multiplies with slashing, multiplies with feather.
   combatDamageParameters: {
     combatType: {
       meleeDamage: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -105,6 +111,7 @@ export const initialState: CharacterState = {
       rangedDamage: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -114,6 +121,7 @@ export const initialState: CharacterState = {
       magicDamage: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -121,37 +129,11 @@ export const initialState: CharacterState = {
         magicPenetration: 0,
       },
     },
-    damageType: {
+    overallDamageType: {
       physical: {
         damage: 0,
         attackSpeed: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      slashing: {
-        damage: 0,
-        attackSpeed: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      piercing: {
-        damage: 0,
-        attackSpeed: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      blunt: {
-        damage: 0,
-        attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -161,6 +143,39 @@ export const initialState: CharacterState = {
       magical: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+    },
+    damageType: {
+      slashing: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      piercing: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      blunt: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -170,6 +185,7 @@ export const initialState: CharacterState = {
       arcane: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -179,6 +195,7 @@ export const initialState: CharacterState = {
       fire: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -188,6 +205,7 @@ export const initialState: CharacterState = {
       water: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -197,6 +215,7 @@ export const initialState: CharacterState = {
       earth: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -206,6 +225,7 @@ export const initialState: CharacterState = {
       air: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -215,6 +235,7 @@ export const initialState: CharacterState = {
       light: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -224,6 +245,7 @@ export const initialState: CharacterState = {
       dark: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -235,6 +257,7 @@ export const initialState: CharacterState = {
       feather: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -244,6 +267,7 @@ export const initialState: CharacterState = {
       light: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -253,6 +277,7 @@ export const initialState: CharacterState = {
       medium: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -262,6 +287,7 @@ export const initialState: CharacterState = {
       heavy: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -271,6 +297,163 @@ export const initialState: CharacterState = {
       titanic: {
         damage: 0,
         attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+    },
+    weaponType: {
+      axe: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      sword: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      claw: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+
+      lance: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      spear: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      dagger: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+
+      mace: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      polearm: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      gauntlet: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+
+      crossbow: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      bow: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      dart: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+
+      staff: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      tome: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
+        criticalChance: 0,
+        criticalMultiplier: 0,
+        hitChance: 0,
+        armorPenetration: 0,
+        magicPenetration: 0,
+      },
+      wand: {
+        damage: 0,
+        attackSpeed: 0,
+        cooldown: 0,
         criticalChance: 0,
         criticalMultiplier: 0,
         hitChance: 0,
@@ -287,13 +470,17 @@ interface ModifyStatPayload {
   value: number;
 }
 
-const calculateNextLevelExperience = (level: number): number => Math.floor(100 * Math.pow(1.1, level));
+const calculateNextLevelExperience = (level: number): number =>
+  Math.floor(100 * Math.pow(1.1, level));
 
 // Define an async thunk for saving character data
-export const saveCharacter = createAsyncThunk("character/saveCharacter", async (_, { getState }) => {
-  const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
-  localStorage.setItem("characterState", JSON.stringify(state.character));
-});
+export const saveCharacter = createAsyncThunk(
+  "character/saveCharacter",
+  async (_, { getState }) => {
+    const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
+    localStorage.setItem("characterState", JSON.stringify(state.character));
+  }
+);
 
 const applyEffect = (character: CharacterState, effect: StatusEffect) => {
   switch (effect.effectType) {

@@ -1,6 +1,5 @@
 // GlobalTime.ts
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useState, useEffect } from "react";
 import { RootState } from "../store";
 
 export interface DateState {
@@ -15,83 +14,6 @@ export interface DateState {
   minute: number;
   ampm: string;
 }
-
-export const useGlobalTime = (
-  initialYear: number,
-  initialHour: number,
-  initialMinute: number,
-  initialAmPm: string
-) => {
-  const [date, setDate] = useState<DateState>({
-    day: days[0],
-    weekDay: 1,
-    weekName: weeksOfMonth[0],
-    week: 1,
-    monthName: monthsOfYear[0],
-    month: 1,
-    year: initialYear,
-    hour: initialHour,
-    minute: initialMinute,
-    ampm: initialAmPm,
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDate((prev) => {
-        let { minute, hour, weekDay, week, month, year, ampm } = prev;
-
-        minute++;
-        if (minute === 60) {
-          minute = 0;
-          hour++;
-          if (hour === 12 && ampm === "AM") {
-            ampm = "PM";
-          } else if (hour === 12 && ampm === "PM") {
-            ampm = "AM";
-            weekDay++;
-            if (weekDay > 5) {
-              weekDay = 1;
-              week++;
-              if (week > 5) {
-                week = 1;
-                month++;
-                if (month > 5) {
-                  month = 1;
-                  year++;
-                }
-              }
-            }
-          } else if (hour === 13) {
-            hour = 1;
-          }
-        }
-
-        // Calculate new day, weekName, and monthName based on the updated counters
-        const day = days[(weekDay - 1) % 5];
-        const weekName = weeksOfMonth[(week - 1) % 5];
-        const monthName = monthsOfYear[(month - 1) % 5];
-
-        return {
-          ...prev,
-          minute,
-          hour,
-          weekDay,
-          week,
-          month,
-          year,
-          day,
-          weekName,
-          monthName,
-          ampm,
-        };
-      });
-    }, 10); // Increment every second
-
-    return () => clearInterval(timer); // Cleanup on unmount
-  }, []);
-
-  return date;
-};
 
 const days = ["Fire", "Water", "Earth", "Air", "Arcane"];
 export const dayEffects = [
@@ -179,15 +101,63 @@ export const initialState: DateState = {
 };
 
 // Define an async thunk for saving character data
-export const saveGlobalTime = createAsyncThunk("globalTime/saveGlobalTime", async (_, { getState }) => {
-  const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
-  localStorage.setItem("globalTimeState", JSON.stringify(state.globalTime));
-});
+export const saveGlobalTime = createAsyncThunk(
+  "globalTime/saveGlobalTime",
+  async (_, { getState }) => {
+    const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
+    localStorage.setItem("globalTimeState", JSON.stringify(state.globalTime));
+  }
+);
+
+// Thunk for updating time
+export const updateTime = createAsyncThunk(
+  "globalTime/updateTime",
+  async (_, { dispatch }) => {
+    // Correctly dispatch the action using the action creator
+    dispatch(tickTime());
+  }
+);
 
 export const globalTimeSlice = createSlice({
-  name: "globalTime",
+  name: 'globalTime',
   initialState,
-  reducers: {},
+  reducers: {
+    tickTime: (state) => {
+      // Increment logic for minute, hour, etc.
+      state.minute++;
+      if (state.minute === 60) {
+        state.minute = 0;
+        state.hour++;
+        if (state.hour === 12 && state.ampm === "AM") {
+          state.ampm = "PM";
+        } else if (state.hour === 12 && state.ampm === "PM") {
+          state.ampm = "AM";
+          state.weekDay++;
+          if (state.weekDay > 5) {
+            state.weekDay = 1;
+            state.week++;
+            if (state.week > 5) {
+              state.week = 1;
+              state.month++;
+              if (state.month > 5) {
+                state.month = 1;
+                state.year++;
+              }
+            }
+          }
+          // Additional logic for day, week, month, year updates
+        } else if (state.hour === 13) {
+          state.hour = 1;
+        }
+      }
+      // Update day, weekName, and monthName
+      state.day = days[(state.weekDay - 1) % 5];
+      state.weekName = weeksOfMonth[(state.week - 1) % 5];
+      state.monthName = monthsOfYear[(state.month - 1) % 5];
+    },
+  },
 });
+
+export const { tickTime } = globalTimeSlice.actions;
 
 export default globalTimeSlice.reducer;

@@ -3,25 +3,31 @@ import { RootState, loadState, saveState, store, useAppDispatch } from "../../st
 import { saveCharacter } from "../Character/characterSlice";
 import { saveInventory } from "../Inventory/inventorySlice";
 import { saveMessage } from "../Message/messageSlice";
-import { saveGlobalTime } from "../../Utils/globalTimeSlice";
+import { saveGlobalTime, updateTime } from "../../Utils/globalTimeSlice";
 import "./App.scss";
 import Character from "../Character/Character";
 import Inventory from "../Inventory/Inventory";
 import Display from "../Display/Display";
 import Message from "../Message/Message";
-import { useGlobalTime } from "../../Utils/globalTimeSlice";
 import { useSelector } from "react-redux";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
 
-  let globalTime = useSelector((state: RootState) => state.globalTime);
-  if (globalTime) {
-    globalTime = useGlobalTime(globalTime.year, globalTime.month, globalTime.week, globalTime.day, globalTime.hour, globalTime.minute, globalTime.weekDay, globalTime.weekName, globalTime.monthName, globalTime.ampm);
-  } else {
-    globalTime = useGlobalTime();
-  }
+  const [timerId, setTimerId] = useState<number | null>(null);
+  const [saveIntervalId, setSaveIntervalId] = useState<number | null>(null);
+
+  const globalTime = useSelector((state: RootState) => state.globalTime);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      dispatch(updateTime());
+    }, 1000);
+    setTimerId(id);
+    return () => clearInterval(id);
+  }, [dispatch]);
+
   useEffect(() => {
     // Simulate a loading process.
     setTimeout(() => {
@@ -30,7 +36,7 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
+    const id = setInterval(() => {
       dispatch(saveCharacter());
       dispatch(saveInventory());
       dispatch(saveMessage());
@@ -48,9 +54,9 @@ const App: React.FC = () => {
         saveState("messageState", messageState);
         saveState("globalTimeState", globalTimeState);
       }, 500); // Delay to ensure state is updated in the Redux store before saving
-    }, 300000); // 300,000 milliseconds = 5 minutes
-
-    return () => clearInterval(intervalId);
+    }, 300000);
+    setSaveIntervalId(id);
+    return () => clearInterval(id);
   }, [dispatch]);
 
   if (loading) {
@@ -136,11 +142,23 @@ const App: React.FC = () => {
 
   const handleReset = () => {
     if (window.confirm("Are you sure you want to reset the game? All data will be lost.")) {
-      localStorage.removeItem("characterState");
-      localStorage.removeItem("inventoryState");
-      localStorage.removeItem("messageState");
-      localStorage.removeItem("globalTimeState");
-      window.location.reload();
+      // Clear intervals
+      if (timerId) clearInterval(timerId);
+      if (saveIntervalId) clearInterval(saveIntervalId);
+
+      // Use a short timeout to allow dispatches to complete
+      setTimeout(() => {
+        localStorage.removeItem("characterState");
+        localStorage.removeItem("inventoryState");
+        localStorage.removeItem("messageState");
+        localStorage.removeItem("globalTimeState");
+
+        // Optionally reset state in Redux if needed here
+        // dispatch(resetStateAction()); // If you have actions to reset Redux state
+
+        // Reload to ensure all components reinitialize cleanly
+        window.location.reload();
+      }, 100); // Adjust time as needed, should be short
     }
   };
 

@@ -1,13 +1,11 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "./Character.scss";
 import { RootState } from "../../store";
 import CharacterName from "./CharacterName";
-import { addStatus, initialState } from "./characterSlice";
 import { detectBrowser } from "../../Utils/browserUtil";
-import { poisonEffect } from "../../Utils/statusEffects";
 import { Tooltip } from "react-tooltip";
-import { Stats, fullStatNames, statAbbreviations, statEffects } from "../../Interfaces/Stats";
+import { fullStatNames, statAbbreviations, statEffects } from "../../Interfaces/Stats";
 import ReactDOMServer from "react-dom/server";
 
 type ExtendedCSSProperties = React.CSSProperties & {
@@ -17,26 +15,15 @@ type ExtendedCSSProperties = React.CSSProperties & {
 };
 
 const Character: React.FC = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const browser = React.useMemo(() => detectBrowser(), []);
   const character = useSelector((state: RootState) => state.character);
 
   // Function to simulate eating poisoned food
-  const eatFood = () => {
-    // Assuming `poisonEffect` is a valid StatusEffect object
-    dispatch(addStatus(poisonEffect));
-  };
-
-  const stats: Stats = {
-    strength: character.stats.strength || initialState.stats.strength,
-    vitality: character.stats.vitality || initialState.stats.vitality,
-    agility: character.stats.agility || initialState.stats.agility,
-    dexterity: character.stats.dexterity || initialState.stats.dexterity,
-    intelligence: character.stats.intelligence || initialState.stats.intelligence,
-    wisdom: character.stats.wisdom || initialState.stats.wisdom,
-    perception: character.stats.perception || initialState.stats.perception,
-    luck: character.stats.luck || initialState.stats.luck,
-  };
+  // const eatFood = () => {
+  //   // Assuming `poisonEffect` is a valid StatusEffect object
+  //   dispatch(addStatus(poisonEffect));
+  // };
 
   const renderEquipmentSlot = (label: string, item: string | null) => {
     const isEmpty = !item;
@@ -164,7 +151,7 @@ const Character: React.FC = () => {
       {renderBars()}
 
       <div className="stats-grid">
-        {Object.entries(stats).map(([statName, statValue]) => {
+        {Object.entries(character.stats).map(([statName, statValue]) => {
           const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
           const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
 
