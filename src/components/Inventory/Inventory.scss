@@ -49,6 +49,7 @@ $padding: 5px;
   margin: 0;
   overflow-y: auto;
   padding: $padding;
+  height: 560px;
   max-height: 560px;
   scrollbar-width: thin; /* makes the scrollbar thinner */
 }

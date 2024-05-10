@@ -8,17 +8,6 @@ export const ForestClearingActivity: Activities = {
       id: "fc1",
       name: "Look around for clues.",
       icon: getIconById("perception"),
-      effect: [
-        {
-          id: "giveItem",
-          effect: [
-            {
-              stat: "strength",
-              value: 1,
-            },
-          ],
-        },
-      ],
       next: "fc2",
     },
     // Forest Clearing 2
@@ -31,6 +20,9 @@ export const ForestClearingActivity: Activities = {
     // Forest Clearing 3
     {
       id: "fc3",
+      name: null,
+      icon: null,
+      next: null,
       branch: [
         {
           id: "fc3-1",
@@ -109,6 +101,9 @@ export const ForestClearingActivity: Activities = {
     // Forest Clearing 4
     {
       id: "fc4",
+      name: null,
+      icon: null,
+      next: null,
       branch: [
         {
           id: "fc4-1",

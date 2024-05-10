@@ -6,9 +6,10 @@ import { Message as MessageType, toggleTimestamp, addMessage } from "./messageSl
 interface MessageTimeProps {
   hour: number;
   minute: number;
+  ampm: string;
 }
 
-const Message = ({ hour, minute }: MessageTimeProps) => {
+const Message = ({ hour, minute, ampm }: MessageTimeProps) => {
   const dispatch = useDispatch();
   const messages = useSelector((state: RootState) => state.message);
 
@@ -38,8 +39,8 @@ const Message = ({ hour, minute }: MessageTimeProps) => {
               id: 1,
               timestamp: `${hour.toString().padStart(2, "0")}:${minute
                 .toString()
-                .padStart(2, "0")}`,
-              message: "test",
+                .padStart(2, "0")} ${ampm}`,
+              message: "Skbd toiley.",
             })
           )
         }

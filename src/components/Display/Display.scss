@@ -82,7 +82,7 @@ img {
 }
 
 .display-action:hover {
-  background-color: #333;
+  background-color: #333366;
 }
 
 .display-action:not(:last-child) {
@@ -98,5 +98,17 @@ img {
   z-index: 1000; // Ensure this is higher than any other element within the same stacking context
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
   transform: translate(-25%, 0%);
+  max-width: 400px;
+}
+
+.activity-tooltip {
+  z-index: 1000; // Ensure this is higher than any other element within the same stacking context
+  position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
+  max-width: 400px;
+}
+
+.branchActivity-tooltip {
+  z-index: 1000; // Ensure this is higher than any other element within the same stacking context
+  position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
   max-width: 400px;
 }

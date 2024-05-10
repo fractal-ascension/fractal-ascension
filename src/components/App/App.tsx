@@ -10,6 +10,7 @@ import Inventory from "../Inventory/Inventory";
 import Display from "../Display/Display";
 import Message from "../Message/Message";
 import { useSelector } from "react-redux";
+import { saveProgress } from "../../Utils/progressSlice";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -37,22 +38,21 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const id = setInterval(() => {
+      // STATEMARKER
       dispatch(saveCharacter());
       dispatch(saveInventory());
       dispatch(saveMessage());
       dispatch(saveGlobalTime());
+      dispatch(saveProgress());
 
       // Waiting for state updates to complete, then saving encoded state to local storage
       setTimeout(() => {
-        const characterState = store.getState().character;
-        const inventoryState = store.getState().inventory;
-        const messageState = store.getState().message;
-        const globalTimeState = store.getState().globalTime;
-
-        saveState("characterState", characterState);
-        saveState("inventoryState", inventoryState);
-        saveState("messageState", messageState);
-        saveState("globalTimeState", globalTimeState);
+        // STATEMARKER
+        saveState("characterState", store.getState().character);
+        saveState("inventoryState", store.getState().inventory);
+        saveState("messageState", store.getState().message);
+        saveState("globalTimeState", store.getState().globalTime);
+        saveState("progressState", store.getState().progress);
       }, 500); // Delay to ensure state is updated in the Redux store before saving
     }, 300000);
     setSaveIntervalId(id);
@@ -78,31 +78,32 @@ const App: React.FC = () => {
 
   const handleSave = () => {
     // Dispatching the Redux actions to update the state before saving
+    // STATEMARKER
     dispatch(saveCharacter());
     dispatch(saveInventory());
     dispatch(saveMessage());
     dispatch(saveGlobalTime());
+    dispatch(saveProgress());
 
     // Waiting for state updates to complete, then saving encoded state to local storage
     setTimeout(() => {
-      const characterState = store.getState().character;
-      const inventoryState = store.getState().inventory;
-      const messageState = store.getState().message;
-      const globalTimeState = store.getState().globalTime;
-
-      saveState("characterState", characterState);
-      saveState("inventoryState", inventoryState);
-      saveState("messageState", messageState);
-      saveState("globalTimeState", globalTimeState);
+      // STATEMARKER
+      saveState("characterState", store.getState().character);
+      saveState("inventoryState", store.getState().inventory);
+      saveState("messageState", store.getState().message);
+      saveState("globalTimeState", store.getState().globalTime);
+      saveState("progressState", store.getState().progress);
     }, 500); // Delay to ensure state is updated in the Redux store before saving
   };
 
   const handleExport = () => {
     const state = {
+      // STATEMARKER
       character: loadState("characterState", store.getState().character),
       inventory: loadState("inventoryState", store.getState().inventory),
       message: loadState("messageState", store.getState().message),
       globalTime: loadState("globalTimeState", store.getState().globalTime),
+      progress: loadState("progressState", store.getState().progress),
     };
     const encodedState = btoa(JSON.stringify(state));
     const blob = new Blob([encodedState], { type: "text/plain;charset=utf-8" });
@@ -129,10 +130,12 @@ const App: React.FC = () => {
         const text = e.target?.result?.toString();
         if (text) {
           const decodedState = JSON.parse(atob(text));
+          // STATEMARKER
           saveState("characterState", decodedState.character);
           saveState("inventoryState", decodedState.inventory);
           saveState("messageState", decodedState.message);
           saveState("globalTimeState", decodedState.globalTime);
+          saveState("progressState", decodedState.progress);
           window.location.reload();
         }
       };
@@ -148,15 +151,13 @@ const App: React.FC = () => {
 
       // Use a short timeout to allow dispatches to complete
       setTimeout(() => {
+        // STATEMARKER
         localStorage.removeItem("characterState");
         localStorage.removeItem("inventoryState");
         localStorage.removeItem("messageState");
         localStorage.removeItem("globalTimeState");
+        localStorage.removeItem("progressState");
 
-        // Optionally reset state in Redux if needed here
-        // dispatch(resetStateAction()); // If you have actions to reset Redux state
-
-        // Reload to ensure all components reinitialize cleanly
         window.location.reload();
       }, 100); // Adjust time as needed, should be short
     }
@@ -184,7 +185,7 @@ const App: React.FC = () => {
           />
         </div>
         <div className="column">
-          <Message hour={globalTime.hour} minute={globalTime.minute} />
+          <Message hour={globalTime.hour} minute={globalTime.minute} ampm={globalTime.ampm} />
         </div>
       </div>
       <div id="footer" className="footer-container">
