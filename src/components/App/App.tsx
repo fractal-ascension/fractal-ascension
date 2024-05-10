@@ -185,7 +185,7 @@ const App: React.FC = () => {
           />
         </div>
         <div className="column">
-          <Message hour={globalTime.hour} minute={globalTime.minute} ampm={globalTime.ampm} />
+          <Message/>
         </div>
       </div>
       <div id="footer" className="footer-container">

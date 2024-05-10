@@ -25,7 +25,16 @@ const Icons = {
 };
 
 export const getIconById = (id: string) => {
-    const icon = Icons.iconList.find(iconItem => iconItem.id === id);
-    return icon ? icon.icon : ""; // Returns an empty string if no icon is found
-  };
-  
+  const icon = Icons.iconList.find((iconItem) => iconItem.id === id);
+  return icon ? icon.icon : ""; // Returns an empty string if no icon is found
+};
+
+export const getStarRepresentation = (rank: number) => {
+  if (rank === 0) return '☆'; // Directly return one empty star for rank 0
+
+  const filledStars = Math.ceil(rank / 2); // Compute number of filled stars
+  const totalStars = filledStars + (rank % 2); // Add one more star if rank is odd
+
+  const stars = "★".repeat(filledStars) + "☆".repeat(totalStars - filledStars);
+  return stars;
+};

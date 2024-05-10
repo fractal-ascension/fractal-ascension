@@ -1,22 +1,15 @@
 // src/features/inventory/inventorySlice.ts
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
+import { Item, ItemType } from "../../Interfaces/Items";
 
 // Define specific types for item types and filter/sort options
-export type ItemType = "WPN" | "USE" | "CMBT" | "EQP" | "TOOL" | "ETC";
 type FilterType = "ALL" | ItemType;
 export type SortCriteria = "AZ" | "09" | "TYPE" | "VAL";
 type SortType = "NONE" | `${SortCriteria}_ASC` | `${SortCriteria}_DESC`;
 
-export interface InventoryItem {
-  name: string;
-  amount: number;
-  type: ItemType;
-  value: number;
-}
-
 interface InventoryState {
-  items: InventoryItem[];
+  items: Item[];
   filter: FilterType;
   sort: SortType;
 }
@@ -39,14 +32,19 @@ const inventorySlice = createSlice({
   name: "inventory",
   initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<InventoryItem>) => {
+    addItem: (state, action: PayloadAction<{ item: Item; amount: number }>) => {
       const existingItemIndex = state.items.findIndex(
-        (item) => item.name === action.payload.name && item.type === action.payload.type
+        (item) => item.name === action.payload.item.name && item.type === action.payload.item.type
       );
       if (existingItemIndex !== -1) {
+        // If item exists, update its amount
         state.items[existingItemIndex].amount += action.payload.amount;
       } else {
-        state.items.push(action.payload);
+        // If item does not exist, push a new object with initial amount
+        state.items.push({
+          ...action.payload.item,
+          amount: action.payload.amount, // Ensure the amount is set
+        });
       }
     },
     removeItem: (state, action: PayloadAction<{ name: string; type: ItemType }>) => {
@@ -54,7 +52,7 @@ const inventorySlice = createSlice({
         (item) => item.name !== action.payload.name || item.type !== action.payload.type
       );
     },
-    updateItem: (state, action: PayloadAction<InventoryItem>) => {
+    updateItem: (state, action: PayloadAction<Item>) => {
       const index = state.items.findIndex(
         (item) => item.name === action.payload.name && item.type === action.payload.type
       );

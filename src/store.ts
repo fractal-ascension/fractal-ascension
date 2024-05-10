@@ -8,12 +8,8 @@ import inventoryReducer, {
 import messageReducer, {
   initialState as messageInitialState,
 } from "./components/Message/messageSlice";
-import globalTimeReducer, {
-  initialState as globalTimeInitialState,
-} from "./Utils/globalTimeSlice";
-import progressReducer, {
-  initialState as progressInitialState,
-} from "./Utils/progressSlice";
+import globalTimeReducer, { initialState as globalTimeInitialState } from "./Utils/globalTimeSlice";
+import progressReducer, { initialState as progressInitialState } from "./Utils/progressSlice";
 
 import { useDispatch } from "react-redux";
 
@@ -24,6 +20,8 @@ export const loadState = (key: string, initialState: unknown) => {
   try {
     const storedState = localStorage.getItem(key);
     return storedState ? JSON.parse(b64Decode(storedState)) : initialState;
+    // return storedState ? JSON.parse(storedState) : initialState;
+    
   } catch (error) {
     console.error("Failed to load or decode state:", error);
     return initialState;
@@ -33,6 +31,8 @@ export const loadState = (key: string, initialState: unknown) => {
 export const saveState = (key: string, state: unknown) => {
   try {
     const serializedState = b64Encode(JSON.stringify(state));
+    // const serializedState = JSON.stringify(state);
+
     localStorage.setItem(key, serializedState);
   } catch (error) {
     console.error("Failed to save or encode state:", error);

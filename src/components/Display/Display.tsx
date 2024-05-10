@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import locations, { Activity } from "../../Locations/locations";
 import { setActiveActivity } from "../../Utils/progressSlice";
+import { addItem } from "../Inventory/inventorySlice";
+import { getStarRepresentation } from "../../Utils/icons";
+import { addMessage } from "../Message/messageSlice";
 
 interface DisplayTimeProps {
   day: string;
@@ -42,7 +45,6 @@ const Display = ({
 
   const activities = locationData.activities;
   const title = locationData.title;
-  const image = locationData.img;
   const descriptions = locationData.descriptions;
   const rank = locationData.rank;
   const levelRange = locationData.levelRange;
@@ -53,6 +55,7 @@ const Display = ({
 
   const activity = activities.find((activity) => activity.id === activeActivity);
   const description = descriptions.find((desc) => desc.id === activeActivity)?.desc; // Find description matching the activity id
+  const image = descriptions.find((desc) => desc.id === activeActivity)?.img; // Find description matching the activity id
 
   // Function to render a single activity or a list of branch activities
   const renderActivity = (activity: Activity) => {
@@ -67,7 +70,9 @@ const Display = ({
           data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<p>{branchActivity.tooltip}</p>)}
         >
           {branchActivity.icon} {branchActivity.name}
-          {branchActivity.tooltip ? <Tooltip id="branchActivity-tooltip" className="branchActivity-tooltip" /> : null}
+          {branchActivity.tooltip ? (
+            <Tooltip id="branchActivity-tooltip" className="branchActivity-tooltip" />
+          ) : null}
         </div>
       ));
     }
@@ -88,7 +93,40 @@ const Display = ({
 
   const clickActivity = (activity: Activity) => {
     console.log("Clicked activity: ", activity);
+    dispatch(
+      addMessage({
+        timestamp: `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")} ${ampm}`,
+        message: `${description}`,
+      })
+    );
+    dispatch(
+      addMessage({
+        timestamp: `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")} ${ampm}`,
+        message: `${activity.name}`,
+      })
+    );
     dispatch(setActiveActivity(activity.next));
+    activity.effect?.forEach((effect) => {
+      if (effect.id === "statChange") {
+        console.log("Stat change effect: ", effect);
+        effect.effect.forEach((change) => {
+          console.log(`Changing stat ${change.stat} by ${change.value}`);
+          // Handle stat changes if needed, perhaps with another dispatch
+        });
+      } else if (effect.id === "giveItem") {
+        console.log("Give item effect: ", effect);
+        effect.effect.forEach((effectItem) => {
+          if ("item" in effectItem) {
+            console.log("Giving item: ", effectItem.item, " Amount: ", effectItem.value);
+            dispatch(addItem({ item: effectItem.item, amount: effectItem.value }));
+          }
+        });
+      }
+    });
   };
 
   return (
@@ -101,7 +139,7 @@ const Display = ({
               <hr />
               <b>{title}</b>
               <hr />
-              Rank : [ {rank} ]
+              Rank : [ {getStarRepresentation(rank)} ]
               <br />
               Level: [ {levelRange} ]
               <br />

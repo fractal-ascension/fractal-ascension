@@ -107,13 +107,16 @@ export interface CombatDamageParameters {
   overallDamageType: {
     physical: DamageDetails; // Multiplies with Slash, Pierce, Blunt
     magical: DamageDetails; // Multiplies with Fire, Water, Earth, Air, Arcane
+    //divine: DamageDetails; // Multiplies with Holy, Unholy, Spiritual, Demonic, Undead
   };
 
   damageType: {
+    // Physical
     slashing: DamageDetails;
     piercing: DamageDetails;
     blunt: DamageDetails;
 
+    // Magical
     arcane: DamageDetails;
     fire: DamageDetails;
     water: DamageDetails;
@@ -122,6 +125,7 @@ export interface CombatDamageParameters {
     light: DamageDetails;
     dark: DamageDetails;
 
+    // Divine
     // Future Damage Type: Holy/Unholy/Spiritual/Demonic/Undead (Clerical style)
   };
 
@@ -163,6 +167,7 @@ interface DamageDetails {
   criticalChance: number;
   criticalMultiplier: number;
   hitChance: number;
+  range: number;
   armorPenetration: number;
   magicPenetration: number;
 }

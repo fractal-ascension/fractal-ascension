@@ -1,15 +1,22 @@
 // locationsConfig.ts
+import { Item } from "../Interfaces/Items";
 import { ForestClearing } from "./ForestClearing/ForestClearing";
 import { ForestPond } from "./ForestPond/ForestPond";
 
-export interface EffectDetail {
-  stat: string;
-  value: number;
-}
-
 export interface StatChangeEffect {
   id: string;
-  effect: EffectDetail[];
+  effect: {
+    stat: string;
+    value: number;
+  }[];
+}
+
+export interface ItemChangeEffect {
+  id: "giveItem";
+  effect: {
+    item: Item;
+    value: number;
+  }[];
 }
 
 export interface Activity {
@@ -18,7 +25,7 @@ export interface Activity {
   icon?: string;
   next?: string;
   tooltip?: string;
-  effect?: StatChangeEffect[];
+  effect?: StatChangeEffect[] | ItemChangeEffect[];
   branch?: Activity[];
 }
 
@@ -29,6 +36,7 @@ export interface Activities {
 export interface Description {
   id: string;
   desc: string;
+  img: string;
 }
 
 export interface Descriptions {
@@ -38,8 +46,7 @@ export interface Descriptions {
 export interface LocationData {
   id: string;
   title: string;
-  img: string;
-  rank: string;
+  rank: number;
   levelRange: string;
   type: string;
   description: string;

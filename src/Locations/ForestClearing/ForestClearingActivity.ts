@@ -1,5 +1,6 @@
 import { getIconById } from "../../Utils/icons";
 import { Activities } from "../locations";
+import { ForestClearingItem } from "./ForestClearingItem";
 
 export const ForestClearingActivity: Activities = {
   activities: [
@@ -13,7 +14,11 @@ export const ForestClearingActivity: Activities = {
           id: "giveItem",
           effect: [
             {
-              stat: "strength",
+              item: ForestClearingItem.find((item) => item.id === "sturdyStick")!,
+              value: 1,
+            },
+            {
+              item: ForestClearingItem.find((item) => item.id === "roundRock")!,
               value: 1,
             },
           ],

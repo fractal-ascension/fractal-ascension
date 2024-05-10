@@ -116,3 +116,32 @@ $padding: 5px;
     color: #607d8b;
   } // Blue Grey for miscellaneous items
 }
+
+#item-tooltip {
+  z-index: 1000; // Ensure this is higher than any other element within the same stacking context
+  position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
+  width: 450px;
+}
+
+#item-tooltip hr {
+  padding: 0px;
+}
+
+.item-tooltip-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center; // This centers the children vertically
+}
+
+.item-tooltip-split span {
+  padding: 0px;
+}
+
+.item-tooltip-split span:nth-child(2) {
+  justify-self: end;
+}
+
+.item-tooltip-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}

@@ -20,9 +20,6 @@ export const ForestClearingActivity: Activities = {
     // Forest Clearing 3
     {
       id: "fc3",
-      name: null,
-      icon: null,
-      next: null,
       branch: [
         {
           id: "fc3-1",
@@ -101,9 +98,6 @@ export const ForestClearingActivity: Activities = {
     // Forest Clearing 4
     {
       id: "fc4",
-      name: null,
-      icon: null,
-      next: null,
       branch: [
         {
           id: "fc4-1",
