@@ -1,4 +1,4 @@
-import Forest_Pond from "../../assets/Pond.jpg";
+// import Forest_Pond from "../../assets/Pond.jpg";
 import { LocationData } from "../locations";
 
 export const ForestPond: LocationData = {

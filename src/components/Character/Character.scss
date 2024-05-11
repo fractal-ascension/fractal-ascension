@@ -21,13 +21,13 @@ $gap: 5px;
   height: 545px
 }
 
-.character-container.chrome {
-  height: 480px;
-}
+// .character-container.chrome {
+//   height: 490px;
+// }
 
-.character-container.edge-chromium {
-  height: 480px;
-}
+// .character-container.edge-chromium {
+//   height: 490px;
+// }
 
 .info-box {
   background: lighten($secondary-bg-color, 10%);
@@ -151,4 +151,5 @@ $gap: 5px;
 .tooltip {
   z-index: 1000; // Ensure this is higher than any other element within the same stacking context
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
+  max-width: 500px;
 }

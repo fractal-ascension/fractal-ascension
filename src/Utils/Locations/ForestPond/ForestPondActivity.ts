@@ -1,4 +1,4 @@
-import { getIconById } from "../../Utils/icons";
+import { getIconById } from "../../Data/icons";
 import { Activities } from "../locations";
 
 export const ForestClearingActivity: Activities = {

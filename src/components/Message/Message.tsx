@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./Message.scss";
 import { RootState } from "../../store";
-import { Message as MessageType, toggleTimestamp } from "./messageSlice"; // Rename to avoid conflict with component name
+import { Message as MessageType, clearMessages, toggleTimestamp } from "./messageSlice"; // Rename to avoid conflict with component name
 
 const Message = () => {
   const dispatch = useDispatch();
@@ -25,6 +25,7 @@ const Message = () => {
         ))}
       </div>
       <button onClick={() => dispatch(toggleTimestamp())}>Toggle Timestamp</button>
+      <button onClick={() => dispatch(clearMessages())}>Clear Messages</button>
     </div>
   );
 };

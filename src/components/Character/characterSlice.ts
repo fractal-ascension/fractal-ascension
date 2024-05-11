@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { CombatDamageParameters, BaseParameters, Stats } from "../../Interfaces/Stats";
+import { CombatDamageParameters, BaseParameters, Stats } from "../../Utils/Interfaces/Stats";
 
 interface Equipment {
   lefthand: string | null;
@@ -500,11 +500,6 @@ export const initialState: CharacterState = {
   statuses: [],
 };
 
-interface ModifyStatPayload {
-  statName: keyof Stats;
-  value: number;
-}
-
 const calculateNextLevelExperience = (level: number): number =>
   Math.floor(100 * Math.pow(1.1, level));
 
@@ -546,7 +541,7 @@ export const characterSlice = createSlice({
         state.parameters.hp = state.parameters.maxHp;
       }
     },
-    modifyStat: (state, action: PayloadAction<ModifyStatPayload>) => {
+    modifyStat: (state, action: PayloadAction<{ statName: keyof Stats; value: number }>) => {
       const { statName, value } = action.payload;
       const currentStatValue = state.stats[statName];
       const newStatValue = currentStatValue + value;

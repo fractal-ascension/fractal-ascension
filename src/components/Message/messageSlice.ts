@@ -47,8 +47,11 @@ export const messageSlice = createSlice({
     toggleTimestamp: (state) => {
       state.showTimestamp = !state.showTimestamp;
     },
+    clearMessages: (state) => {
+      state.messages = [];
+    },
   },
 });
 
-export const { addMessage, toggleTimestamp } = messageSlice.actions;
+export const { addMessage, toggleTimestamp, clearMessages } = messageSlice.actions;
 export default messageSlice.reducer;

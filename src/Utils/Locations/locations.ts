@@ -1,18 +1,19 @@
 // locationsConfig.ts
 import { Item } from "../Interfaces/Items";
+import { Stats } from "../Interfaces/Stats";
 import { ForestClearing } from "./ForestClearing/ForestClearing";
 import { ForestPond } from "./ForestPond/ForestPond";
 
 export interface StatChangeEffect {
-  id: string;
+  id: "statChange";
   effect: {
-    stat: string;
+    stat: keyof Stats;
     value: number;
   }[];
 }
 
 export interface ItemChangeEffect {
-  id: "giveItem";
+  id: "itemChange";
   effect: {
     item: Item;
     value: number;
@@ -24,6 +25,7 @@ export interface Activity {
   name?: string;
   icon?: string;
   next?: string;
+  previous?: string;
   tooltip?: string;
   effect?: StatChangeEffect[] | ItemChangeEffect[];
   branch?: Activity[];

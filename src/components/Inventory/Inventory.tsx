@@ -4,8 +4,8 @@ import { RootState } from "../../store";
 import ReactDOMServer from "react-dom/server";
 import "./Inventory.scss";
 import { Tooltip } from "react-tooltip";
-import { getStarRepresentation } from "../../Utils/icons";
-import { currencyBreakdown } from "../../Interfaces/Items";
+import { getStarRepresentation } from "../../Utils/Data/icons";
+import { Item, currencyBreakdown } from "../../Utils/Interfaces/Items";
 
 const Inventory = () => {
   const dispatch = useDispatch();
@@ -65,6 +65,19 @@ const Inventory = () => {
         return null;
       })
       .filter(Boolean); // Filter out null entries (where amount is 0 and not displayed)
+  };
+
+  const handleDelete = (item: Item) => {
+    if (window.confirm("Are you sure you want to delete this item?"))
+      dispatch(removeItem({ item: item }));
+    else if (item.unique) {
+      if (
+        window.confirm(
+          `Are you sure you want to delete this UNIQUE item? You will not be able to get it back.`
+        )
+      )
+        dispatch(removeItem({ item: item }));
+    }
   };
 
   return (
@@ -153,6 +166,7 @@ const Inventory = () => {
                     </div>
                     <hr />
                     <span>{item.description}</span>
+                    {item.unique ? <span><hr/><span style={{color: "orange"}}>Unique</span></span> : null}
                   </div>
                   <hr />
                 </div>
@@ -165,10 +179,7 @@ const Inventory = () => {
             </span>
             <span>x{item.amount.toLocaleString("en-US")}</span>
             <span className="delete-button-container">
-              <button
-                className="delete-button"
-                onClick={() => dispatch(removeItem({ name: item.name, type: item.type }))}
-              >
+              <button className="delete-button" onClick={() => handleDelete(item)}>
                 X
               </button>
             </span>

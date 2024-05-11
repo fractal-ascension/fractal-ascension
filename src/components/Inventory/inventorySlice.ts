@@ -1,7 +1,7 @@
 // src/features/inventory/inventorySlice.ts
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { Item, ItemType } from "../../Interfaces/Items";
+import { Item, ItemType } from "../../Utils/Interfaces/Items";
 
 // Define specific types for item types and filter/sort options
 type FilterType = "ALL" | ItemType;
@@ -32,30 +32,34 @@ const inventorySlice = createSlice({
   name: "inventory",
   initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<{ item: Item; amount: number }>) => {
-      const existingItemIndex = state.items.findIndex(
-        (item) => item.name === action.payload.item.name && item.type === action.payload.item.type
-      );
+    addOrRemoveItem: (state, action: PayloadAction<{ item: Item; amount: number }>) => {
+      const existingItemIndex = state.items.findIndex((i) => i.id === action.payload.item.id);
       if (existingItemIndex !== -1) {
-        // If item exists, update its amount
+        // Adjust item amount
         state.items[existingItemIndex].amount += action.payload.amount;
+        // Remove item if the amount is zero or less
+        if (state.items[existingItemIndex].amount <= 0) {
+          state.items.splice(existingItemIndex, 1);
+        }
       } else {
-        // If item does not exist, push a new object with initial amount
-        state.items.push({
-          ...action.payload.item,
-          amount: action.payload.amount, // Ensure the amount is set
-        });
+        // Add new item only if amount is greater than zero
+        if (action.payload.amount > 0) {
+          state.items.push({
+            ...action.payload.item,
+            amount: action.payload.amount,
+          });
+        }
       }
     },
-    removeItem: (state, action: PayloadAction<{ name: string; type: ItemType }>) => {
-      state.items = state.items.filter(
-        (item) => item.name !== action.payload.name || item.type !== action.payload.type
-      );
+    removeItem: (state, action: PayloadAction<{ item: Item }>) => {
+      const index = state.items.findIndex((i) => i.id === action.payload.item.id);
+      if (index !== -1) {
+        state.items.splice(index, 1);
+      }
     },
-    updateItem: (state, action: PayloadAction<Item>) => {
-      const index = state.items.findIndex(
-        (item) => item.name === action.payload.name && item.type === action.payload.type
-      );
+
+    updateItem: (state, action: PayloadAction<{ item: Item }>) => {
+      const index = state.items.findIndex((i) => i.id === action.payload.item.id);
       if (index !== -1) {
         state.items[index] = { ...state.items[index], ...action.payload };
       }
@@ -70,6 +74,7 @@ const inventorySlice = createSlice({
   },
 });
 
-export const { addItem, removeItem, updateItem, setFilter, setSort } = inventorySlice.actions;
+export const { addOrRemoveItem, removeItem, updateItem, setFilter, setSort } =
+  inventorySlice.actions;
 export const selectInventory = (state: { inventory: InventoryState }) => state.inventory;
 export default inventorySlice.reducer;

@@ -21,6 +21,9 @@ const Icons = {
     { id: "dodgeChance", icon: "🛡️" },
     { id: "criticalChance", icon: "💥" },
     { id: "book", icon: "📖" },
+    { id: "sword", icon: "⚔️" },
+    { id: "bow", icon: "🏹" },
+    { id: "nature", icon: "🌿" },
   ],
 };
 

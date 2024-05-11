@@ -1,43 +1,21 @@
 import "./Display.scss";
-import { dayEffects, monthEffects, weekEffects } from "../../Utils/globalTimeSlice";
+import { dayEffects, monthEffects, weekEffects } from "../../Utils/Slices/globalTimeSlice";
 import ReactDOMServer from "react-dom/server";
 import { Tooltip } from "react-tooltip";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import locations, { Activity } from "../../Locations/locations";
-import { setActiveActivity } from "../../Utils/progressSlice";
-import { addItem } from "../Inventory/inventorySlice";
-import { getStarRepresentation } from "../../Utils/icons";
+import locations, { Activity } from "../../Utils/Locations/locations";
+import { setActiveActivity } from "../../Utils/Slices/progressSlice";
+import { addOrRemoveItem } from "../Inventory/inventorySlice";
+import { getStarRepresentation } from "../../Utils/Data/icons";
 import { addMessage } from "../Message/messageSlice";
+import { modifyStat } from "../Character/characterSlice";
 
-interface DisplayTimeProps {
-  day: string;
-  weekDay: number;
-  weekName: string;
-  week: number;
-  monthName: string;
-  month: number;
-  year: number;
-  hour: number;
-  minute: number;
-  ampm: string;
-}
-
-const Display = ({
-  day,
-  weekName,
-  weekDay,
-  monthName,
-  week,
-  month,
-  year,
-  hour,
-  minute,
-  ampm,
-}: DisplayTimeProps) => {
+const Display = () => {
   const dispatch = useDispatch();
 
   const progress = useSelector((state: RootState) => state.progress);
+  const time = useSelector((state: RootState) => state.globalTime);
   const activeArea = progress.activeLocation;
   const activeActivity = progress.activeActivity;
 
@@ -51,7 +29,7 @@ const Display = ({
   const type = locationData.type;
   const areaDescription = locationData.description;
 
-  const currentDay = day;
+  const currentDay = time.day;
 
   const activity = activities.find((activity) => activity.id === activeActivity);
   const description = descriptions.find((desc) => desc.id === activeActivity)?.desc; // Find description matching the activity id
@@ -95,38 +73,44 @@ const Display = ({
     console.log("Clicked activity: ", activity);
     dispatch(
       addMessage({
-        timestamp: `${hour.toString().padStart(2, "0")}:${minute
+        timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
           .toString()
-          .padStart(2, "0")} ${ampm}`,
+          .padStart(2, "0")} ${time.ampm}`,
         message: `${description}`,
       })
     );
     dispatch(
       addMessage({
-        timestamp: `${hour.toString().padStart(2, "0")}:${minute
+        timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
           .toString()
-          .padStart(2, "0")} ${ampm}`,
-        message: `${activity.name}`,
+          .padStart(2, "0")} ${time.ampm}`,
+        message: `(${activity.icon}) ${activity.name}`,
       })
     );
     dispatch(setActiveActivity(activity.next));
     activity.effect?.forEach((effect) => {
       if (effect.id === "statChange") {
         console.log("Stat change effect: ", effect);
-        effect.effect.forEach((change) => {
-          console.log(`Changing stat ${change.stat} by ${change.value}`);
+        effect.effect.forEach((statChange) => {
+          console.log(`Changing stat ${statChange.stat} by ${statChange.value}`);
+          dispatch(modifyStat({ statName: statChange.stat, value: statChange.value }));
           // Handle stat changes if needed, perhaps with another dispatch
         });
-      } else if (effect.id === "giveItem") {
-        console.log("Give item effect: ", effect);
-        effect.effect.forEach((effectItem) => {
-          if ("item" in effectItem) {
-            console.log("Giving item: ", effectItem.item, " Amount: ", effectItem.value);
-            dispatch(addItem({ item: effectItem.item, amount: effectItem.value }));
+      } else if (effect.id === "itemChange") {
+        console.log("Item effect: ", effect);
+        effect.effect.forEach((itemChange) => {
+          if ("item" in itemChange) {
+            console.log("Giving item: ", itemChange.item, " Amount: ", itemChange.value);
+            dispatch(addOrRemoveItem({ item: itemChange.item, amount: itemChange.value }));
           }
         });
       }
     });
+  };
+
+  // DEBUG
+  const goBack = (activity: Activity) => {
+    activity.previous ? dispatch(setActiveActivity(activity.previous)) : null;
   };
 
   return (
@@ -158,7 +142,7 @@ const Display = ({
           data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
             <div>
               <hr />
-              <b>Day of {day}</b>
+              <b>Day of {time.day}</b>
               <hr />
               {dayEffects
                 .find((currDay) => currDay.id === currentDay)
@@ -167,28 +151,28 @@ const Display = ({
                 ))}
               <hr />
 
-              <b>Week of the {weekName}</b>
+              <b>Week of the {time.weekName}</b>
               <hr />
               {weekEffects
-                .find((currWeek) => currWeek.id === weekName)
+                .find((currWeek) => currWeek.id === time.weekName)
                 ?.effects.map((effect) => (
                   <div key={effect}>• {effect}</div>
                 ))}
 
               <hr />
-              <b>Month of {monthName}</b>
+              <b>Month of {time.monthName}</b>
               <hr />
               {monthEffects
-                .find((currMonth) => currMonth.id === monthName)
+                .find((currMonth) => currMonth.id === time.monthName)
                 ?.effects.map((effect) => (
                   <div key={effect}>• {effect}</div>
                 ))}
             </div>
           )}
         >
-          {`[${day}] ${weekDay}/${week}/${month}/${year} ${hour
+          {`[${time.day}] ${time.weekDay}/${time.week}/${time.month}/${time.year} ${time.hour
             .toString()
-            .padStart(2, "0")}:${minute.toString().padStart(2, "0")} ${ampm}`}
+            .padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`}
           <Tooltip id="date-tooltip" className="tooltip" />
         </p>
       </div>
@@ -200,6 +184,16 @@ const Display = ({
       </div>
       <div className="display-actions">
         {activity ? renderActivity(activity) : <p>No activities available.</p>}
+      </div>
+      {/* DEBUG */}
+      <div className="display-footer">
+        <button
+          className="display-back"
+          onClick={() => goBack(activity!)}
+          disabled={!activity?.previous}
+        >
+          Go Back
+        </button>
       </div>
     </div>
   );

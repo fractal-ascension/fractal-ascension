@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { RootState, loadState, saveState, store, useAppDispatch } from "../../store";
+import { loadState, saveState, store, useAppDispatch } from "../../store";
 import { saveCharacter } from "../Character/characterSlice";
 import { saveInventory } from "../Inventory/inventorySlice";
 import { saveMessage } from "../Message/messageSlice";
-import { saveGlobalTime, updateTime } from "../../Utils/globalTimeSlice";
+import { saveGlobalTime, updateTime } from "../../Utils/Slices/globalTimeSlice";
 import "./App.scss";
 import Character from "../Character/Character";
 import Inventory from "../Inventory/Inventory";
 import Display from "../Display/Display";
 import Message from "../Message/Message";
-import { useSelector } from "react-redux";
-import { saveProgress } from "../../Utils/progressSlice";
+import { saveProgress } from "../../Utils/Slices/progressSlice";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,8 +17,6 @@ const App: React.FC = () => {
 
   const [timerId, setTimerId] = useState<number | null>(null);
   const [saveIntervalId, setSaveIntervalId] = useState<number | null>(null);
-
-  const globalTime = useSelector((state: RootState) => state.globalTime);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -171,21 +168,10 @@ const App: React.FC = () => {
           <Inventory />
         </div>
         <div className="column">
-          <Display
-            day={globalTime.day}
-            weekDay={globalTime.weekDay}
-            weekName={globalTime.weekName}
-            week={globalTime.week}
-            monthName={globalTime.monthName}
-            month={globalTime.month}
-            year={globalTime.year}
-            hour={globalTime.hour}
-            minute={globalTime.minute}
-            ampm={globalTime.ampm}
-          />
+          <Display />
         </div>
         <div className="column">
-          <Message/>
+          <Message />
         </div>
       </div>
       <div id="footer" className="footer-container">

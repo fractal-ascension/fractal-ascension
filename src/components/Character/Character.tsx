@@ -3,9 +3,9 @@ import { useSelector } from "react-redux";
 import "./Character.scss";
 import { RootState } from "../../store";
 import CharacterName from "./CharacterName";
-import { detectBrowser } from "../../Utils/browserUtil";
+import { detectBrowser } from "../../Utils/Functions/browserUtil";
 import { Tooltip } from "react-tooltip";
-import { fullStatNames, statAbbreviations, statEffects } from "../../Interfaces/Stats";
+import { fullStatNames, statAbbreviations, statEffects } from "../../Utils/Interfaces/Stats";
 import ReactDOMServer from "react-dom/server";
 
 type ExtendedCSSProperties = React.CSSProperties & {
@@ -156,16 +156,16 @@ const Character: React.FC = () => {
           const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
 
           // Define the tooltip content directly here
-            const tooltipContent = (
+          const tooltipContent = (
             <div>
               <strong>{fullName}</strong>
               {statEffects
-              .find((effect) => effect.id === statName)
-              ?.effects.map((effect) => (
-                <div key={effect}>• {effect}</div>
-              ))}
+                .find((effect) => effect.id === statName)
+                ?.effects.map((effect) => (
+                  <div key={effect}>• {effect}</div>
+                ))}
             </div>
-            );
+          );
 
           return (
             <div

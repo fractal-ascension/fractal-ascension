@@ -1,4 +1,4 @@
-import { StatusEffect } from "../components/Character/characterSlice";
+import { StatusEffect } from "../../components/Character/characterSlice";
 
 export const poisonEffect: StatusEffect = {
   id: "poison",

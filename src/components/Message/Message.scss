@@ -46,6 +46,8 @@ $gap: 5px;
   gap: $gap;
   margin-bottom: $margin-bottom;
   padding: $padding;
+  max-height: 1142px;
+  overflow-y: auto;
 }
 
 .message-body p {

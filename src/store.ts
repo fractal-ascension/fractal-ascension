@@ -8,8 +8,8 @@ import inventoryReducer, {
 import messageReducer, {
   initialState as messageInitialState,
 } from "./components/Message/messageSlice";
-import globalTimeReducer, { initialState as globalTimeInitialState } from "./Utils/globalTimeSlice";
-import progressReducer, { initialState as progressInitialState } from "./Utils/progressSlice";
+import globalTimeReducer, { initialState as globalTimeInitialState } from "./Utils/Slices/globalTimeSlice";
+import progressReducer, { initialState as progressInitialState } from "./Utils/Slices/progressSlice";
 
 import { useDispatch } from "react-redux";
 
