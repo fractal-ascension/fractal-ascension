@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { CombatDamageParameters, BaseParameters, Stats } from "../../Utils/Interfaces/Stats";
+import { CombatDamageParameters, BaseParameters, Stats } from "../../Utils/Data/Stats";
 
 interface Equipment {
   lefthand: string | null;
@@ -50,29 +50,29 @@ const initialStats: Stats = {
 // Ranges use skills and perks for survival stats.
 // Mages use spells and mana for survival stats.
 const calculateBaseParameters = (level: number, stats: Stats): BaseParameters => ({
-  hp: 100,
-  hpRegen: 1 + level * 1 + stats.vitality * 1,
-  maxHp: 100 + level * 10 + stats.vitality * 5 + stats.strength * 2,
-  hunger: 100,
-  hungerRegen: -0.1,
-  maxHunger: 100 + level * 10 + stats.vitality * 5,
-  sp: 100,
-  spRegen: 1 + level * 1 + stats.vitality * 1,
-  maxSp: 100 + level * 10 + stats.vitality * 5 + stats.strength * 2,
-  thirst: 100,
-  thirstRegen: -0.1,
-  maxThirst: 100 + level * 10 + stats.vitality * 5,
-  mp: 100,
-  mpRegen: 1 + level * 1 + stats.wisdom * 1,
-  maxMp: 100 + level * 10 + stats.wisdom * 5 + stats.intelligence * 2,
-  sleep: 100,
-  sleepRegen: -0.1,
-  maxSleep: 100 + level * 10 + stats.vitality * 5,
-  energy: 100,
-  energyRegen: -0.1,
-  maxEnergy: 100 + level * 10 + stats.vitality * 5,
+  hp: 10,
+  hpRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
+  maxHp: 10 + level * 1 + stats.vitality * 2 + stats.strength * 1,
+  hunger: 10,
+  hungerRegen: -0.1, // Certain actions/skills/perks can increase or decrease
+  maxHunger: 10 + level * 1 + stats.vitality * 2,
+  sp: 10,
+  spRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
+  maxSp: 10 + level * 1 + stats.vitality * 2 + stats.strength * 1,
+  thirst: 10,
+  thirstRegen: -0.1, // Certain actions/skills/perks can increase or decrease
+  maxThirst: 10 + level * 1 + stats.vitality * 2,
+  mp: 10,
+  mpRegen: 0.1 + level * 0.1 + stats.wisdom * 0.1,
+  maxMp: 10 + level * 1 + stats.wisdom * 2 + stats.intelligence * 1,
+  sleep: 10,
+  sleepRegen: -0.1, // Certain actions/skills/perks can increase or decrease
+  maxSleep: 10 + level * 1 + stats.vitality * 2,
+  energy: 10,
+  energyRegen: -0.1, // Certain actions/skills/perks can increase or decrease
+  maxEnergy: 10 + level * 1 + stats.vitality * 2,
   xp: 0,
-  nextLevelExperience: 99 + Math.pow(1.1, level),
+  nextLevelExperience: 99 + Math.pow(3.5, level),
 });
 
 export const initialState: CharacterState = {
@@ -501,7 +501,7 @@ export const initialState: CharacterState = {
 };
 
 const calculateNextLevelExperience = (level: number): number =>
-  Math.floor(100 * Math.pow(1.1, level));
+  Math.ceil(99 + Math.pow(3.5, level));
 
 // Define an async thunk for saving character data
 export const saveCharacter = createAsyncThunk(

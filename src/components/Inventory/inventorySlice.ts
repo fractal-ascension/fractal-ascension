@@ -1,7 +1,7 @@
 // src/features/inventory/inventorySlice.ts
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { Item, ItemType } from "../../Utils/Interfaces/Items";
+import { Item, ItemType } from "../../Utils/Data/Items";
 
 // Define specific types for item types and filter/sort options
 type FilterType = "ALL" | ItemType;

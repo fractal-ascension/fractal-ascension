@@ -1,4 +1,4 @@
-import { getIconById } from "../../Data/icons";
+import { getIconById } from "../../Data/Icons";
 import { Activities } from "../locations";
 import { ForestClearingItem } from "./ForestClearingItem";
 

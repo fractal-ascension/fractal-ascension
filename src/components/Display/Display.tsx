@@ -7,7 +7,7 @@ import { RootState } from "../../store";
 import locations, { Activity } from "../../Utils/Locations/locations";
 import { setActiveActivity } from "../../Utils/Slices/progressSlice";
 import { addOrRemoveItem } from "../Inventory/inventorySlice";
-import { getStarRepresentation } from "../../Utils/Data/icons";
+import { getStarRepresentation } from "../../Utils/Data/Icons";
 import { addMessage } from "../Message/messageSlice";
 import { modifyStat } from "../Character/characterSlice";
 

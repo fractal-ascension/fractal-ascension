@@ -1,6 +1,6 @@
 // locationsConfig.ts
-import { Item } from "../Interfaces/Items";
-import { Stats } from "../Interfaces/Stats";
+import { Item } from "../Data/Items";
+import { Stats } from "../Data/Stats";
 import { ForestClearing } from "./ForestClearing/ForestClearing";
 import { ForestPond } from "./ForestPond/ForestPond";
 

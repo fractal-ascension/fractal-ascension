@@ -5,7 +5,7 @@ import { RootState } from "../../store";
 import CharacterName from "./CharacterName";
 import { detectBrowser } from "../../Utils/Functions/browserUtil";
 import { Tooltip } from "react-tooltip";
-import { fullStatNames, statAbbreviations, statEffects } from "../../Utils/Interfaces/Stats";
+import { fullStatNames, statAbbreviations, statEffects } from "../../Utils/Data/Stats";
 import ReactDOMServer from "react-dom/server";
 
 type ExtendedCSSProperties = React.CSSProperties & {

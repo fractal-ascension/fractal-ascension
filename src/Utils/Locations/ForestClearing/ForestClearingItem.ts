@@ -12,7 +12,7 @@ import {
   ScrapStone,
   ScrapWood,
   Sword,
-} from "../../Interfaces/Items";
+} from "../../Data/Items";
 
 export const ForestClearingItem: Item[] = [
   {

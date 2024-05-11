@@ -4,8 +4,8 @@ import { RootState } from "../../store";
 import ReactDOMServer from "react-dom/server";
 import "./Inventory.scss";
 import { Tooltip } from "react-tooltip";
-import { getStarRepresentation } from "../../Utils/Data/icons";
-import { Item, currencyBreakdown } from "../../Utils/Interfaces/Items";
+import { getStarRepresentation } from "../../Utils/Data/Icons";
+import { Item, currencyBreakdown } from "../../Utils/Data/Items";
 
 const Inventory = () => {
   const dispatch = useDispatch();
