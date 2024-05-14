@@ -8,20 +8,30 @@ import {
   Iron,
   IronWood,
   Item,
+  ItemType,
   Paper,
   ScrapStone,
   ScrapWood,
   Sword,
 } from "../../Data/Items";
 
+export enum ForestClearingItems {
+  SturdyStick = "sturdyStick",
+  RoundRock = "roundRock",
+  TrustyIronSword = "trustyIronSword",
+  TrustyIronwoodBow = "trustyIronwoodBow",
+  TrustyArcaneSpellbook = "trustyArcaneSpellbook",
+  TrustForestEncyclopedia = "trustForestEncyclopedia",
+}
+
 export const ForestClearingItem: Item[] = [
   {
     // WIP still trying to decide on many things
-    id: "sturdyStick",
+    id: ForestClearingItems.SturdyStick,
     name: "Sturdy Stick",
     description: "A sturdy stick.",
     value: 0,
-    type: "WPN",
+    type: ItemType.WPN,
     amount: 1,
     unique: false,
     weapon: {
@@ -37,11 +47,11 @@ export const ForestClearingItem: Item[] = [
     },
   },
   {
-    id: "roundRock",
+    id: ForestClearingItems.RoundRock,
     name: "Round Rock",
     description: "A round rock.",
     value: 0,
-    type: "WPN",
+    type: ItemType.WPN,
     amount: 1,
     unique: false,
     weapon: {
@@ -57,11 +67,11 @@ export const ForestClearingItem: Item[] = [
     },
   },
   {
-    id: "trustyIronSword",
+    id: ForestClearingItems.TrustyIronSword,
     name: "Trusty Iron Sword",
     description: "A sword you've had by your side for many years.",
     value: 10000,
-    type: "WPN",
+    type: ItemType.WPN,
     amount: 1,
     unique: true,
     weapon: {
@@ -77,11 +87,11 @@ export const ForestClearingItem: Item[] = [
     },
   },
   {
-    id: "trustIronwoodBow",
+    id: ForestClearingItems.TrustyIronwoodBow,
     name: "Trusty Ironwood Bow",
     description: "A bow you've had by your side for many years.",
     value: 10000,
-    type: "WPN",
+    type: ItemType.WPN,
     amount: 1,
     unique: true,
     weapon: {
@@ -97,11 +107,11 @@ export const ForestClearingItem: Item[] = [
     },
   },
   {
-    id: "trustyArcaneSpellbook",
+    id: ForestClearingItems.TrustyArcaneSpellbook,
     name: "Trusty Arcane Spellbook",
     description: "An Arcane spellbook you've had by your side for many years.",
     value: 10000,
-    type: "WPN",
+    type: ItemType.WPN,
     amount: 1,
     unique: true,
     weapon: {
@@ -121,16 +131,24 @@ export const ForestClearingItem: Item[] = [
     },
   },
   {
-    id: "trustForestEncyclopedia",
+    id: ForestClearingItems.TrustForestEncyclopedia,
     name: "Trusty Forest Encyclopedia",
     description: "An encyclopedia you've had by your side for many years.",
     value: 10000,
-    type: "TOOL",
+    type: ItemType.TOOL,
     amount: 1,
     unique: true,
     tool: {
-      skillDirectBonus: [{ skill: "nature", value: 1, cap: 5 }],
-      skillMultiplierBonus: [{ skill: "nature", value: 0.1, cap: 5 }],
+      skillDirectBonus: [
+        { skill: "Fishing", value: 2, cap: 30 },
+        { skill: "Hunting", value: 2, cap: 30 },
+        { skill: "Foraging", value: 2, cap: 30 },
+      ],
+      skillMultiplierBonus: [
+        { skill: "Fishing", value: 2, cap: 30 },
+        { skill: "Hunting", value: 2, cap: 30 },
+        { skill: "Foraging", value: 2, cap: 30 },
+      ],
     },
   },
 ];

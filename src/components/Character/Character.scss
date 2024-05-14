@@ -7,6 +7,10 @@ $border-radius: 5px;
 $margin-bottom: 8px;
 $padding: 5px;
 $gap: 5px;
+$button-bg-color: #333366;
+$button-hover-bg-color: #555599;
+$button-border-color: #555599;
+$text-color: white;
 
 .character-container {
   background-color: $primary-bg-color;
@@ -18,7 +22,7 @@ $gap: 5px;
   padding: 10px;
   text-shadow: 1.5px 1px #000;
   width: 600px;
-  height: 545px
+  height: 582px
 }
 
 // .character-container.chrome {
@@ -152,4 +156,17 @@ $gap: 5px;
   z-index: 1000; // Ensure this is higher than any other element within the same stacking context
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
   max-width: 500px;
+}
+
+.panel-button {
+  background: $button-bg-color;
+  border: 1px solid $button-border-color;
+  color: $text-color;
+  font: 1em MS Gothic;
+  padding: $padding $padding;
+  margin-top: 10px;
+  width: 85px;
+  &:hover {
+    background: $button-hover-bg-color;
+  }
 }

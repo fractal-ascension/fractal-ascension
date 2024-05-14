@@ -1,4 +1,4 @@
-import { Descriptions } from "../locations";
+import { Descriptions } from "../../Data/Locations";
 
 export const ForestClearingDescription: Descriptions = {
   description: [

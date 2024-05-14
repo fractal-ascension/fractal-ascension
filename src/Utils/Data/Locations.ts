@@ -1,11 +1,16 @@
 // locationsConfig.ts
-import { Item } from "../Data/Items";
-import { Stats } from "../Data/Stats";
-import { ForestClearing } from "./ForestClearing/ForestClearing";
-import { ForestPond } from "./ForestPond/ForestPond";
+import { Item } from "./Items";
+import { Stats } from "./Stats";
+import { ForestClearing } from "../Locations/ForestClearing/ForestClearing";
+import { ForestPond } from "../Locations/ForestPond/ForestPond";
+
+export const enum activityTypes {
+  StatChange = "statChange",
+  ItemChange = "itemChange",
+}
 
 export interface StatChangeEffect {
-  id: "statChange";
+  id: activityTypes.StatChange;
   effect: {
     stat: keyof Stats;
     value: number;
@@ -13,7 +18,7 @@ export interface StatChangeEffect {
 }
 
 export interface ItemChangeEffect {
-  id: "itemChange";
+  id: activityTypes.ItemChange;
   effect: {
     item: Item;
     value: number;

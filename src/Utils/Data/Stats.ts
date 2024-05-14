@@ -35,12 +35,23 @@ export interface Stats {
   luck: number;
 }
 
+export const enum StatId {
+  Strength = "strength",
+  Vitality = "vitality",
+  Agility = "agility",
+  Dexterity = "dexterity",
+  Intelligence = "intelligence",
+  Wisdom = "wisdom",
+  Perception = "perception",
+  Luck = "luck",
+}
+
 export interface StatTooltip {
   stat: Stats;
   effects: string[];
 }
 
-export const statAbbreviations = {
+export const statAbbreviations: Record<keyof Stats, keyof typeof fullStatNames> = {
   strength: "STR",
   vitality: "VIT",
   agility: "AGI",
@@ -65,11 +76,11 @@ export const fullStatNames = {
 export const statEffects = [
   {
     id: "strength",
-    effects: ["+2 Max HP & SP"],
+    effects: ["+1 Max HP & SP"],
   },
   {
     id: "vitality",
-    effects: ["+5 Max HP & SP ", "+1 Regen HP & SP", "+5 Max Hunger & Thirst & Sleep & Energy"],
+    effects: ["+2 Max HP/SP/Hunger/Thirst/Sleep/Energy", "+0.1 HP/SP Regen"],
   },
   {
     id: "agility",
@@ -81,11 +92,11 @@ export const statEffects = [
   },
   {
     id: "intelligence",
-    effects: ["+2 Max MP"],
+    effects: ["+1 Max MP"],
   },
   {
     id: "wisdom",
-    effects: ["+5 Max MP ", "+1 Regen MP"],
+    effects: ["+2 Max MP ", "+0.1 Regen MP"],
   },
   {
     id: "perception",

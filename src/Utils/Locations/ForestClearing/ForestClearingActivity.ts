@@ -1,6 +1,6 @@
 import { getIconById } from "../../Data/Icons";
-import { Activities } from "../locations";
-import { ForestClearingItem } from "./ForestClearingItem";
+import { Activities, activityTypes as ActivityTypes } from "../../Data/Locations";
+import { ForestClearingItem, ForestClearingItems } from "./ForestClearingItem";
 
 export const ForestClearingActivity: Activities = {
   activities: [
@@ -11,7 +11,7 @@ export const ForestClearingActivity: Activities = {
       icon: getIconById("perception"),
       effect: [
         {
-          id: "itemChange",
+          id: ActivityTypes.ItemChange,
           effect: [
             {
               item: ForestClearingItem.find((item) => item.id === "sturdyStick")!,
@@ -42,16 +42,16 @@ export const ForestClearingActivity: Activities = {
         {
           id: "fc3-1",
           name: "Won from a spar.",
-          tooltip: "The black eye wasn't worth it to be honest. +1 Strength.",
+          tooltip: "The black eye wasn't worth it to be honest.",
           icon: getIconById("strength"),
           next: "fc4",
           effect: [
             {
-              id: "statChange",
+              id: ActivityTypes.StatChange,
               effect: [
                 {
                   stat: "strength",
-                  value: 1,
+                  value: +1,
                 },
               ],
             },
@@ -60,12 +60,12 @@ export const ForestClearingActivity: Activities = {
         {
           id: "fc3-2",
           name: "Stolen from the bookseller.",
-          tooltip: "Old man didn't even notice. +1 Dexterity.",
+          tooltip: "Old man didn't even notice.",
           icon: getIconById("dexterity"),
           next: "fc4",
           effect: [
             {
-              id: "statChange",
+              id: ActivityTypes.StatChange,
               effect: [
                 {
                   stat: "dexterity",
@@ -78,12 +78,12 @@ export const ForestClearingActivity: Activities = {
         {
           id: "fc3-3",
           name: "Gifted by father.",
-          tooltip: "Wanted me to be literate he said. +1 Intelligence.",
+          tooltip: "Wanted me to be literate he said.",
           icon: getIconById("intelligence"),
           next: "fc4",
           effect: [
             {
-              id: "statChange",
+              id: ActivityTypes.StatChange,
               effect: [
                 {
                   stat: "intelligence",
@@ -96,12 +96,12 @@ export const ForestClearingActivity: Activities = {
         {
           id: "fc3-4",
           name: "Made by me.",
-          tooltip: "Paper's hard to find or make, but I managed. 1+ Perception",
+          tooltip: "Paper's hard to find or make, but I managed.",
           icon: getIconById("perception"),
           next: "fc4",
           effect: [
             {
-              id: "statChange",
+              id: ActivityTypes.StatChange,
               effect: [
                 {
                   stat: "perception",
@@ -121,15 +121,15 @@ export const ForestClearingActivity: Activities = {
         {
           id: "fc4-1",
           name: "Trusty Iron Sword.",
-          tooltip: "Never leave home without, I always have to be prepared for a fight.",
+          tooltip: "Never leave home without, have to be prepared for a fight.",
           icon: getIconById("sword"),
           next: "fc5",
           effect: [
             {
-              id: "itemChange",
+              id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === "trustyIronSword")!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronSword)!,
                   value: 1,
                 },
               ],
@@ -144,10 +144,10 @@ export const ForestClearingActivity: Activities = {
           next: "fc5",
           effect: [
             {
-              id: "itemChange",
+              id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === "trustyIronSword")!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronwoodBow)!,
                   value: 1,
                 },
               ],
@@ -162,10 +162,10 @@ export const ForestClearingActivity: Activities = {
           next: "fc5",
           effect: [
             {
-              id: "itemChange",
+              id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === "trustyArcaneSpellbook")!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyArcaneSpellbook)!,
                   value: 1,
                 },
               ],
@@ -180,10 +180,10 @@ export const ForestClearingActivity: Activities = {
           next: "fc5",
           effect: [
             {
-              id: "itemChange",
+              id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === "trustForestEncyclopedia")!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustForestEncyclopedia)!,
                   value: 1,
                 },
               ],
@@ -191,6 +191,13 @@ export const ForestClearingActivity: Activities = {
           ],
         },
       ],
+    },
+    {
+      id: "fc2",
+      name: "Examine the book.",
+      icon: getIconById("book"),
+      next: "fc3",
+      previous: "fc1",
     },
   ],
 };

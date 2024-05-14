@@ -4,8 +4,8 @@ import { RootState } from "../../store";
 import ReactDOMServer from "react-dom/server";
 import "./Inventory.scss";
 import { Tooltip } from "react-tooltip";
-import { getStarRepresentation } from "../../Utils/Data/Icons";
-import { Item, currencyBreakdown } from "../../Utils/Data/Items";
+import { Item } from "../../Utils/Data/Items";
+import { ItemTooltipUtil } from "../../Utils/Functions/itemTooltipUtil";
 
 const Inventory = () => {
   const dispatch = useDispatch();
@@ -38,34 +38,6 @@ const Inventory = () => {
     }
   });
   // <img src={stick} alt="Stick" width="30"/>
-  const convertToCurrency = (value: number) => {
-    if (value === 0) {
-      return (
-        <span style={{ color: "#b87333" }}>
-          0<span>C</span>
-        </span>
-      );
-    }
-
-    return currencyBreakdown
-      .map(({ divisor, symbol, color }) => {
-        const amount = Math.floor(value / divisor);
-        value %= divisor; // Update the remaining value to be broken down into smaller units
-
-        // Only render the currency span if the amount is greater than 0
-        if (amount > 0) {
-          return (
-            <span key={symbol} style={{ color: color }}>
-              {amount}
-              <span>{symbol} </span>
-            </span>
-          );
-        }
-
-        return null;
-      })
-      .filter(Boolean); // Filter out null entries (where amount is 0 and not displayed)
-  };
 
   const handleDelete = (item: Item) => {
     if (window.confirm("Are you sure you want to delete this item?"))
@@ -114,62 +86,7 @@ const Inventory = () => {
             data-tooltip-id="item-tooltip"
             data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
               item.weapon ? (
-                <div>
-                  <hr />
-                  <div className="item-tooltip-split">
-                    <span>
-                      <b>{item.name}</b>
-                    </span>
-                    <span>Rank: {getStarRepresentation(item.weapon?.rank)}</span>
-                  </div>
-                  <hr />
-                  <div className="item-tooltip-split">
-                    <span>Type: [{item.type}]</span>
-                    <span>Class: [{item.weapon.weaponType.name}]</span>
-                  </div>
-                  <br />
-                  <div>
-                    <div className="item-tooltip-details">
-                      <span>
-                        <b>Damage: </b>
-                      </span>
-                      <span style={{ gridColumn: "2 / span 2" }}>
-                        [{item.weapon.damage.minDamage} - {item.weapon.damage.maxDamage}]
-                      </span>
-                      <span>
-                        <b>Atk Speed: </b>
-                      </span>
-                      <span style={{ gridColumn: "2 / span 2" }}>[{item.weapon.attackSpeed}s]</span>
-                      <span>
-                        <b>Range: </b>
-                      </span>
-                      <span style={{ gridColumn: "2 / span 2" }}>[{item.weapon.range}m]</span>
-                      <span>
-                        <b>Critical: </b>
-                      </span>
-                      <span style={{ gridColumn: "2 / span 2" }}>
-                        [{item.weapon.critical.criticalChance * 100}% {" ("}
-                        {item.weapon.critical.criticalMultiplier}x)]
-                      </span>
-                      <span>
-                        <b>Durability: </b>
-                      </span>
-                      <span style={{ gridColumn: "2 / span 2" }}>
-                        [{item.weapon.durability.current}/{item.weapon.durability.max}]
-                      </span>
-                      <span>
-                        <b>Value: </b>
-                      </span>
-                      <span style={{ gridColumn: "2 / span 2" }}>
-                        {convertToCurrency(item.value)}
-                      </span>
-                    </div>
-                    <hr />
-                    <span>{item.description}</span>
-                    {item.unique ? <span><hr/><span style={{color: "orange"}}>Unique</span></span> : null}
-                  </div>
-                  <hr />
-                </div>
+                ItemTooltipUtil(item)
               ) : null
             )}
           >

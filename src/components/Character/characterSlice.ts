@@ -72,7 +72,7 @@ const calculateBaseParameters = (level: number, stats: Stats): BaseParameters =>
   energyRegen: -0.1, // Certain actions/skills/perks can increase or decrease
   maxEnergy: 10 + level * 1 + stats.vitality * 2,
   xp: 0,
-  nextLevelExperience: 99 + Math.pow(3.5, level),
+  nextLevelExperience: 100 + Math.pow(2, level) + 100 * Math.pow(level, 2),
 });
 
 export const initialState: CharacterState = {

@@ -1,4 +1,4 @@
-import { LocationData } from "../locations";
+import { LocationData } from "../../Data/Locations";
 import { ForestClearingActivity } from "./ForestClearingActivity";
 import { ForestClearingDescription } from "./ForestClearingDescription";
 

@@ -1,20 +1,46 @@
 import { Stats } from "./Stats";
 
-export type ItemType = "WPN" | "EQP" | "TOOL" | "USE" | "CMBT" | "ETC";
-type AttackType = "Melee" | "Ranged" | "Magic";
-type OverallDamageType = "Physical" | "Magical" | "Divine";
-type DamageType =
-  | "Slashing"
-  | "Piercing"
-  | "Blunt"
-  | "Arcane"
-  | "Fire"
-  | "Water"
-  | "Earth"
-  | "Air"
-  | "Light"
-  | "Dark";
-type WeightType = "Feather" | "Light" | "Medium" | "Heavy" | "Titanic";
+export enum ItemType {
+  WPN = "WPN",
+  EQP = "EQP",
+  TOOL = "TOOL",
+  USE = "USE",
+  CMBT = "CMBT",
+  ETC = "ETC",
+}
+
+export enum AttackType {
+  Melee = "Melee",
+  Ranged = "Ranged",
+  Magic = "Magic",
+}
+
+export enum OverallDamageType {
+  Physical = "Physical",
+  Magical = "Magical",
+  Divine = "Divine",
+}
+
+export enum DamageType {
+  Slashing = "Slashing",
+  Piercing = "Piercing",
+  Blunt = "Blunt",
+  Arcane = "Arcane",
+  Fire = "Fire",
+  Water = "Water",
+  Earth = "Earth",
+  Air = "Air",
+  Light = "Light",
+  Dark = "Dark",
+}
+
+export enum WeightType {
+  Feather = "Feather",
+  Light = "Light",
+  Medium = "Medium",
+  Heavy = "Heavy",
+  Titanic = "Titanic",
+}
 
 export interface Items {
   items: Item[];
@@ -50,13 +76,13 @@ export interface Item {
   };
   // Skills both have an effect that scales with level, and perks unlocked at certain levels (which can also scale)
   tool?: {
-    skillDirectBonus?: [{ skill: string; value: number; cap: number }]; // Directly adds to skill level
-    skillMultiplierBonus?: [{ skill: string; value: number; cap: number }]; // Multiplies skill effect (does not increase level) (continues to apply after cap, but weakened by {effect/(over cap + 1)})
-    skillLearningBonus?: [{ skill: string; value: number; cap: number }]; // Adds to skill exp gain (continues to apply after cap, but weakened by {effect/(over cap + 1)})
-    skillRestriction?: [{ skill: string; value: number }]; // Cannot be used without skill level
-    statDirectBonus?: [{ stat: keyof Stats; value: number; cap: number }]; // Directly adds to stat level
-    statMultiplierBonus?: [{ stat: keyof Stats; value: number; cap: number }]; // Multiplies stat effect (does not increase level) (continues to apply after cap, but weakened by {effect/(over cap + 1)})
-    statRestriction?: [{ stat: keyof Stats; value: number }]; // Cannot be used without stat level
+    skillDirectBonus?: { skill: string; value: number; cap: number }[]; // Directly adds to skill level
+    skillMultiplierBonus?: { skill: string; value: number; cap: number }[]; // Multiplies skill effect (does not increase level) (continues to apply after cap, but weakened by {effect/(over cap + 1)})
+    skillLearningBonus?: { skill: string; value: number; cap: number }[]; // Adds to skill exp gain (continues to apply after cap, but weakened by {effect/(over cap + 1)})
+    skillRestriction?: { skill: string; value: number }[]; // Cannot be used without skill level
+    statDirectBonus?: { stat: keyof Stats; value: number; cap: number }[]; // Directly adds to stat level
+    statMultiplierBonus?: { stat: keyof Stats; value: number; cap: number }[]; // Multiplies stat effect (does not increase level) (continues to apply after cap, but weakened by {effect/(over cap + 1)})
+    statRestriction?: { stat: keyof Stats; value: number }[]; // Cannot be used without stat level
   };
 }
 
@@ -78,55 +104,55 @@ export interface Material {
 export const Axe: Weapon = {
   id: "axe",
   name: "Axe",
-  attackType: "Melee",
-  overallDamageType: "Physical",
-  damageType: "Slashing",
-  weightType: "Medium",
+  attackType: AttackType.Melee,
+  overallDamageType: OverallDamageType.Physical,
+  damageType: DamageType.Slashing,
+  weightType: WeightType.Medium,
 };
 
 export const Club: Weapon = {
   id: "club",
   name: "Club",
-  attackType: "Melee",
-  overallDamageType: "Physical",
-  damageType: "Blunt",
-  weightType: "Medium",
+  attackType: AttackType.Melee,
+  overallDamageType: OverallDamageType.Physical,
+  damageType: DamageType.Blunt,
+  weightType: WeightType.Medium,
 };
 
 export const Hammer: Weapon = {
   id: "hammer",
   name: "Hammer",
-  attackType: "Melee",
-  overallDamageType: "Physical",
-  damageType: "Blunt",
-  weightType: "Heavy",
+  attackType: AttackType.Melee,
+  overallDamageType: OverallDamageType.Physical,
+  damageType: DamageType.Blunt,
+  weightType: WeightType.Heavy,
 };
 
 export const Sword: Weapon = {
   id: "sword",
   name: "Sword",
-  attackType: "Melee",
-  overallDamageType: "Physical",
-  damageType: "Slashing",
-  weightType: "Medium",
+  attackType: AttackType.Melee,
+  overallDamageType: OverallDamageType.Physical,
+  damageType: DamageType.Slashing,
+  weightType: WeightType.Medium,
 };
 
 export const Bow: Weapon = {
   id: "bow",
   name: "Bow",
-  attackType: "Ranged",
-  overallDamageType: "Physical",
-  damageType: "Piercing",
-  weightType: "Medium",
+  attackType: AttackType.Ranged,
+  overallDamageType: OverallDamageType.Physical,
+  damageType: DamageType.Piercing,
+  weightType: WeightType.Medium,
 };
 
 export const ArcaneTome: Weapon = {
   id: "arcaneTome",
   name: "Arcane Tome",
-  attackType: "Magic",
-  overallDamageType: "Magical",
-  damageType: "Arcane",
-  weightType: "Medium",
+  attackType: AttackType.Magic,
+  overallDamageType: OverallDamageType.Magical,
+  damageType: DamageType.Arcane,
+  weightType: WeightType.Light,
 };
 
 export const ScrapWood: Material = {

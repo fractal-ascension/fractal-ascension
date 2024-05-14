@@ -202,6 +202,7 @@ const Character: React.FC = () => {
         ))}
       </div>
       {/* <button onClick={eatFood}>Eat Poisoned Food</button> */}
+      <button className="panel-button">ETC</button>
     </div>
   );
 };

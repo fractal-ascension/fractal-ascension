@@ -1,5 +1,5 @@
 // import Forest_Pond from "../../assets/Pond.jpg";
-import { LocationData } from "../locations";
+import { LocationData } from "../../Data/Locations";
 
 export const ForestPond: LocationData = {
   id: "forest-pond",

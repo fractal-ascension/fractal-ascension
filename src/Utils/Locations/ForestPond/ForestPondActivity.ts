@@ -1,5 +1,5 @@
 import { getIconById } from "../../Data/Icons";
-import { Activities } from "../locations";
+import { Activities } from "../../Data/Locations";
 
 export const ForestClearingActivity: Activities = {
   activities: [
