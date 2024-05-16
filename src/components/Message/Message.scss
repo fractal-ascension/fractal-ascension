@@ -7,6 +7,8 @@ $border-radius: 5px;
 $margin-bottom: 8px;
 $padding: 5px;
 $gap: 5px;
+$primary-message-bg: #404b69;
+$alternate-message-bg: #3c415e;
 
 .message-container {
   background-color: $primary-bg-color;
@@ -37,24 +39,29 @@ $gap: 5px;
 
 .message-body {
   font-size: 0.8em;
-  position: relative; // This establishes a new stacking context
-  z-index: 1; // You might adjust this based on other elements in your layout
   background-color: $secondary-bg-color;
   border-radius: $border-radius;
   display: flex;
   flex-direction: column;
-  gap: $gap;
   margin-bottom: $margin-bottom;
-  padding: $padding;
   max-height: 1142px;
   overflow-y: auto;
 }
 
-.message-body p {
+.message-body span {
   margin: 0;
-  border-bottom: #000 1px solid;
 }
 
-.message-item:hover {
-  background-color: #555;
+.message-item {
+  padding: $padding;
+  background-color: $primary-message-bg; // Default background color
+  &:nth-child(odd) {
+    background-color: $primary-message-bg;
+  }
+  &:nth-child(even) {
+    background-color: $alternate-message-bg;
+  }
+  &:hover {
+    background-color: #555;
+  }
 }

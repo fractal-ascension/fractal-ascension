@@ -1,5 +1,5 @@
-import { getIconById } from "../../Data/Icons";
-import { Activities, activityTypes as ActivityTypes } from "../../Data/Locations";
+import { Icons } from "../../Data/Icons";
+import { Activities, ActivityTypes } from "../../Data/Locations";
 import { ForestClearingItem, ForestClearingItems } from "./ForestClearingItem";
 
 export const ForestClearingActivity: Activities = {
@@ -8,17 +8,17 @@ export const ForestClearingActivity: Activities = {
     {
       id: "fc1",
       name: "Look around for clues.",
-      icon: getIconById("perception"),
+      icon: Icons.Perception,
       effect: [
         {
           id: ActivityTypes.ItemChange,
           effect: [
             {
-              item: ForestClearingItem.find((item) => item.id === "sturdyStick")!,
+              item: ForestClearingItem.find((item) => item.id === ForestClearingItems.SturdyStick)!,
               value: 1,
             },
             {
-              item: ForestClearingItem.find((item) => item.id === "roundRock")!,
+              item: ForestClearingItem.find((item) => item.id === ForestClearingItems.RoundRock)!,
               value: 1,
             },
           ],
@@ -30,7 +30,7 @@ export const ForestClearingActivity: Activities = {
     {
       id: "fc2",
       name: "Examine the book.",
-      icon: getIconById("book"),
+      icon: Icons.Book,
       next: "fc3",
       previous: "fc1",
     },
@@ -43,7 +43,7 @@ export const ForestClearingActivity: Activities = {
           id: "fc3-1",
           name: "Won from a spar.",
           tooltip: "The black eye wasn't worth it to be honest.",
-          icon: getIconById("strength"),
+          icon: Icons.Strength,
           next: "fc4",
           effect: [
             {
@@ -61,7 +61,7 @@ export const ForestClearingActivity: Activities = {
           id: "fc3-2",
           name: "Stolen from the bookseller.",
           tooltip: "Old man didn't even notice.",
-          icon: getIconById("dexterity"),
+          icon: Icons.Dexterity,
           next: "fc4",
           effect: [
             {
@@ -79,7 +79,7 @@ export const ForestClearingActivity: Activities = {
           id: "fc3-3",
           name: "Gifted by father.",
           tooltip: "Wanted me to be literate he said.",
-          icon: getIconById("intelligence"),
+          icon: Icons.Intelligence,
           next: "fc4",
           effect: [
             {
@@ -97,7 +97,7 @@ export const ForestClearingActivity: Activities = {
           id: "fc3-4",
           name: "Made by me.",
           tooltip: "Paper's hard to find or make, but I managed.",
-          icon: getIconById("perception"),
+          icon: Icons.Perception,
           next: "fc4",
           effect: [
             {
@@ -122,14 +122,16 @@ export const ForestClearingActivity: Activities = {
           id: "fc4-1",
           name: "Trusty Iron Sword.",
           tooltip: "Never leave home without, have to be prepared for a fight.",
-          icon: getIconById("sword"),
+          icon: Icons.Sword,
           next: "fc5",
           effect: [
             {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronSword)!,
+                  item: ForestClearingItem.find(
+                    (item) => item.id === ForestClearingItems.TrustyIronSword
+                  )!,
                   value: 1,
                 },
               ],
@@ -140,14 +142,16 @@ export const ForestClearingActivity: Activities = {
           id: "fc4-2",
           name: "Trusty Ironwood Bow.",
           tooltip: "Perfect for hunting game, perfect for a forest adventure.",
-          icon: getIconById("bow"),
+          icon: Icons.Bow,
           next: "fc5",
           effect: [
             {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronwoodBow)!,
+                  item: ForestClearingItem.find(
+                    (item) => item.id === ForestClearingItems.TrustyIronwoodBow
+                  )!,
                   value: 1,
                 },
               ],
@@ -158,14 +162,16 @@ export const ForestClearingActivity: Activities = {
           id: "fc4-3",
           name: "Trusty Arcane Spellbook.",
           tooltip: "I still need to master Arcane Spark, might as well bring the manual.",
-          icon: getIconById("book"),
+          icon: Icons.Book,
           next: "fc5",
           effect: [
             {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyArcaneSpellbook)!,
+                  item: ForestClearingItem.find(
+                    (item) => item.id === ForestClearingItems.TrustyArcaneSpellbook
+                  )!,
                   value: 1,
                 },
               ],
@@ -176,14 +182,16 @@ export const ForestClearingActivity: Activities = {
           id: "fc4-4",
           name: "Trusty Forest Encyclopedia.",
           tooltip: "An encyclopedia of the forest, helps with identifying animals and plants.",
-          icon: getIconById("nature"),
+          icon: Icons.Nature,
           next: "fc5",
           effect: [
             {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustForestEncyclopedia)!,
+                  item: ForestClearingItem.find(
+                    (item) => item.id === ForestClearingItems.TrustForestEncyclopedia
+                  )!,
                   value: 1,
                 },
               ],
@@ -193,11 +201,11 @@ export const ForestClearingActivity: Activities = {
       ],
     },
     {
-      id: "fc2",
+      id: "fc5",
       name: "Examine the book.",
-      icon: getIconById("book"),
-      next: "fc3",
-      previous: "fc1",
+      icon: Icons.Book,
+      next: "fc6",
+      previous: "fc4",
     },
   ],
 };

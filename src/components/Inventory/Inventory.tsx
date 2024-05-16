@@ -4,7 +4,7 @@ import { RootState } from "../../store";
 import ReactDOMServer from "react-dom/server";
 import "./Inventory.scss";
 import { Tooltip } from "react-tooltip";
-import { Item } from "../../Utils/Data/Items";
+import { Item, ItemType } from "../../Utils/Data/Items";
 import { ItemTooltipUtil } from "../../Utils/Functions/itemTooltipUtil";
 
 const Inventory = () => {
@@ -59,22 +59,22 @@ const Inventory = () => {
           ALL
         </button>
         {/* Filter for Atk Type, Overall Damage Type, Damage Type, Weight Type */}
-        <button className="category-button" onClick={() => dispatch(setFilter("WPN"))}>
+        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.WPN))}>
           WPN
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter("EQP"))}>
+        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.EQP))}>
           EQP
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter("TOOL"))}>
+        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.TOOL))}>
           TOOL
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter("USE"))}>
+        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.USE))}>
           USE
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter("CMBT"))}>
+        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.CMBT))}>
           CMBT
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter("ETC"))}>
+        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.ETC))}>
           ETC
         </button>
       </div>

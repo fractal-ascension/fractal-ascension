@@ -4,7 +4,7 @@ import ReactDOMServer from "react-dom/server";
 import { Tooltip } from "react-tooltip";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import locations, { Activity } from "../../Utils/Data/Locations";
+import { Activity } from "../../Utils/Data/Locations";
 import { setActiveActivity } from "../../Utils/Slices/progressSlice";
 import { addOrRemoveItem } from "../Inventory/inventorySlice";
 import { getStarRepresentation } from "../../Utils/Data/Icons";
@@ -12,6 +12,7 @@ import { addMessage } from "../Message/messageSlice";
 import { modifyStat } from "../Character/characterSlice";
 import { ItemTooltipUtil } from "../../Utils/Functions/itemTooltipUtil";
 import { fullStatNames, statAbbreviations } from "../../Utils/Data/Stats";
+import locations from "../../Utils/Data/LocationList";
 
 const Display = () => {
   const dispatch = useDispatch();
@@ -86,21 +87,25 @@ const Display = () => {
         data-tooltip-id="activity-tooltip"
         data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
           <span>
-            {activity.tooltip}
-            {activity.tooltipEffect ? (
-              <span>
-                <hr />
-                {activity.tooltipEffect}
-              </span>
-            ) : activity.effect ? (
-              activity.effect.map((effect) => (
-                <span key={effect.id}>
-                  <hr />
-                  {effect.id}
-                </span>
-              ))
-            ) : null}
-          </span>
+              {activity.tooltip}
+              {activity.effect
+                ? activity.effect.map((effect) =>
+                    effect.id === "statChange"
+                      ? effect.effect.map((statChange) => (
+                          <span key={statChange.stat}>
+                            <hr />
+                            {statChange.value > 0 ? "+" : ""}
+                            {statChange.value} {fullStatNames[statAbbreviations[statChange.stat]]}
+                          </span>
+                        ))
+                      : effect.id === "itemChange"
+                      ? effect.effect.map((itemChange) => (
+                          <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>
+                        ))
+                      : null
+                  )
+                : null}
+            </span>
         )}
       >
         {activity.icon} {activity.name}
@@ -124,7 +129,7 @@ const Display = () => {
         timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
           .toString()
           .padStart(2, "0")} ${time.ampm}`,
-        message: `(${activity.icon}) ${activity.name}`,
+        message: `${activity.icon} ${activity.name}`,
       })
     );
     activity.tooltip

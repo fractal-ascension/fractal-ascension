@@ -1,16 +1,14 @@
 // locationsConfig.ts
 import { Item } from "./Items";
 import { Stats } from "./Stats";
-import { ForestClearing } from "../Locations/ForestClearing/ForestClearing";
-import { ForestPond } from "../Locations/ForestPond/ForestPond";
 
-export const enum activityTypes {
+export enum ActivityTypes { // Changed from const enum to enum
   StatChange = "statChange",
   ItemChange = "itemChange",
 }
 
 export interface StatChangeEffect {
-  id: activityTypes.StatChange;
+  id: ActivityTypes.StatChange;
   effect: {
     stat: keyof Stats;
     value: number;
@@ -18,7 +16,7 @@ export interface StatChangeEffect {
 }
 
 export interface ItemChangeEffect {
-  id: activityTypes.ItemChange;
+  id: ActivityTypes.ItemChange;
   effect: {
     item: Item;
     value: number;
@@ -32,7 +30,7 @@ export interface Activity {
   next?: string;
   previous?: string;
   tooltip?: string;
-  effect?: StatChangeEffect[] | ItemChangeEffect[];
+  effect?: (StatChangeEffect | ItemChangeEffect)[];
   branch?: Activity[];
 }
 
@@ -62,12 +60,3 @@ export interface LocationData {
   activities: Activity[];
   descriptions: Description[];
 }
-
-// Map location IDs to their respective data modules
-const locations: { [key: string]: LocationData } = {
-  "forest-clearing": ForestClearing,
-  "forest-pond": ForestPond,
-  // add more locations
-};
-
-export default locations;

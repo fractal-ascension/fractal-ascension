@@ -4,11 +4,11 @@ import { saveCharacter } from "../Character/characterSlice";
 import { saveInventory } from "../Inventory/inventorySlice";
 import { saveMessage } from "../Message/messageSlice";
 import { saveGlobalTime, updateTime } from "../../Utils/Slices/globalTimeSlice";
-import "./App.scss";
 import Character from "../Character/Character";
 import Inventory from "../Inventory/Inventory";
 import Display from "../Display/Display";
 import Message from "../Message/Message";
+import "./App.scss";
 import { saveProgress } from "../../Utils/Slices/progressSlice";
 
 const App: React.FC = () => {
@@ -18,10 +18,18 @@ const App: React.FC = () => {
   const [timerId, setTimerId] = useState<number | null>(null);
   const [saveIntervalId, setSaveIntervalId] = useState<number | null>(null);
 
+  const enum SaveStates {
+    CharacterState = "characterState",
+    InventoryState = "inventoryState",
+    MessageState = "messageState",
+    GlobalTimeState = "globalTimeState",
+    ProgressState = "progressState",
+  }
+
   useEffect(() => {
     const id = setInterval(() => {
       dispatch(updateTime());
-    }, 1000);
+    }, 1000) as unknown as number;  // Type assertion to number
     setTimerId(id);
     return () => clearInterval(id);
   }, [dispatch]);
@@ -45,16 +53,16 @@ const App: React.FC = () => {
       // Waiting for state updates to complete, then saving encoded state to local storage
       setTimeout(() => {
         // STATEMARKER
-        saveState("characterState", store.getState().character);
-        saveState("inventoryState", store.getState().inventory);
-        saveState("messageState", store.getState().message);
-        saveState("globalTimeState", store.getState().globalTime);
-        saveState("progressState", store.getState().progress);
+        saveState(SaveStates.CharacterState, store.getState().character);
+        saveState(SaveStates.InventoryState, store.getState().inventory);
+        saveState(SaveStates.MessageState, store.getState().message);
+        saveState(SaveStates.GlobalTimeState, store.getState().globalTime);
+        saveState(SaveStates.ProgressState, store.getState().progress);
       }, 500); // Delay to ensure state is updated in the Redux store before saving
-    }, 300000);
+    }, 300000) as unknown as number;  // Type assertion to number
     setSaveIntervalId(id);
     return () => clearInterval(id);
-  }, [dispatch]);
+  }, [SaveStates.CharacterState, SaveStates.GlobalTimeState, SaveStates.InventoryState, SaveStates.MessageState, SaveStates.ProgressState, dispatch]);
 
   if (loading) {
     return (
@@ -85,22 +93,22 @@ const App: React.FC = () => {
     // Waiting for state updates to complete, then saving encoded state to local storage
     setTimeout(() => {
       // STATEMARKER
-      saveState("characterState", store.getState().character);
-      saveState("inventoryState", store.getState().inventory);
-      saveState("messageState", store.getState().message);
-      saveState("globalTimeState", store.getState().globalTime);
-      saveState("progressState", store.getState().progress);
+      saveState(SaveStates.CharacterState, store.getState().character);
+      saveState(SaveStates.InventoryState, store.getState().inventory);
+      saveState(SaveStates.MessageState, store.getState().message);
+      saveState(SaveStates.GlobalTimeState, store.getState().globalTime);
+      saveState(SaveStates.ProgressState, store.getState().progress);
     }, 500); // Delay to ensure state is updated in the Redux store before saving
   };
 
   const handleExport = () => {
     const state = {
       // STATEMARKER
-      character: loadState("characterState", store.getState().character),
-      inventory: loadState("inventoryState", store.getState().inventory),
-      message: loadState("messageState", store.getState().message),
-      globalTime: loadState("globalTimeState", store.getState().globalTime),
-      progress: loadState("progressState", store.getState().progress),
+      character: loadState(SaveStates.CharacterState, store.getState().character),
+      inventory: loadState(SaveStates.InventoryState, store.getState().inventory),
+      message: loadState(SaveStates.MessageState, store.getState().message),
+      globalTime: loadState(SaveStates.GlobalTimeState, store.getState().globalTime),
+      progress: loadState(SaveStates.ProgressState, store.getState().progress),
     };
     const encodedState = btoa(JSON.stringify(state));
     const blob = new Blob([encodedState], { type: "text/plain;charset=utf-8" });
@@ -128,11 +136,11 @@ const App: React.FC = () => {
         if (text) {
           const decodedState = JSON.parse(atob(text));
           // STATEMARKER
-          saveState("characterState", decodedState.character);
-          saveState("inventoryState", decodedState.inventory);
-          saveState("messageState", decodedState.message);
-          saveState("globalTimeState", decodedState.globalTime);
-          saveState("progressState", decodedState.progress);
+          saveState(SaveStates.CharacterState, decodedState.character);
+          saveState(SaveStates.InventoryState, decodedState.inventory);
+          saveState(SaveStates.MessageState, decodedState.message);
+          saveState(SaveStates.GlobalTimeState, decodedState.globalTime);
+          saveState(SaveStates.ProgressState, decodedState.progress);
           window.location.reload();
         }
       };
@@ -149,11 +157,11 @@ const App: React.FC = () => {
       // Use a short timeout to allow dispatches to complete
       setTimeout(() => {
         // STATEMARKER
-        localStorage.removeItem("characterState");
-        localStorage.removeItem("inventoryState");
-        localStorage.removeItem("messageState");
-        localStorage.removeItem("globalTimeState");
-        localStorage.removeItem("progressState");
+        localStorage.removeItem(SaveStates.CharacterState);
+        localStorage.removeItem(SaveStates.InventoryState);
+        localStorage.removeItem(SaveStates.MessageState);
+        localStorage.removeItem(SaveStates.GlobalTimeState);
+        localStorage.removeItem(SaveStates.ProgressState);
 
         window.location.reload();
       }, 100); // Adjust time as needed, should be short
