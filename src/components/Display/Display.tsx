@@ -4,7 +4,7 @@ import ReactDOMServer from "react-dom/server";
 import { Tooltip } from "react-tooltip";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { Activity } from "../../Utils/Data/Locations";
+import { Activity, ActivityTypes } from "../../Utils/Data/Locations";
 import { setActiveActivity } from "../../Utils/Slices/progressSlice";
 import { addOrRemoveItem } from "../Inventory/inventorySlice";
 import { getStarRepresentation } from "../../Utils/Data/Icons";
@@ -53,7 +53,7 @@ const Display = () => {
               {branchActivity.tooltip}
               {branchActivity.effect
                 ? branchActivity.effect.map((effect) =>
-                    effect.id === "statChange"
+                    effect.id === ActivityTypes.StatChange
                       ? effect.effect.map((statChange) => (
                           <span key={statChange.stat}>
                             <hr />
@@ -61,7 +61,7 @@ const Display = () => {
                             {statChange.value} {fullStatNames[statAbbreviations[statChange.stat]]}
                           </span>
                         ))
-                      : effect.id === "itemChange"
+                      : effect.id === ActivityTypes.ItemChange
                       ? effect.effect.map((itemChange) => (
                           <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>
                         ))
@@ -87,25 +87,25 @@ const Display = () => {
         data-tooltip-id="activity-tooltip"
         data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
           <span>
-              {activity.tooltip}
-              {activity.effect
-                ? activity.effect.map((effect) =>
-                    effect.id === "statChange"
-                      ? effect.effect.map((statChange) => (
-                          <span key={statChange.stat}>
-                            <hr />
-                            {statChange.value > 0 ? "+" : ""}
-                            {statChange.value} {fullStatNames[statAbbreviations[statChange.stat]]}
-                          </span>
-                        ))
-                      : effect.id === "itemChange"
-                      ? effect.effect.map((itemChange) => (
-                          <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>
-                        ))
-                      : null
-                  )
-                : null}
-            </span>
+            {activity.tooltip}
+            {activity.effect
+              ? activity.effect.map((effect) =>
+                  effect.id === ActivityTypes.StatChange
+                    ? effect.effect.map((statChange) => (
+                        <span key={statChange.stat}>
+                          <hr />
+                          {statChange.value > 0 ? "+" : ""}
+                          {statChange.value} {fullStatNames[statAbbreviations[statChange.stat]]}
+                        </span>
+                      ))
+                    : effect.id === ActivityTypes.ItemChange
+                    ? effect.effect.map((itemChange) => (
+                        <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>
+                      ))
+                    : null
+                )
+              : null}
+          </span>
         )}
       >
         {activity.icon} {activity.name}
@@ -122,36 +122,64 @@ const Display = () => {
           .toString()
           .padStart(2, "0")} ${time.ampm}`,
         message: `${description}`,
+        type: "activity",
       })
     );
-    dispatch(
-      addMessage({
-        timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
-          .toString()
-          .padStart(2, "0")} ${time.ampm}`,
-        message: `${activity.icon} ${activity.name}`,
-      })
-    );
+    // Tooltip Message
     activity.tooltip
+      ? activity.effect
+        ? dispatch(
+            addMessage({
+              timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
+                .toString()
+                .padStart(2, "0")} ${time.ampm}`,
+              message: `${activity.icon} ${activity.name}`,
+              type: "activity",
+              tooltip: `${activity.tooltip}`,
+              effect: activity.effect,
+            })
+          )
+        : dispatch(
+            addMessage({
+              timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
+                .toString()
+                .padStart(2, "0")} ${time.ampm}`,
+              message: `${activity.icon} ${activity.name}`,
+              type: "activity",
+              tooltip: `${activity.tooltip}`,
+            })
+          )
+      : activity.effect
       ? dispatch(
           addMessage({
             timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
               .toString()
               .padStart(2, "0")} ${time.ampm}`,
-            message: `${activity.tooltip}`,
+            message: `${activity.icon} ${activity.name}`,
+            type: "activity",
+            effect: activity.effect,
           })
         )
-      : null;
+      : dispatch(
+          addMessage({
+            timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
+              .toString()
+              .padStart(2, "0")} ${time.ampm}`,
+            message: `${activity.icon} ${activity.name}`,
+            type: "activity",
+          })
+        );
+
     dispatch(setActiveActivity(activity.next));
     activity.effect?.forEach((effect) => {
-      if (effect.id === "statChange") {
+      if (effect.id === ActivityTypes.StatChange) {
         console.log("Stat change effect: ", effect);
         effect.effect.forEach((statChange) => {
           console.log(`Changing stat ${statChange.stat} by ${statChange.value}`);
           dispatch(modifyStat({ statName: statChange.stat, value: statChange.value }));
           // Handle stat changes if needed, perhaps with another dispatch
         });
-      } else if (effect.id === "itemChange") {
+      } else if (effect.id === ActivityTypes.ItemChange) {
         console.log("Item effect: ", effect);
         effect.effect.forEach((itemChange) => {
           console.log("Giving item: ", itemChange.item, " Amount: ", itemChange.value);

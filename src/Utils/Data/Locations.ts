@@ -2,9 +2,9 @@
 import { Item } from "./Items";
 import { Stats } from "./Stats";
 
-export enum ActivityTypes { // Changed from const enum to enum
-  StatChange = "statChange",
-  ItemChange = "itemChange",
+export enum ActivityTypes {
+  StatChange,
+  ItemChange,
 }
 
 export interface StatChangeEffect {

@@ -45,6 +45,7 @@ export enum WeightType {
 export interface Items {
   items: Item[];
 }
+
 export interface Item {
   id: string;
   name: string;

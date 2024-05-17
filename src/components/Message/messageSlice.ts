@@ -1,10 +1,15 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
+import { Item } from "../../Utils/Data/Items";
+import { ItemChangeEffect, StatChangeEffect } from "../../Utils/Data/Locations";
 
 export interface Message {
   id: number;
   timestamp: string;
+  type: string;
   message: string;
+  tooltip?: string;
+  effect?: (StatChangeEffect | ItemChangeEffect)[];
 }
 
 export interface MessageState {
@@ -29,7 +34,17 @@ export const messageSlice = createSlice({
   name: "message",
   initialState,
   reducers: {
-    addMessage: (state, action: PayloadAction<{ timestamp: string; message: string }>) => {
+    addMessage: (
+      state,
+      action: PayloadAction<{
+        timestamp: string;
+        type: string;
+        message: string;
+        tooltip?: string;
+        item?: Item;
+        effect?: (StatChangeEffect | ItemChangeEffect)[];
+      }>
+    ) => {
       // Determine the next ID
       const nextId =
         state.messages.length > 0 ? Math.max(...state.messages.map((msg) => msg.id)) + 1 : 1;
@@ -37,7 +52,10 @@ export const messageSlice = createSlice({
       const newMessage: Message = {
         id: nextId, // Use the calculated next ID
         timestamp: action.payload.timestamp, // Assume timestamp is still passed in, or generate it here
+        type: action.payload.type,
         message: action.payload.message,
+        tooltip: action.payload.tooltip,
+        effect: action.payload.effect,
       };
       state.messages.push(newMessage);
       if (state.messages.length > state.maxMessages) {
