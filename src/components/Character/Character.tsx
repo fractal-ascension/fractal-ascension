@@ -7,6 +7,7 @@ import { detectBrowser } from "../../Utils/Functions/browserUtil";
 import { Tooltip } from "react-tooltip";
 import { fullStatNames, statAbbreviations, statEffects } from "../../Utils/Data/Stats";
 import ReactDOMServer from "react-dom/server";
+import { Icons } from "../../Utils/Data/Icons";
 
 type ExtendedCSSProperties = React.CSSProperties & {
   "--bar-width"?: string;
@@ -15,15 +16,8 @@ type ExtendedCSSProperties = React.CSSProperties & {
 };
 
 const Character: React.FC = () => {
-  // const dispatch = useDispatch();
   const browser = React.useMemo(() => detectBrowser(), []);
   const character = useSelector((state: RootState) => state.character);
-
-  // Function to simulate eating poisoned food
-  // const eatFood = () => {
-  //   // Assuming `poisonEffect` is a valid StatusEffect object
-  //   dispatch(addStatus(poisonEffect));
-  // };
 
   const renderEquipmentSlot = (label: string, item: string | null) => {
     const isEmpty = !item;
@@ -196,13 +190,18 @@ const Character: React.FC = () => {
       <div className="status-grid">
         {character.statuses?.map((status) => (
           <div key={status.id} className="status-box">
-            {status.name} (Remaining:{" "}
-            {status.duration > 0 ? `${status.duration} ticks` : "Permanent"})
+            <div className="status-content">
+              <span className="status-text">
+                {Icons.Skull}
+                <br /> {status.name}
+              </span>
+            </div>
+            <div className="status-duration">
+              {status.duration > 0 ? `${status.duration} ticks` : "Permanent"}
+            </div>
           </div>
         ))}
       </div>
-      {/* <button onClick={eatFood}>Eat Poisoned Food</button> */}
-      <button className="panel-button">ETC</button>
     </div>
   );
 };

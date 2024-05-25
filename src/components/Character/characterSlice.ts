@@ -16,11 +16,18 @@ interface Equipment {
 // Combination elements would combine and add based on player's base element values.
 // Like, Steam would be Water * Fire, so if player has 10 Water and 5 Fire, Steam would be 15 damage.
 
+export enum EffectType {
+  REDUCE_HP = "reduceHp",
+  REDUCE_ALL = "reduceAll",
+}
+
 export interface StatusEffect {
   id: string;
   name: string;
+  description: string;
   duration: number;
-  effectType: string;
+  effectType: EffectType;
+  effectDescription: string;
   effectAmount: number;
 }
 
@@ -30,6 +37,7 @@ export interface CharacterState {
   parameters: BaseParameters;
   level: number;
   stats: Stats;
+  originalStats: Stats;
   equipment: Equipment;
   combatDamageParameters: CombatDamageParameters;
   statuses: StatusEffect[];
@@ -85,6 +93,7 @@ export const initialState: CharacterState = {
   level: 0,
   parameters: calculateBaseParameters(0, initialStats),
   stats: initialStats,
+  originalStats: { ...initialStats },
   equipment: {
     lefthand: null,
     righthand: null,
@@ -508,7 +517,7 @@ export const initialState: CharacterState = {
   hasEnergyDecay: false,
 };
 
-// Define an async thunk for saving character data
+// Async thunks
 export const saveCharacter = createAsyncThunk(
   "character/saveCharacter",
   async (_, { getState }) => {
@@ -524,9 +533,10 @@ export const handleRegenAndDecay = createAsyncThunk(
   }
 );
 
+// Utility functions
 const applyEffect = (character: CharacterState, effect: StatusEffect) => {
   switch (effect.effectType) {
-    case "reduceHp":
+    case EffectType.REDUCE_HP:
       character.parameters.hp = Math.max(character.parameters.hp - effect.effectAmount, 0);
       break;
     // Add more cases as needed for different types of effects
@@ -537,21 +547,22 @@ const updateCharacterParameters = (state: CharacterState) => {
   const { level, stats } = state;
   const baseParameters = calculateBaseParameters(level, stats);
 
-  state.parameters.maxHp = baseParameters.maxHp;
-  state.parameters.hpRegen = baseParameters.hpRegen;
-  state.parameters.maxSp = baseParameters.maxSp;
-  state.parameters.spRegen = baseParameters.spRegen;
-  state.parameters.maxMp = baseParameters.maxMp;
-  state.parameters.mpRegen = baseParameters.mpRegen;
-  state.parameters.maxHunger = baseParameters.maxHunger;
-  state.parameters.hungerRegen = baseParameters.hungerRegen;
-  state.parameters.maxThirst = baseParameters.maxThirst;
-  state.parameters.thirstRegen = baseParameters.thirstRegen;
-  state.parameters.maxSleep = baseParameters.maxSleep;
-  state.parameters.sleepRegen = baseParameters.sleepRegen;
-  state.parameters.maxEnergy = baseParameters.maxEnergy;
-  state.parameters.energyRegen = baseParameters.energyRegen;
-  state.parameters.nextLevelExperience = baseParameters.nextLevelExperience;
+  // Update only the necessary properties
+  state.parameters.maxHp = roundToOneDecimal(baseParameters.maxHp);
+  state.parameters.hpRegen = roundToOneDecimal(baseParameters.hpRegen);
+  state.parameters.maxSp = roundToOneDecimal(baseParameters.maxSp);
+  state.parameters.spRegen = roundToOneDecimal(baseParameters.spRegen);
+  state.parameters.maxMp = roundToOneDecimal(baseParameters.maxMp);
+  state.parameters.mpRegen = roundToOneDecimal(baseParameters.mpRegen);
+  state.parameters.maxHunger = roundToOneDecimal(baseParameters.maxHunger);
+  state.parameters.hungerRegen = roundToOneDecimal(baseParameters.hungerRegen);
+  state.parameters.maxThirst = roundToOneDecimal(baseParameters.maxThirst);
+  state.parameters.thirstRegen = roundToOneDecimal(baseParameters.thirstRegen);
+  state.parameters.maxSleep = roundToOneDecimal(baseParameters.maxSleep);
+  state.parameters.sleepRegen = roundToOneDecimal(baseParameters.sleepRegen);
+  state.parameters.maxEnergy = roundToOneDecimal(baseParameters.maxEnergy);
+  state.parameters.energyRegen = roundToOneDecimal(baseParameters.energyRegen);
+  state.parameters.nextLevelExperience = roundToOneDecimal(baseParameters.nextLevelExperience);
 
   state.hasHungerDecay = false;
   state.hasThirstDecay = false;
@@ -566,38 +577,26 @@ const roundToOneDecimal = (value: number): number => {
   return parseFloat(value.toFixed(1));
 };
 
-const applyStatusEffect = (
-  status: {
-    effectType: string;
-    duration: number;
-    effectAmount: number;
-  },
-  stats: Stats
-) => {
-  if (status.effectType === "reduceAll" && status.duration > 0) {
+const applyStatusEffect = (status: StatusEffect, stats: Stats) => {
+  if (status.effectType === EffectType.REDUCE_ALL && status.duration > 0) {
     const effectAmount = status.effectAmount;
     const applyEffect = (value: number) => value * effectAmount;
 
-    // Update actual stats and current parameters only
-    stats.strength = Math.floor(applyEffect(stats.strength));
-    stats.vitality = Math.floor(applyEffect(stats.vitality));
-    stats.agility = Math.floor(applyEffect(stats.agility));
-    stats.dexterity = Math.floor(applyEffect(stats.dexterity));
-    stats.intelligence = Math.floor(applyEffect(stats.intelligence));
-    stats.wisdom = Math.floor(applyEffect(stats.wisdom));
-    stats.perception = Math.floor(applyEffect(stats.perception));
-    stats.luck = Math.floor(applyEffect(stats.luck));
+    Object.keys(stats).forEach((key) => {
+      const statKey = key as keyof Stats;
+      stats[statKey] = Math.floor(applyEffect(stats[statKey]));
+    });
   }
 };
 
-const handleDeath = (
-  isDead: boolean,
-  parameters: BaseParameters,
-  statuses: StatusEffect[],
-  stats: Stats
-) => {
-  if (isDead) {
+const restoreOriginalStats = (state: CharacterState) => {
+  state.stats = { ...state.originalStats };
+};
+
+const handleDeath = (state: CharacterState) => {
+  if (state.parameters.hp <= 0) {
     console.log("You have died.");
+    const parameters = state.parameters;
     parameters.hp = parameters.maxHp * 0.5;
     parameters.sp = parameters.maxSp * 0.5;
     parameters.mp = parameters.maxMp * 0.5;
@@ -606,24 +605,30 @@ const handleDeath = (
     parameters.sleep = parameters.maxSleep * 0.5;
     parameters.energy = parameters.maxEnergy * 0.5;
 
-    const deadStatus = {
-      id: "dead",
-      name: "Dead",
-      duration: 1,
-      effectType: "reduceAll",
+    const resurrectedStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
+    const resurrectedStatus: StatusEffect = {
+      id: "resurrected",
+      name: "Resurrected",
+      description: "Recently resurrected by an unknown power. You feel weak.",
+      duration: 600,
+      effectType: EffectType.REDUCE_ALL,
+      effectDescription: "All stats reduced by 50%.",
       effectAmount: 0.5,
     };
 
-    const alreadyDead = statuses.some((status) => status.id === "dead");
-    if (!alreadyDead) {
-      statuses.push(deadStatus);
-      applyStatusEffect(deadStatus, stats); // Apply effect only once when the player dies
+    if (resurrectedStatusIndex === -1) {
+      state.statuses.push(resurrectedStatus);
+      applyStatusEffect(resurrectedStatus, state.stats);
+    } else {
+      state.statuses[resurrectedStatusIndex].duration = 600; // Refresh the duration
     }
+
     return true;
   }
   return false;
 };
 
+// Slice
 export const characterSlice = createSlice({
   name: "character",
   initialState,
@@ -638,18 +643,12 @@ export const characterSlice = createSlice({
       state.parameters.xp += action.payload;
       while (state.parameters.xp >= state.parameters.nextLevelExperience) {
         state.parameters.xp -= state.parameters.nextLevelExperience;
-
         state.level += 1;
-
-        state.stats.agility += 1;
-        state.stats.dexterity += 1;
-        state.stats.intelligence += 1;
-        state.stats.luck += 1;
-        state.stats.perception += 1;
-        state.stats.strength += 1;
-        state.stats.vitality += 1;
-        state.stats.wisdom += 1;
-
+        Object.keys(state.stats).forEach((key) => {
+          const statKey = key as keyof Stats;
+          state.stats[statKey] += 1;
+          state.originalStats[statKey] += 1; // Update originalStats as well
+        });
         state.parameters.nextLevelExperience = calculateNextLevelExperience(state.level);
         updateCharacterParameters(state);
       }
@@ -657,6 +656,7 @@ export const characterSlice = createSlice({
     modifyStat: (state, action: PayloadAction<{ statName: keyof Stats; value: number }>) => {
       const { statName, value } = action.payload;
       state.stats[statName] += value;
+      state.originalStats[statName] += value; // Update originalStats as well
       updateCharacterParameters(state);
     },
     equipItem: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
@@ -672,11 +672,13 @@ export const characterSlice = createSlice({
     updateCharacterName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
     },
-    addStatus: (state, action) => {
+    addStatus: (state, action: PayloadAction<StatusEffect>) => {
       state.statuses.push(action.payload);
     },
     removeStatus: (state, action: PayloadAction<string>) => {
       state.statuses = state.statuses.filter((status) => status.id !== action.payload);
+      restoreOriginalStats(state); // Restore stats when status is removed
+      updateCharacterParameters(state);
     },
     updateStatuses: (state) => {
       state.statuses.forEach((status) => {
@@ -686,17 +688,16 @@ export const characterSlice = createSlice({
         }
       });
       state.statuses = state.statuses.filter((status) => status.duration !== 0);
+      restoreOriginalStats(state); // Restore stats after updating statuses
+      updateCharacterParameters(state);
     },
     regenAndDecay: (state) => {
-      const { parameters, statuses, stats } = state;
-      const isDead = parameters.hp <= 0;
-
-      if (handleDeath(isDead, parameters, statuses, stats)) return;
+      if (handleDeath(state)) return;
 
       // Apply status effects
-      statuses.forEach((status) => {
-        if (status.id !== "dead") {
-          applyStatusEffect(status, stats);
+      state.statuses.forEach((status) => {
+        if (status.id !== "resurrected") {
+          applyStatusEffect(status, state.stats);
         }
       });
 
@@ -708,6 +709,9 @@ export const characterSlice = createSlice({
         }))
         .filter((status) => status.duration > 0);
 
+      restoreOriginalStats(state); // Restore stats after applying effects
+      updateCharacterParameters(state);
+
       const applyDecay = (regenValue: number, decayValue: number) =>
         roundToOneDecimal(regenValue - Math.abs(decayValue));
       const removeDecay = (regenValue: number, decayValue: number) =>
@@ -717,65 +721,87 @@ export const characterSlice = createSlice({
         resource: number,
         regenValue: number,
         decayFactors: { hp: number; sp: number; mp: number },
-        stateFlag: "hasHungerDecay" | "hasThirstDecay" | "hasSleepDecay" | "hasEnergyDecay"
+        stateFlag: keyof Pick<
+          CharacterState,
+          "hasHungerDecay" | "hasThirstDecay" | "hasSleepDecay" | "hasEnergyDecay"
+        >
       ) => {
-        if (isDead) return; // Skip decay if player is dead
         if (resource === 0 && !state[stateFlag]) {
-          parameters.hpRegen = applyDecay(parameters.hpRegen, regenValue * decayFactors.hp);
-          parameters.spRegen = applyDecay(parameters.spRegen, regenValue * decayFactors.sp);
-          parameters.mpRegen = applyDecay(parameters.mpRegen, regenValue * decayFactors.mp);
+          state.parameters.hpRegen = applyDecay(
+            state.parameters.hpRegen,
+            regenValue * decayFactors.hp
+          );
+          state.parameters.spRegen = applyDecay(
+            state.parameters.spRegen,
+            regenValue * decayFactors.sp
+          );
+          state.parameters.mpRegen = applyDecay(
+            state.parameters.mpRegen,
+            regenValue * decayFactors.mp
+          );
           state[stateFlag] = true;
         } else if (resource > 0 && state[stateFlag]) {
-          parameters.hpRegen = removeDecay(parameters.hpRegen, regenValue * decayFactors.hp);
-          parameters.spRegen = removeDecay(parameters.spRegen, regenValue * decayFactors.sp);
-          parameters.mpRegen = removeDecay(parameters.mpRegen, regenValue * decayFactors.mp);
+          state.parameters.hpRegen = removeDecay(
+            state.parameters.hpRegen,
+            regenValue * decayFactors.hp
+          );
+          state.parameters.spRegen = removeDecay(
+            state.parameters.spRegen,
+            regenValue * decayFactors.sp
+          );
+          state.parameters.mpRegen = removeDecay(
+            state.parameters.mpRegen,
+            regenValue * decayFactors.mp
+          );
           state[stateFlag] = false;
         }
       };
 
       handleDecay(
-        parameters.hunger,
-        parameters.hungerRegen,
+        state.parameters.hunger,
+        state.parameters.hungerRegen,
         { hp: 10, sp: 5, mp: 2 },
         "hasHungerDecay"
       );
       handleDecay(
-        parameters.thirst,
-        parameters.thirstRegen,
+        state.parameters.thirst,
+        state.parameters.thirstRegen,
         { hp: 2, sp: 10, mp: 5 },
         "hasThirstDecay"
       );
       handleDecay(
-        parameters.sleep,
-        parameters.sleepRegen,
+        state.parameters.sleep,
+        state.parameters.sleepRegen,
         { hp: 5, sp: 2, mp: 10 },
         "hasSleepDecay"
       );
       handleDecay(
-        parameters.energy,
-        parameters.energyRegen,
+        state.parameters.energy,
+        state.parameters.energyRegen,
         { hp: 2, sp: 2, mp: 2 },
         "hasEnergyDecay"
       );
 
-      parameters.hp = roundToOneDecimal(
-        Math.min(parameters.hp + parameters.hpRegen, parameters.maxHp)
+      state.parameters.hp = roundToOneDecimal(
+        Math.min(state.parameters.hp + state.parameters.hpRegen, state.parameters.maxHp)
       );
-      parameters.sp = roundToOneDecimal(
-        Math.min(parameters.sp + parameters.spRegen, parameters.maxSp)
+      state.parameters.sp = roundToOneDecimal(
+        Math.min(state.parameters.sp + state.parameters.spRegen, state.parameters.maxSp)
       );
-      parameters.mp = roundToOneDecimal(
-        Math.min(parameters.mp + parameters.mpRegen, parameters.maxMp)
+      state.parameters.mp = roundToOneDecimal(
+        Math.min(state.parameters.mp + state.parameters.mpRegen, state.parameters.maxMp)
       );
-      parameters.hunger = roundToOneDecimal(
-        Math.max(parameters.hunger + parameters.hungerRegen, 0)
+      state.parameters.hunger = roundToOneDecimal(
+        Math.max(state.parameters.hunger + state.parameters.hungerRegen, 0)
       );
-      parameters.thirst = roundToOneDecimal(
-        Math.max(parameters.thirst + parameters.thirstRegen, 0)
+      state.parameters.thirst = roundToOneDecimal(
+        Math.max(state.parameters.thirst + state.parameters.thirstRegen, 0)
       );
-      parameters.sleep = roundToOneDecimal(Math.max(parameters.sleep + parameters.sleepRegen, 0));
-      parameters.energy = roundToOneDecimal(
-        Math.max(parameters.energy + parameters.energyRegen, 0)
+      state.parameters.sleep = roundToOneDecimal(
+        Math.max(state.parameters.sleep + state.parameters.sleepRegen, 0)
+      );
+      state.parameters.energy = roundToOneDecimal(
+        Math.max(state.parameters.energy + state.parameters.energyRegen, 0)
       );
     },
   },

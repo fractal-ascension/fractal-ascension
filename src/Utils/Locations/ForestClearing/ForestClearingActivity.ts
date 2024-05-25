@@ -68,7 +68,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.StatChange,
               effect: [
                 {
-                  stat: "dexterity",
+                  stat: "vitality",
                   value: 1,
                 },
               ],

@@ -22,7 +22,7 @@ $text-color: white;
   padding: 10px;
   text-shadow: 1.5px 1px #000;
   width: 600px;
-  height: 582px
+  height: 582px;
 }
 
 // .character-container.chrome {
@@ -55,7 +55,10 @@ $text-color: white;
 
 .bar-grid {
   display: grid;
-  grid-template-columns: repeat(2, 4fr); // Adjust comment or remove it if it's a typo and should be repeat(2, 1fr)
+  grid-template-columns: repeat(
+    2,
+    4fr
+  ); // Adjust comment or remove it if it's a typo and should be repeat(2, 1fr)
   gap: $gap;
   margin-bottom: $margin-bottom;
 }
@@ -138,8 +141,8 @@ $text-color: white;
   overflow-x: auto; /* Enables horizontal scrolling */
   gap: $gap; /* Maintains gap between items */
   padding: $padding;
-  scrollbar-width: thin; /* makes the scrollbar thinner */
-  height: 30px;
+  scrollbar-width: thin; /* Makes the scrollbar thinner */
+  height: auto; /* Allows height to adjust based on content */
 }
 
 .status-box {
@@ -147,9 +150,28 @@ $text-color: white;
   border: 1px solid $detail-border-color;
   border-radius: $border-radius;
   color: white;
-  padding: $padding;
+  padding: 5px 10px; /* Smaller padding for compact look */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px; /* Sets a minimum width for each box */
+  max-width: 120px; /* Optional: sets a maximum width for each box */
   text-align: center;
-  min-width: 150px; /* Optional: sets a minimum width for each box */
+}
+
+.status-content {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Gap between icon and text */
+}
+
+.status-text {
+  font-size: 0.8em; /* Smaller text size */
+}
+
+.status-duration {
+  font-size: 0.6em; /* Smaller text size for duration */
 }
 
 .tooltip {
