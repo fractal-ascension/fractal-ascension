@@ -3,8 +3,8 @@ import { Item } from "./Items";
 import { Stats } from "./Stats";
 
 export enum ActivityTypes {
-  StatChange,
-  ItemChange,
+  StatChange = "StatChange",
+  ItemChange = "ItemChange",
 }
 
 export interface StatChangeEffect {

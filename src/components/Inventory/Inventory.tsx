@@ -5,7 +5,7 @@ import ReactDOMServer from "react-dom/server";
 import "./Inventory.scss";
 import { Tooltip } from "react-tooltip";
 import { Item, ItemType } from "../../Utils/Data/Items";
-import { ItemTooltipUtil } from "../../Utils/Functions/itemTooltipUtil";
+import { ItemTooltipUtil } from "../../Utils/Functions/ItemTooltipUtil";
 
 const Inventory = () => {
   const dispatch = useDispatch();
@@ -85,9 +85,7 @@ const Inventory = () => {
             key={index}
             data-tooltip-id="item-tooltip"
             data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
-              item.weapon ? (
-                ItemTooltipUtil(item)
-              ) : null
+              item.weapon || item.tool ? ItemTooltipUtil(item) : null
             )}
           >
             <span className="inventory-label">

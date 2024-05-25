@@ -9,11 +9,15 @@ import {
   IronWood,
   Item,
   ItemType,
+  Manual,
   Paper,
   ScrapStone,
   ScrapWood,
   Sword,
 } from "../../Data/Items";
+import { FishingSkillId } from "../../Data/Skills/FishingSkill";
+import { ForagingSkillId } from "../../Data/Skills/ForagingSkill";
+import { HuntingSkillId } from "../../Data/Skills/HuntingSkill";
 
 export enum ForestClearingItems {
   SturdyStick = "sturdyStick",
@@ -139,15 +143,23 @@ export const ForestClearingItem: Item[] = [
     amount: 1,
     unique: true,
     tool: {
+      toolType: Manual,
+      rank: 3,
+      quality: 1,
+      material: [
+        { material: Paper, amount: 20 },
+        { material: Ink, amount: 10 },
+      ],
+      durability: { current: 896, max: 1000 }, // Goes down when doing an activity boosted by manual
       skillDirectBonus: [
-        { skill: "Fishing", value: 2, cap: 30 },
-        { skill: "Hunting", value: 2, cap: 30 },
-        { skill: "Foraging", value: 2, cap: 30 },
+        { skill: FishingSkillId.Fishing, value: 2, cap: 30 },
+        { skill: HuntingSkillId.Hunting, value: 2, cap: 30 },
+        { skill: ForagingSkillId.Foraging, value: 2, cap: 30 },
       ],
       skillMultiplierBonus: [
-        { skill: "Fishing", value: 2, cap: 30 },
-        { skill: "Hunting", value: 2, cap: 30 },
-        { skill: "Foraging", value: 2, cap: 30 },
+        { skill: FishingSkillId.Fishing, value: 2, cap: 30 },
+        { skill: HuntingSkillId.Hunting, value: 2, cap: 30 },
+        { skill: ForagingSkillId.Foraging, value: 2, cap: 30 },
       ],
     },
   },

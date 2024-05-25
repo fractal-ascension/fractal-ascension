@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { loadState, saveState, store, useAppDispatch } from "../../store";
-import { saveCharacter } from "../Character/characterSlice";
+import { handleRegenAndDecay, saveCharacter } from "../Character/characterSlice";
 import { saveInventory } from "../Inventory/inventorySlice";
 import { saveMessage } from "../Message/messageSlice";
 import { saveGlobalTime, updateTime } from "../../Utils/Slices/globalTimeSlice";
@@ -17,6 +17,7 @@ const App: React.FC = () => {
 
   const [timerId, setTimerId] = useState<number | null>(null);
   const [saveIntervalId, setSaveIntervalId] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const enum SaveStates {
     CharacterState = "characterState",
@@ -27,12 +28,23 @@ const App: React.FC = () => {
   }
 
   useEffect(() => {
-    const id = setInterval(() => {
-      dispatch(updateTime());
-    }, 1000) as unknown as number;  // Type assertion to number
-    setTimerId(id);
-    return () => clearInterval(id);
-  }, [dispatch]);
+    if (!isPaused) {
+      const id = setInterval(() => {
+        dispatch(updateTime());
+        dispatch(handleRegenAndDecay());
+      }, 1000) as unknown as number; // Type assertion to number
+      setTimerId(id);
+      return () => clearInterval(id);
+    } else if (timerId !== null) {
+      clearInterval(timerId);
+      setTimerId(null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, isPaused]);
+
+  const togglePause = () => {
+    setIsPaused((prevState) => !prevState);
+  };
 
   useEffect(() => {
     // Simulate a loading process.
@@ -59,10 +71,17 @@ const App: React.FC = () => {
         saveState(SaveStates.GlobalTimeState, store.getState().globalTime);
         saveState(SaveStates.ProgressState, store.getState().progress);
       }, 500); // Delay to ensure state is updated in the Redux store before saving
-    }, 300000) as unknown as number;  // Type assertion to number
+    }, 300000) as unknown as number; // Type assertion to number
     setSaveIntervalId(id);
     return () => clearInterval(id);
-  }, [SaveStates.CharacterState, SaveStates.GlobalTimeState, SaveStates.InventoryState, SaveStates.MessageState, SaveStates.ProgressState, dispatch]);
+  }, [
+    SaveStates.CharacterState,
+    SaveStates.GlobalTimeState,
+    SaveStates.InventoryState,
+    SaveStates.MessageState,
+    SaveStates.ProgressState,
+    dispatch,
+  ]);
 
   if (loading) {
     return (
@@ -194,6 +213,9 @@ const App: React.FC = () => {
           <label htmlFor="fileInput" className="buttonLabel">
             Import
           </label>
+        </div>
+        <div className="footer_button" onClick={togglePause}>
+          {isPaused ? "Resume" : "Pause"}
         </div>
         <div className="footer_button reset-button" onClick={handleReset}>
           Reset Game

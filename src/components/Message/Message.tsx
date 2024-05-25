@@ -6,7 +6,7 @@ import { Message as MessageType, clearMessages, toggleTimestamp } from "./messag
 import "./Message.scss";
 import { ActivityTypes } from "../../Utils/Data/Locations";
 import { fullStatNames, statAbbreviations } from "../../Utils/Data/Stats";
-import { ItemTooltipUtil } from "../../Utils/Functions/itemTooltipUtil";
+import { ItemTooltipUtil } from "../../Utils/Functions/ItemTooltipUtil";
 import { Tooltip } from "react-tooltip";
 
 const Message = () => {

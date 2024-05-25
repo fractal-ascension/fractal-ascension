@@ -1,37 +1,24 @@
 import { Skill } from "../Skills";
 
 export enum FishingSkillId {
-  Fishing,
+  Fishing = "Fishing",
 }
 
 export enum FishingEffectId {
-  FishingPower,
-  FishingSkill,
-  FishingStrength,
-  BiteRate,
-  CatchRate,
-  Familiarization,
-  MaxFamiliarityReward,
-}
-
-export enum FishingEffectDescription {
-  IncreaseFishingPower,
-  IncreaseFishingSkill,
-  IncreaseFishingStrength,
-  IncreaseBiteRate,
-  IncreaseCatchRate,
-  IncreaseFamiliarization,
-  UniqueFishLoot,
+  FishingPower = "FishingPower",
+  FishingSkill = "FishingSkill",
+  FishingStrength = "FishingStrength",
+  FishingFamiliarization = "FishingFamiliarization",
 }
 
 export enum FishingRestrictionId {
-  FishingLocation,
-  FishType,
+  FishingLocation = "FishingLocation",
+  FishType = "FishType",
 }
 
 export enum FishingUnlockId {
-  Tool,
-  Area,
+  Tool = "Tool",
+  Area = "Area",
 }
 
 const fishingSkill: Skill = {
@@ -42,43 +29,22 @@ const fishingSkill: Skill = {
   effects: [
     {
       id: FishingEffectId.FishingPower,
-      description: FishingEffectDescription.IncreaseFishingPower,
+      description: "IncreaseFishingPower",
       value: 10,
     },
     {
       id: FishingEffectId.FishingSkill,
-      description: FishingEffectDescription.IncreaseFishingSkill,
+      description: "IncreaseFishingSkill",
       value: 10,
     },
     {
       id: FishingEffectId.FishingStrength,
-      description: FishingEffectDescription.IncreaseFishingStrength,
+      description: "IncreaseFishingStrength",
       value: 10,
     },
     {
-      id: FishingEffectId.BiteRate,
-      description: FishingEffectDescription.IncreaseBiteRate,
-      value: 5,
-      restriction: [
-        { type: FishingRestrictionId.FishingLocation, value: 1 }, // Example: 1 for rivers
-      ],
-    },
-    {
-      id: FishingEffectId.CatchRate,
-      description: FishingEffectDescription.IncreaseCatchRate,
-      value: 5,
-      restriction: [
-        { type: FishingRestrictionId.FishingLocation, value: 2 }, // Example: 2 for ocean
-      ],
-    },
-    {
-      id: FishingEffectId.Familiarization,
-      description: FishingEffectDescription.IncreaseFamiliarization,
-      value: 1,
-    },
-    {
-      id: FishingEffectId.MaxFamiliarityReward,
-      description: FishingEffectDescription.UniqueFishLoot,
+      id: FishingEffectId.FishingFamiliarization,
+      description: "IncreaseFishingFamiliarization",
       value: 1,
     },
   ],

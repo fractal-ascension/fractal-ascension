@@ -1,6 +1,6 @@
 import { currencyBreakdown } from "../Data/Items";
 
-export const convertToCurrency = (value: number) => {
+export const ConvertToCurrency = (value: number) => {
   if (value === 0) {
     return (
       <span style={{ color: "#b87333" }}>

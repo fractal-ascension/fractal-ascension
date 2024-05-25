@@ -1,3 +1,4 @@
+import { SkillId } from "./Skills";
 import { Stats } from "./Stats";
 
 export enum ItemType {
@@ -56,11 +57,17 @@ export interface Item {
   unique: boolean;
   weapon?: {
     weaponType: Weapon;
-    attackSpeed: number;
-    range: number;
-    material: { material: Material; amount: number }[];
     rank: number; // Rank 0 1-5, 1 3-9, 2 6-15, 3 10-23, 4 15-33, 5 21-45, 6 28-59, 7 36-75, 8 45-91, 9 55-111, 10 66-133
     quality: number; // Multiplies damage, crit, durability, round down
+    material: { material: Material; amount: number }[];
+    durability: {
+      current: number; // Every attack reduces by 1, can be reduced more or less based on skills
+      // Reduces buy/sell value by {current / max} value. Repairing increases by 20% of max value
+      max: number;
+    };
+
+    attackSpeed: number;
+    range: number;
     damage: {
       minDamage: number;
       maxDamage: number;
@@ -69,15 +76,20 @@ export interface Item {
       criticalChance: number;
       criticalMultiplier: number;
     };
+  };
+  // Skills both have an effect that scales with level, and perks unlocked at certain levels (which can also scale)
+  tool?: {
+    toolType: Tool;
+    rank: number; // Rank 0 1-5, 1 3-9, 2 6-15, 3 10-23, 4 15-33, 5 21-45, 6 28-59, 7 36-75, 8 45-91, 9 55-111, 10 66-133
+    quality: number; // Multiplies damage, crit, durability, round down
+    material: { material: Material; amount: number }[];
     durability: {
       current: number; // Every attack reduces by 1, can be reduced more or less based on skills
       // Reduces buy/sell value by {current / max} value. Repairing increases by 20% of max value
       max: number;
     };
-  };
-  // Skills both have an effect that scales with level, and perks unlocked at certain levels (which can also scale)
-  tool?: {
-    skillDirectBonus?: { skill: string; value: number; cap: number }[]; // Directly adds to skill level
+
+    skillDirectBonus?: { skill: SkillId; value: number; cap: number }[]; // Directly adds to skill level
     skillMultiplierBonus?: { skill: string; value: number; cap: number }[]; // Multiplies skill effect (does not increase level) (continues to apply after cap, but weakened by {effect/(over cap + 1)})
     skillLearningBonus?: { skill: string; value: number; cap: number }[]; // Adds to skill exp gain (continues to apply after cap, but weakened by {effect/(over cap + 1)})
     skillRestriction?: { skill: string; value: number }[]; // Cannot be used without skill level
@@ -94,6 +106,11 @@ export interface Weapon {
   overallDamageType: OverallDamageType;
   damageType: DamageType;
   weightType: WeightType;
+}
+
+export interface Tool {
+  id: string;
+  name: string;
 }
 
 export interface Material {
@@ -154,6 +171,11 @@ export const ArcaneTome: Weapon = {
   overallDamageType: OverallDamageType.Magical,
   damageType: DamageType.Arcane,
   weightType: WeightType.Light,
+};
+
+export const Manual: Tool = {
+  id: "manual",
+  name: "Manual",
 };
 
 export const ScrapWood: Material = {

@@ -1,7 +1,7 @@
 import "./Display.scss";
 import { dayEffects, monthEffects, weekEffects } from "../../Utils/Slices/globalTimeSlice";
 import ReactDOMServer from "react-dom/server";
-import { Tooltip } from "react-tooltip";
+import { Tooltip, TooltipRefProps } from "react-tooltip";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { Activity, ActivityTypes } from "../../Utils/Data/Locations";
@@ -10,12 +10,14 @@ import { addOrRemoveItem } from "../Inventory/inventorySlice";
 import { getStarRepresentation } from "../../Utils/Data/Icons";
 import { addMessage } from "../Message/messageSlice";
 import { modifyStat } from "../Character/characterSlice";
-import { ItemTooltipUtil } from "../../Utils/Functions/itemTooltipUtil";
+import { ItemTooltipUtil } from "../../Utils/Functions/ItemTooltipUtil";
 import { fullStatNames, statAbbreviations } from "../../Utils/Data/Stats";
 import locations from "../../Utils/Data/LocationList";
+import { useRef } from "react";
 
 const Display = () => {
   const dispatch = useDispatch();
+  const tooltipRef = useRef<TooltipRefProps>(null);
 
   const progress = useSelector((state: RootState) => state.progress);
   const time = useSelector((state: RootState) => state.globalTime);
@@ -73,7 +75,11 @@ const Display = () => {
         >
           {branchActivity.icon} {branchActivity.name}
           {branchActivity.tooltip ? (
-            <Tooltip id="branchActivity-tooltip" className="branchActivity-tooltip" />
+            <Tooltip
+              id="branchActivity-tooltip"
+              ref={tooltipRef}
+              className="branchActivity-tooltip"
+            />
           ) : null}
         </div>
       ));
@@ -109,7 +115,9 @@ const Display = () => {
         )}
       >
         {activity.icon} {activity.name}
-        {activity.tooltip ? <Tooltip id="activity-tooltip" className="activity-tooltip" /> : null}
+        {activity.tooltip ? (
+          <Tooltip id="activity-tooltip" ref={tooltipRef} className="activity-tooltip" />
+        ) : null}
       </div>
     );
   };
@@ -187,6 +195,8 @@ const Display = () => {
         });
       }
     });
+    tooltipRef.current?.close();
+    setTimeout(() => tooltipRef.current?.open(), 0);
   };
 
   // DEBUG
