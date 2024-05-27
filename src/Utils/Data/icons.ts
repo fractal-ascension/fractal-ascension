@@ -24,7 +24,7 @@ export enum Icons {
 }
 
 export const getStarRepresentation = (rank: number) => {
-  if (rank === 0) return '☆'; // Directly return one empty star for rank 0
+  if (rank === 0) return "☆"; // Directly return one empty star for rank 0
 
   const filledStars = Math.ceil(rank / 2); // Compute number of filled stars
   const totalStars = filledStars + (rank % 2); // Add one more star if rank is odd

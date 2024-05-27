@@ -48,9 +48,7 @@ const Message = () => {
                             </span>
                           ))
                         : effect.id === ActivityTypes.ItemChange
-                        ? effect.effect.map((itemChange) => (
-                            <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>
-                          ))
+                        ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>)
                         : null
                     )
                   : null}
@@ -58,14 +56,10 @@ const Message = () => {
             )}
           >
             <span>
-              {messages.showTimestamp && (
-                <span style={{ color: "GrayText" }}>[{message.timestamp}] </span>
-              )}
+              {messages.showTimestamp && <span style={{ color: "GrayText" }}>[{message.timestamp}] </span>}
               {message.message}
             </span>
-            {message.tooltip ? (
-              <Tooltip id={`message-tooltip-${message.id}`} className="message-tooltip" />
-            ) : null}
+            {message.tooltip ? <Tooltip id={`message-tooltip-${message.id}`} className="message-tooltip" /> : null}
           </div>
         ))}
         {/* Invisible element to mark the end of messages */}

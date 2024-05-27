@@ -28,14 +28,7 @@ const Character: React.FC = () => {
     );
   };
 
-  const renderBar = (
-    label: string,
-    value: number,
-    maxValue: number,
-    regen: number | null,
-    startColor: string,
-    endColor: string
-  ) => {
+  const renderBar = (label: string, value: number, maxValue: number, regen: number | null, startColor: string, endColor: string) => {
     const barWidth = ((maxValue - value) / maxValue) * 100;
     return (
       <div
@@ -63,70 +56,14 @@ const Character: React.FC = () => {
   const renderBars = () => {
     return (
       <div className="bar-grid">
-        {renderBar(
-          "HP",
-          character.parameters.hp,
-          character.parameters.maxHp,
-          character.parameters.hpRegen,
-          "#750000",
-          "#9c0000"
-        )}
-        {renderBar(
-          "Hunger",
-          character.parameters.hunger,
-          character.parameters.maxHunger,
-          character.parameters.hungerRegen,
-          "#750000",
-          "#9c0000"
-        )}
-        {renderBar(
-          "SP",
-          character.parameters.sp,
-          character.parameters.maxSp,
-          character.parameters.spRegen,
-          "#006600",
-          "#008700"
-        )}
-        {renderBar(
-          "Thirst",
-          character.parameters.thirst,
-          character.parameters.maxThirst,
-          character.parameters.thirstRegen,
-          "#006600",
-          "#008700"
-        )}
-        {renderBar(
-          "MP",
-          character.parameters.mp,
-          character.parameters.maxMp,
-          character.parameters.mpRegen,
-          "#000066",
-          "#00008c"
-        )}
-        {renderBar(
-          "Sleep ",
-          character.parameters.sleep,
-          character.parameters.maxSleep,
-          character.parameters.sleepRegen,
-          "#000066",
-          "#00008c"
-        )}
-        {renderBar(
-          "XP",
-          character.parameters.xp,
-          character.parameters.nextLevelExperience,
-          null,
-          "#660066",
-          "#880088"
-        )}
-        {renderBar(
-          "Energy",
-          character.parameters.energy,
-          character.parameters.maxEnergy,
-          character.parameters.energyRegen,
-          "#cc9900",
-          "#e7ad00"
-        )}
+        {renderBar("HP", character.parameters.hp, character.parameters.maxHp, character.parameters.hpRegen, "#750000", "#9c0000")}
+        {renderBar("Hunger", character.parameters.hunger, character.parameters.maxHunger, character.parameters.hungerRegen, "#750000", "#9c0000")}
+        {renderBar("SP", character.parameters.sp, character.parameters.maxSp, character.parameters.spRegen, "#006600", "#008700")}
+        {renderBar("Thirst", character.parameters.thirst, character.parameters.maxThirst, character.parameters.thirstRegen, "#006600", "#008700")}
+        {renderBar("MP", character.parameters.mp, character.parameters.maxMp, character.parameters.mpRegen, "#000066", "#00008c")}
+        {renderBar("Sleep ", character.parameters.sleep, character.parameters.maxSleep, character.parameters.sleepRegen, "#000066", "#00008c")}
+        {renderBar("XP", character.parameters.xp, character.parameters.nextLevelExperience, null, "#660066", "#880088")}
+        {renderBar("Energy", character.parameters.energy, character.parameters.maxEnergy, character.parameters.energyRegen, "#cc9900", "#e7ad00")}
       </div>
     );
   };
@@ -162,12 +99,7 @@ const Character: React.FC = () => {
           );
 
           return (
-            <div
-              key={statName}
-              className="stat-box"
-              data-tooltip-id="stats-tooltip"
-              data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}
-            >
+            <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
               {abbreviation}: {statValue}
             </div>
           );
@@ -177,8 +109,8 @@ const Character: React.FC = () => {
 
       {/* Display equipment */}
       <div className="equipment-grid">
-        {renderEquipmentSlot("L. Hand", character.equipment.lefthand)}
-        {renderEquipmentSlot("R. Hand", character.equipment.righthand)}
+        {renderEquipmentSlot("Weapon", character.equipment.weapon)}
+        {renderEquipmentSlot("Offhand", character.equipment.offhand)}
         {renderEquipmentSlot("Head", character.equipment.head)}
         {renderEquipmentSlot("Body", character.equipment.body)}
         {renderEquipmentSlot("Arms", character.equipment.arms)}
@@ -212,9 +144,7 @@ const Character: React.FC = () => {
                 <br /> {status.name}
               </span>
             </div>
-            <div className="status-duration">
-              {status.duration > 0 ? `${status.duration} ticks` : "Permanent"}
-            </div>
+            <div className="status-duration">{status.duration > 0 ? `${status.duration} ticks` : "Permanent"}</div>
             <Tooltip id={`status-tooltip-${status.id}`} className="status-tooltip" />
           </div>
         ))}

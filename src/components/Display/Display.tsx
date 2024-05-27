@@ -64,9 +64,7 @@ const Display = () => {
                           </span>
                         ))
                       : effect.id === ActivityTypes.ItemChange
-                      ? effect.effect.map((itemChange) => (
-                          <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>
-                        ))
+                      ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>)
                       : null
                   )
                 : null}
@@ -74,13 +72,7 @@ const Display = () => {
           )}
         >
           {branchActivity.icon} {branchActivity.name}
-          {branchActivity.tooltip ? (
-            <Tooltip
-              id="branchActivity-tooltip"
-              ref={tooltipRef}
-              className="branchActivity-tooltip"
-            />
-          ) : null}
+          {branchActivity.tooltip ? <Tooltip id="branchActivity-tooltip" ref={tooltipRef} className="branchActivity-tooltip" /> : null}
         </div>
       ));
     }
@@ -105,9 +97,7 @@ const Display = () => {
                         </span>
                       ))
                     : effect.id === ActivityTypes.ItemChange
-                    ? effect.effect.map((itemChange) => (
-                        <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>
-                      ))
+                    ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>)
                     : null
                 )
               : null}
@@ -115,9 +105,7 @@ const Display = () => {
         )}
       >
         {activity.icon} {activity.name}
-        {activity.tooltip ? (
-          <Tooltip id="activity-tooltip" ref={tooltipRef} className="activity-tooltip" />
-        ) : null}
+        {activity.tooltip ? <Tooltip id="activity-tooltip" ref={tooltipRef} className="activity-tooltip" /> : null}
       </div>
     );
   };
@@ -126,9 +114,7 @@ const Display = () => {
     console.log("Clicked activity: ", activity);
     dispatch(
       addMessage({
-        timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
-          .toString()
-          .padStart(2, "0")} ${time.ampm}`,
+        timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`,
         message: `${description}`,
         type: "activity",
       })
@@ -138,9 +124,7 @@ const Display = () => {
       ? activity.effect
         ? dispatch(
             addMessage({
-              timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
-                .toString()
-                .padStart(2, "0")} ${time.ampm}`,
+              timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`,
               message: `${activity.icon} ${activity.name}`,
               type: "activity",
               tooltip: `${activity.tooltip}`,
@@ -149,9 +133,7 @@ const Display = () => {
           )
         : dispatch(
             addMessage({
-              timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
-                .toString()
-                .padStart(2, "0")} ${time.ampm}`,
+              timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`,
               message: `${activity.icon} ${activity.name}`,
               type: "activity",
               tooltip: `${activity.tooltip}`,
@@ -160,9 +142,7 @@ const Display = () => {
       : activity.effect
       ? dispatch(
           addMessage({
-            timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
-              .toString()
-              .padStart(2, "0")} ${time.ampm}`,
+            timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`,
             message: `${activity.icon} ${activity.name}`,
             type: "activity",
             effect: activity.effect,
@@ -170,9 +150,7 @@ const Display = () => {
         )
       : dispatch(
           addMessage({
-            timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute
-              .toString()
-              .padStart(2, "0")} ${time.ampm}`,
+            timestamp: `${time.hour.toString().padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`,
             message: `${activity.icon} ${activity.name}`,
             type: "activity",
           })
@@ -261,9 +239,7 @@ const Display = () => {
             </div>
           )}
         >
-          {`[${time.day}] ${time.weekDay}/${time.week}/${time.month}/${time.year} ${time.hour
-            .toString()
-            .padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`}
+          {`[${time.day}] ${time.weekDay}/${time.week}/${time.month}/${time.year} ${time.hour.toString().padStart(2, "0")}:${time.minute.toString().padStart(2, "0")} ${time.ampm}`}
           <Tooltip id="date-tooltip" className="tooltip" />
         </p>
       </div>
@@ -273,16 +249,10 @@ const Display = () => {
           <p>{description || "No description available."}</p>
         </div>
       </div>
-      <div className="display-actions">
-        {activity ? renderActivity(activity) : <p>No activities available.</p>}
-      </div>
+      <div className="display-actions">{activity ? renderActivity(activity) : <p>No activities available.</p>}</div>
       {/* DEBUG */}
       <div className="display-footer">
-        <button
-          className="display-back"
-          onClick={() => goBack(activity!)}
-          disabled={!activity?.previous}
-        >
+        <button className="display-back" onClick={() => goBack(activity!)} disabled={!activity?.previous}>
           Go Back
         </button>
       </div>

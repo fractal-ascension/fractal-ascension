@@ -1,3 +1,4 @@
+import { EquipmentSlot } from "../../components/Character/characterSlice";
 import { SkillId } from "./Skills";
 import { Stats } from "./Stats";
 
@@ -55,7 +56,8 @@ export interface Item {
   type: ItemType;
   amount: number;
   unique: boolean;
-  img? : string;
+  img?: string;
+  slot?: EquipmentSlot;
   weapon?: {
     weaponType: Weapon;
     rank: number; // Rank 0 1-5, 1 3-9, 2 6-15, 3 10-23, 4 15-33, 5 21-45, 6 28-59, 7 36-75, 8 45-91, 9 55-111, 10 66-133

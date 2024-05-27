@@ -55,10 +55,7 @@ $text-color: white;
 
 .bar-grid {
   display: grid;
-  grid-template-columns: repeat(
-    2,
-    4fr
-  ); // Adjust comment or remove it if it's a typo and should be repeat(2, 1fr)
+  grid-template-columns: repeat(2, 4fr); // Adjust comment or remove it if it's a typo and should be repeat(2, 1fr)
   gap: $gap;
   margin-bottom: $margin-bottom;
 }
@@ -184,7 +181,6 @@ $text-color: white;
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
   max-width: 500px;
   text-align: start;
-
 }
 
 .panel-button {

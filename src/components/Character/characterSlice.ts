@@ -3,14 +3,25 @@ import { RootState } from "../../store";
 import { CombatDamageParameters, BaseParameters, Stats } from "../../Utils/Data/Stats";
 
 export interface Equipment {
-  lefthand: string | null;
-  righthand: string | null;
+  weapon: string | null;
+  offhand: string | null;
   head: string | null;
   body: string | null;
   arms: string | null;
   legs: string | null;
   feet: string | null;
   accessory: string | null;
+}
+
+export enum EquipmentSlot {
+  WEAPON = "weapon",
+  OFFHAND = "offhand",
+  HEAD = "head",
+  BODY = "body",
+  ARMS = "arms",
+  LEGS = "legs",
+  FEET = "feet",
+  ACCESSORY = "accessory",
 }
 
 // Combination elements would combine and add based on player's base element values.
@@ -95,8 +106,8 @@ export const initialState: CharacterState = {
   stats: initialStats,
   originalStats: { ...initialStats },
   equipment: {
-    lefthand: null,
-    righthand: null,
+    weapon: null,
+    offhand: null,
     head: null,
     body: null,
     arms: null,
@@ -518,20 +529,14 @@ export const initialState: CharacterState = {
 };
 
 // Async thunks
-export const saveCharacter = createAsyncThunk(
-  "character/saveCharacter",
-  async (_, { getState }) => {
-    const state = getState() as RootState;
-    localStorage.setItem("characterState", JSON.stringify(state.character));
-  }
-);
+export const saveCharacter = createAsyncThunk("character/saveCharacter", async (_, { getState }) => {
+  const state = getState() as RootState;
+  localStorage.setItem("characterState", JSON.stringify(state.character));
+});
 
-export const handleRegenAndDecay = createAsyncThunk(
-  "character/handleRegenAndDecay",
-  async (_, { dispatch }) => {
-    dispatch(regenAndDecay());
-  }
-);
+export const handleRegenAndDecay = createAsyncThunk("character/handleRegenAndDecay", async (_, { dispatch }) => {
+  dispatch(regenAndDecay());
+});
 
 // Utility functions
 const applyEffect = (character: CharacterState, effect: StatusEffect) => {
@@ -570,8 +575,7 @@ const updateCharacterParameters = (state: CharacterState) => {
   state.hasEnergyDecay = false;
 };
 
-const calculateNextLevelExperience = (level: number): number =>
-  99 + Math.pow(2, level) + 100 * Math.pow(level, 2);
+const calculateNextLevelExperience = (level: number): number => 99 + Math.pow(2, level) + 100 * Math.pow(level, 2);
 
 const roundToOneDecimal = (value: number): number => {
   return parseFloat(value.toFixed(1));
@@ -605,9 +609,7 @@ const handleDeath = (state: CharacterState) => {
     parameters.sleep = parameters.maxSleep * 0.5;
     parameters.energy = parameters.maxEnergy * 0.5;
 
-    const resurrectedStatusIndex = state.statuses.findIndex(
-      (status) => status.id === "resurrected"
-    );
+    const resurrectedStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
     const resurrectedStatus: StatusEffect = {
       id: "resurrected",
       name: "Resurrected",
@@ -663,9 +665,7 @@ export const characterSlice = createSlice({
     },
     equipItem: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
       const { slot, item } = action.payload;
-      if (state.equipment[slot] === null) {
-        state.equipment[slot] = item;
-      }
+      state.equipment[slot] = item;
     },
     unequipItem: (state, action: PayloadAction<{ slot: keyof Equipment }>) => {
       const { slot } = action.payload;
@@ -714,113 +714,44 @@ export const characterSlice = createSlice({
       restoreOriginalStats(state); // Restore stats after applying effects
       updateCharacterParameters(state);
 
-      const applyDecay = (regenValue: number, decayValue: number) =>
-        roundToOneDecimal(regenValue - Math.abs(decayValue));
-      const removeDecay = (regenValue: number, decayValue: number) =>
-        roundToOneDecimal(regenValue + Math.abs(decayValue));
+      const applyDecay = (regenValue: number, decayValue: number) => roundToOneDecimal(regenValue - Math.abs(decayValue));
+      const removeDecay = (regenValue: number, decayValue: number) => roundToOneDecimal(regenValue + Math.abs(decayValue));
 
       const handleDecay = (
         resource: number,
         regenValue: number,
         decayFactors: { hp: number; sp: number; mp: number },
-        stateFlag: keyof Pick<
-          CharacterState,
-          "hasHungerDecay" | "hasThirstDecay" | "hasSleepDecay" | "hasEnergyDecay"
-        >
+        stateFlag: keyof Pick<CharacterState, "hasHungerDecay" | "hasThirstDecay" | "hasSleepDecay" | "hasEnergyDecay">
       ) => {
         if (resource === 0 && !state[stateFlag]) {
-          state.parameters.hpRegen = applyDecay(
-            state.parameters.hpRegen,
-            regenValue * decayFactors.hp
-          );
-          state.parameters.spRegen = applyDecay(
-            state.parameters.spRegen,
-            regenValue * decayFactors.sp
-          );
-          state.parameters.mpRegen = applyDecay(
-            state.parameters.mpRegen,
-            regenValue * decayFactors.mp
-          );
+          state.parameters.hpRegen = applyDecay(state.parameters.hpRegen, regenValue * decayFactors.hp);
+          state.parameters.spRegen = applyDecay(state.parameters.spRegen, regenValue * decayFactors.sp);
+          state.parameters.mpRegen = applyDecay(state.parameters.mpRegen, regenValue * decayFactors.mp);
           state[stateFlag] = true;
         } else if (resource > 0 && state[stateFlag]) {
-          state.parameters.hpRegen = removeDecay(
-            state.parameters.hpRegen,
-            regenValue * decayFactors.hp
-          );
-          state.parameters.spRegen = removeDecay(
-            state.parameters.spRegen,
-            regenValue * decayFactors.sp
-          );
-          state.parameters.mpRegen = removeDecay(
-            state.parameters.mpRegen,
-            regenValue * decayFactors.mp
-          );
+          state.parameters.hpRegen = removeDecay(state.parameters.hpRegen, regenValue * decayFactors.hp);
+          state.parameters.spRegen = removeDecay(state.parameters.spRegen, regenValue * decayFactors.sp);
+          state.parameters.mpRegen = removeDecay(state.parameters.mpRegen, regenValue * decayFactors.mp);
           state[stateFlag] = false;
         }
       };
 
-      handleDecay(
-        state.parameters.hunger,
-        state.parameters.hungerRegen,
-        { hp: 10, sp: 5, mp: 2 },
-        "hasHungerDecay"
-      );
-      handleDecay(
-        state.parameters.thirst,
-        state.parameters.thirstRegen,
-        { hp: 2, sp: 10, mp: 5 },
-        "hasThirstDecay"
-      );
-      handleDecay(
-        state.parameters.sleep,
-        state.parameters.sleepRegen,
-        { hp: 5, sp: 2, mp: 10 },
-        "hasSleepDecay"
-      );
-      handleDecay(
-        state.parameters.energy,
-        state.parameters.energyRegen,
-        { hp: 2, sp: 2, mp: 2 },
-        "hasEnergyDecay"
-      );
+      handleDecay(state.parameters.hunger, state.parameters.hungerRegen, { hp: 10, sp: 5, mp: 2 }, "hasHungerDecay");
+      handleDecay(state.parameters.thirst, state.parameters.thirstRegen, { hp: 2, sp: 10, mp: 5 }, "hasThirstDecay");
+      handleDecay(state.parameters.sleep, state.parameters.sleepRegen, { hp: 5, sp: 2, mp: 10 }, "hasSleepDecay");
+      handleDecay(state.parameters.energy, state.parameters.energyRegen, { hp: 2, sp: 2, mp: 2 }, "hasEnergyDecay");
 
-      state.parameters.hp = roundToOneDecimal(
-        Math.min(state.parameters.hp + state.parameters.hpRegen, state.parameters.maxHp)
-      );
-      state.parameters.sp = roundToOneDecimal(
-        Math.min(state.parameters.sp + state.parameters.spRegen, state.parameters.maxSp)
-      );
-      state.parameters.mp = roundToOneDecimal(
-        Math.min(state.parameters.mp + state.parameters.mpRegen, state.parameters.maxMp)
-      );
-      state.parameters.hunger = roundToOneDecimal(
-        Math.max(state.parameters.hunger + state.parameters.hungerRegen, 0)
-      );
-      state.parameters.thirst = roundToOneDecimal(
-        Math.max(state.parameters.thirst + state.parameters.thirstRegen, 0)
-      );
-      state.parameters.sleep = roundToOneDecimal(
-        Math.max(state.parameters.sleep + state.parameters.sleepRegen, 0)
-      );
-      state.parameters.energy = roundToOneDecimal(
-        Math.max(state.parameters.energy + state.parameters.energyRegen, 0)
-      );
+      state.parameters.hp = roundToOneDecimal(Math.min(state.parameters.hp + state.parameters.hpRegen, state.parameters.maxHp));
+      state.parameters.sp = roundToOneDecimal(Math.min(state.parameters.sp + state.parameters.spRegen, state.parameters.maxSp));
+      state.parameters.mp = roundToOneDecimal(Math.min(state.parameters.mp + state.parameters.mpRegen, state.parameters.maxMp));
+      state.parameters.hunger = roundToOneDecimal(Math.max(state.parameters.hunger + state.parameters.hungerRegen, 0));
+      state.parameters.thirst = roundToOneDecimal(Math.max(state.parameters.thirst + state.parameters.thirstRegen, 0));
+      state.parameters.sleep = roundToOneDecimal(Math.max(state.parameters.sleep + state.parameters.sleepRegen, 0));
+      state.parameters.energy = roundToOneDecimal(Math.max(state.parameters.energy + state.parameters.energyRegen, 0));
     },
   },
 });
 
-export const {
-  takeDamage,
-  heal,
-  gainExperience,
-  modifyStat,
-  equipItem,
-  unequipItem,
-  updateCharacterName,
-  addStatus,
-  removeStatus,
-  updateStatuses,
-  regenAndDecay,
-} = characterSlice.actions;
+export const { takeDamage, heal, gainExperience, modifyStat, equipItem, unequipItem, updateCharacterName, addStatus, removeStatus, updateStatuses, regenAndDecay } = characterSlice.actions;
 
 export default characterSlice.reducer;

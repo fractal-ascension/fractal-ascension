@@ -3,7 +3,7 @@ import { ForestClearingActivity } from "./ForestClearingActivity";
 import { ForestClearingDescription } from "./ForestClearingDescription";
 
 export const ForestClearing: LocationData = {
-  id: "forest-clearing", 
+  id: "forest-clearing",
   title: "Forest Clearing",
   rank: 0,
   levelRange: "1-1",
@@ -12,5 +12,5 @@ export const ForestClearing: LocationData = {
   initialActivity: "fc1",
   defaultActivity: "fc10",
   activities: ForestClearingActivity.activities,
-  descriptions: ForestClearingDescription.description
+  descriptions: ForestClearingDescription.description,
 };

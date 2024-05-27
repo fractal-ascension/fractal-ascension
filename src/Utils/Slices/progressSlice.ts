@@ -12,13 +12,10 @@ export const initialState: ProgressState = {
 };
 
 // Define an async thunk for saving character data
-export const saveProgress = createAsyncThunk(
-  "progress/saveProgress",
-  async (_, { getState }) => {
-    const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
-    localStorage.setItem("progressState", JSON.stringify(state.progress));
-  }
-);
+export const saveProgress = createAsyncThunk("progress/saveProgress", async (_, { getState }) => {
+  const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
+  localStorage.setItem("progressState", JSON.stringify(state.progress));
+});
 
 export const progressSlice = createSlice({
   name: "progress",

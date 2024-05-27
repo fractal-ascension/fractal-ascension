@@ -100,25 +100,19 @@ export const initialState: DateState = {
 };
 
 // Define an async thunk for saving character data
-export const saveGlobalTime = createAsyncThunk(
-  "globalTime/saveGlobalTime",
-  async (_, { getState }) => {
-    const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
-    localStorage.setItem("globalTimeState", JSON.stringify(state.globalTime));
-  }
-);
+export const saveGlobalTime = createAsyncThunk("globalTime/saveGlobalTime", async (_, { getState }) => {
+  const state = getState() as RootState; // Ensure you have a RootState type defined in your store.ts
+  localStorage.setItem("globalTimeState", JSON.stringify(state.globalTime));
+});
 
 // Thunk for updating time
-export const updateTime = createAsyncThunk(
-  "globalTime/updateTime",
-  async (_, { dispatch }) => {
-    // Correctly dispatch the action using the action creator
-    dispatch(tickTime());
-  }
-);
+export const updateTime = createAsyncThunk("globalTime/updateTime", async (_, { dispatch }) => {
+  // Correctly dispatch the action using the action creator
+  dispatch(tickTime());
+});
 
 export const globalTimeSlice = createSlice({
-  name: 'globalTime',
+  name: "globalTime",
   initialState,
   reducers: {
     tickTime: (state) => {

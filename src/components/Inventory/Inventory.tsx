@@ -6,6 +6,7 @@ import "./Inventory.scss";
 import { Tooltip } from "react-tooltip";
 import { Item, ItemType } from "../../Utils/Data/Items";
 import { ItemTooltipUtil } from "../../Utils/Functions/ItemTooltipUtil";
+import { equipItem } from "../Character/characterSlice";
 
 const Inventory = () => {
   const dispatch = useDispatch();
@@ -22,15 +23,11 @@ const Inventory = () => {
 
     switch (sortCriteria) {
       case "AZ":
-        return sortDirection === "DESC"
-          ? b.name.localeCompare(a.name)
-          : a.name.localeCompare(b.name);
+        return sortDirection === "DESC" ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
       case "09":
         return sortDirection === "DESC" ? b.amount - a.amount : a.amount - b.amount;
       case "TYPE":
-        return sortDirection === "DESC"
-          ? b.type.localeCompare(a.type)
-          : a.type.localeCompare(b.type);
+        return sortDirection === "DESC" ? b.type.localeCompare(a.type) : a.type.localeCompare(b.type);
       case "VAL":
         return sortDirection === "DESC" ? b.value - a.value : a.value - b.value;
       default:
@@ -39,15 +36,9 @@ const Inventory = () => {
   });
 
   const handleDelete = (item: Item) => {
-    if (window.confirm("Are you sure you want to delete this item?"))
-      dispatch(removeItem({ item: item }));
+    if (window.confirm("Are you sure you want to delete this item?")) dispatch(removeItem({ item: item }));
     else if (item.unique) {
-      if (
-        window.confirm(
-          `Are you sure you want to delete this UNIQUE item? You will not be able to get it back.`
-        )
-      )
-        dispatch(removeItem({ item: item }));
+      if (window.confirm(`Are you sure you want to delete this UNIQUE item? You will not be able to get it back.`)) dispatch(removeItem({ item: item }));
     }
   };
 
@@ -79,18 +70,12 @@ const Inventory = () => {
       </div>
       <ul className="inventory-list">
         {sortedFilteredItems.map((item, index) => (
-          <li
-            className="item"
-            key={index}
-            data-tooltip-id="item-tooltip"
-            data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
-              item.weapon || item.tool ? ItemTooltipUtil(item) : null
-            )}
-          >
-            <span className="inventory-label">
+          <li className="item" key={index} data-tooltip-id="item-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(item.weapon || item.tool ? ItemTooltipUtil(item) : null)}>
+            <span className="inventory-label" {...(item.slot ? { onClick: () => dispatch(equipItem({ slot: item.slot!, item: item.name })) } : {})}>
               <span className={`item-type-label item-type-${item.type}`}>[{item.type}] </span>
               {item.name}
             </span>
+
             <span>x{item.amount.toLocaleString("en-US")}</span>
             <span className="delete-button-container">
               <button className="delete-button" onClick={() => handleDelete(item)}>

@@ -20,13 +20,10 @@ export const initialState: InventoryState = {
   sort: "TYPE_DESC",
 };
 
-export const saveInventory = createAsyncThunk(
-  "inventory/saveInventory",
-  async (_, { getState }) => {
-    const state = getState() as RootState; // Use your RootState
-    localStorage.setItem("inventoryState", JSON.stringify(state.inventory));
-  }
-);
+export const saveInventory = createAsyncThunk("inventory/saveInventory", async (_, { getState }) => {
+  const state = getState() as RootState; // Use your RootState
+  localStorage.setItem("inventoryState", JSON.stringify(state.inventory));
+});
 
 const inventorySlice = createSlice({
   name: "inventory",
@@ -74,6 +71,5 @@ const inventorySlice = createSlice({
   },
 });
 
-export const { addOrRemoveItem, removeItem, updateItem, setFilter, setSort } =
-  inventorySlice.actions;
+export const { addOrRemoveItem, removeItem, updateItem, setFilter, setSort } = inventorySlice.actions;
 export default inventorySlice.reducer;

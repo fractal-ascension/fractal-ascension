@@ -21,11 +21,7 @@ export const ItemTooltipUtil = (item: Item) => {
       <br />
       <div>
         <div className="item-tooltip-details">
-          <img
-            src={item.img ? item.img : nullItem}
-            alt={`${item.name}`}
-            style={{ gridRow: "1 / span 11", gridColumn: " 1 / span 3" }}
-          />
+          <img src={item.img ? item.img : nullItem} alt={`${item.name}`} style={{ gridRow: "1 / span 11", gridColumn: " 1 / span 3" }} />
           <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
             <b>Damage: </b>
           </span>
@@ -35,15 +31,11 @@ export const ItemTooltipUtil = (item: Item) => {
           <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
             <b>Atk Speed: </b>
           </span>
-          <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>
-            [{item.weapon.attackSpeed}s]
-          </span>
+          <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>[{item.weapon.attackSpeed}s]</span>
           <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
             <b>Range: </b>
           </span>
-          <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>
-            [{item.weapon.range}m]
-          </span>
+          <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>[{item.weapon.range}m]</span>
           <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
             <b>Critical: </b>
           </span>
@@ -60,9 +52,7 @@ export const ItemTooltipUtil = (item: Item) => {
           <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
             <b>Value: </b>
           </span>
-          <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>
-            {ConvertToCurrency(item.value)}
-          </span>
+          <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>{ConvertToCurrency(item.value)}</span>
         </div>
         <hr />
         <span>{item.description}</span>

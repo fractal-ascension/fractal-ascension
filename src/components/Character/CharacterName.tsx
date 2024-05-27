@@ -38,16 +38,7 @@ const CharacterName = () => {
   };
 
   return (
-    <div
-      className="editable-text"
-      ref={nameRef}
-      contentEditable={true}
-      onBlur={handleBlur}
-      onInput={handleNameEdit}
-      onKeyDown={handleKeyDown}
-      suppressContentEditableWarning={true}
-      spellCheck={false}
-    >
+    <div className="editable-text" ref={nameRef} contentEditable={true} onBlur={handleBlur} onInput={handleNameEdit} onKeyDown={handleKeyDown} suppressContentEditableWarning={true} spellCheck={false}>
       {character.name ? character.name : initialState.name}
     </div>
   );

@@ -1,13 +1,7 @@
 import { configureStore, Middleware } from "@reduxjs/toolkit";
-import characterReducer, {
-  initialState as characterInitialState,
-} from "./components/Character/characterSlice";
-import inventoryReducer, {
-  initialState as inventoryInitialState,
-} from "./components/Inventory/inventorySlice";
-import messageReducer, {
-  initialState as messageInitialState,
-} from "./components/Message/messageSlice";
+import characterReducer, { initialState as characterInitialState } from "./components/Character/characterSlice";
+import inventoryReducer, { initialState as inventoryInitialState } from "./components/Inventory/inventorySlice";
+import messageReducer, { initialState as messageInitialState } from "./components/Message/messageSlice";
 import globalTimeReducer, { initialState as globalTimeInitialState } from "./Utils/Slices/globalTimeSlice";
 import progressReducer, { initialState as progressInitialState } from "./Utils/Slices/progressSlice";
 
@@ -21,7 +15,6 @@ export const loadState = (key: string, initialState: unknown) => {
     const storedState = localStorage.getItem(key);
     // return storedState ? JSON.parse(b64Decode(storedState)) : initialState;
     return storedState ? JSON.parse(storedState) : initialState;
-    
   } catch (error) {
     console.error("Failed to load or decode state:", error);
     return initialState;

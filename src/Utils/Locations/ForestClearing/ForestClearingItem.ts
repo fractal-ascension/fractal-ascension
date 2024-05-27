@@ -1,25 +1,10 @@
-import {
-  ArcaneGem,
-  ArcaneTome,
-  Bow,
-  Club,
-  Hammer,
-  Ink,
-  Iron,
-  IronWood,
-  Item,
-  ItemType,
-  Manual,
-  Paper,
-  ScrapStone,
-  ScrapWood,
-  Sword,
-} from "../../Data/Items";
+import { ArcaneGem, ArcaneTome, Bow, Club, Hammer, Ink, Iron, IronWood, Item, ItemType, Manual, Paper, ScrapStone, ScrapWood, Sword } from "../../Data/Items";
 import { FishingSkillId } from "../../Data/Skills/FishingSkill";
 import { ForagingSkillId } from "../../Data/Skills/ForagingSkill";
 import { HuntingSkillId } from "../../Data/Skills/HuntingSkill";
 import sturdyStick from "../../../assets/SturdyStick.png";
 import roundRock from "../../../assets/RoundRock.png";
+import { EquipmentSlot } from "../../../components/Character/characterSlice";
 
 export enum ForestClearingItems {
   SturdyStick = "sturdyStick",
@@ -40,6 +25,7 @@ export const ForestClearingItem: Item[] = [
     amount: 1,
     unique: false,
     img: sturdyStick,
+    slot: EquipmentSlot.WEAPON,
     weapon: {
       weaponType: Club,
       attackSpeed: 2,
@@ -61,6 +47,7 @@ export const ForestClearingItem: Item[] = [
     amount: 1,
     unique: false,
     img: roundRock,
+    slot: EquipmentSlot.WEAPON,
     weapon: {
       weaponType: Hammer,
       attackSpeed: 4,
@@ -81,6 +68,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
+    slot: EquipmentSlot.WEAPON,
     weapon: {
       weaponType: Sword,
       attackSpeed: 2,
@@ -101,6 +89,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
+    slot: EquipmentSlot.WEAPON,
     weapon: {
       weaponType: Bow,
       attackSpeed: 3,
@@ -121,6 +110,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
+    slot: EquipmentSlot.WEAPON,
     weapon: {
       weaponType: ArcaneTome,
       attackSpeed: 2,
@@ -145,6 +135,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.TOOL,
     amount: 1,
     unique: true,
+    slot: EquipmentSlot.OFFHAND,
     tool: {
       toolType: Manual,
       rank: 3,

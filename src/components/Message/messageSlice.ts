@@ -46,8 +46,7 @@ export const messageSlice = createSlice({
       }>
     ) => {
       // Determine the next ID
-      const nextId =
-        state.messages.length > 0 ? Math.max(...state.messages.map((msg) => msg.id)) + 1 : 1;
+      const nextId = state.messages.length > 0 ? Math.max(...state.messages.map((msg) => msg.id)) + 1 : 1;
 
       const newMessage: Message = {
         id: nextId, // Use the calculated next ID

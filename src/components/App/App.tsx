@@ -39,7 +39,7 @@ const App: React.FC = () => {
       clearInterval(timerId);
       setTimerId(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isPaused]);
 
   const togglePause = () => {
@@ -74,14 +74,7 @@ const App: React.FC = () => {
     }, 300000) as unknown as number; // Type assertion to number
     setSaveIntervalId(id);
     return () => clearInterval(id);
-  }, [
-    SaveStates.CharacterState,
-    SaveStates.GlobalTimeState,
-    SaveStates.InventoryState,
-    SaveStates.MessageState,
-    SaveStates.ProgressState,
-    dispatch,
-  ]);
+  }, [SaveStates.CharacterState, SaveStates.GlobalTimeState, SaveStates.InventoryState, SaveStates.MessageState, SaveStates.ProgressState, dispatch]);
 
   if (loading) {
     return (
@@ -135,9 +128,7 @@ const App: React.FC = () => {
     // Generate the timestamp
     const now = new Date();
     const date = now.toLocaleDateString("en-GB").replace(/\//g, "-"); // Converts date to dd-mm-yyyy format
-    const time = now
-      .toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false })
-      .replace(/:/g, "-"); // Converts time to HH-mm format
+    const time = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false }).replace(/:/g, "-"); // Converts time to HH-mm format
 
     // Create the download link with the timestamp
     const link = document.createElement("a");

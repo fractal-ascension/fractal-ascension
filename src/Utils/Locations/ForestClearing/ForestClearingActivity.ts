@@ -129,9 +129,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find(
-                    (item) => item.id === ForestClearingItems.TrustyIronSword
-                  )!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronSword)!,
                   value: 1,
                 },
               ],
@@ -149,9 +147,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find(
-                    (item) => item.id === ForestClearingItems.TrustyIronwoodBow
-                  )!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronwoodBow)!,
                   value: 1,
                 },
               ],
@@ -169,9 +165,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find(
-                    (item) => item.id === ForestClearingItems.TrustyArcaneSpellbook
-                  )!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyArcaneSpellbook)!,
                   value: 1,
                 },
               ],
@@ -189,9 +183,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find(
-                    (item) => item.id === ForestClearingItems.TrustForestEncyclopedia
-                  )!,
+                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustForestEncyclopedia)!,
                   value: 1,
                 },
               ],
