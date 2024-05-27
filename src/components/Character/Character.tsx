@@ -189,7 +189,23 @@ const Character: React.FC = () => {
       <span style={{ fontSize: ".7em", color: "gray" }}>Status</span>
       <div className="status-grid">
         {character.statuses?.map((status) => (
-          <div key={status.id} className="status-box">
+          <div
+            key={status.id}
+            className="status-box"
+            data-tooltip-id={`status-tooltip-${status.id}`}
+            data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
+              <span style={{ fontSize: "0.8em" }}>
+                {status.description}
+                <br />
+                {status.effectDescription.map((desc, index) => (
+                  <span key={index}>
+                    • {desc}
+                    <br />
+                  </span>
+                ))}
+              </span>
+            )}
+          >
             <div className="status-content">
               <span className="status-text">
                 {Icons.Skull}
@@ -199,6 +215,7 @@ const Character: React.FC = () => {
             <div className="status-duration">
               {status.duration > 0 ? `${status.duration} ticks` : "Permanent"}
             </div>
+            <Tooltip id={`status-tooltip-${status.id}`} className="status-tooltip" />
           </div>
         ))}
       </div>

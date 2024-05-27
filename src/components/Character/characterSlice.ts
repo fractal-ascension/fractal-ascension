@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { CombatDamageParameters, BaseParameters, Stats } from "../../Utils/Data/Stats";
 
-interface Equipment {
+export interface Equipment {
   lefthand: string | null;
   righthand: string | null;
   head: string | null;
@@ -27,7 +27,7 @@ export interface StatusEffect {
   description: string;
   duration: number;
   effectType: EffectType;
-  effectDescription: string;
+  effectDescription: string[];
   effectAmount: number;
 }
 
@@ -66,22 +66,22 @@ const calculateBaseParameters = (level: number, stats: Stats): BaseParameters =>
   hpRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
   maxHp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
   hunger: 100,
-  hungerRegen: -10.1, // Certain actions/skills/perks can increase or decrease
+  hungerRegen: -0.1, // Certain actions/skills/perks can increase or decrease
   maxHunger: 100 + level * 10 + stats.vitality * 20,
   sp: 100,
   spRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
   maxSp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
   thirst: 100,
-  thirstRegen: -10.1, // Certain actions/skills/perks can increase or decrease
+  thirstRegen: -0.1, // Certain actions/skills/perks can increase or decrease
   maxThirst: 100 + level * 10 + stats.vitality * 20,
   mp: 100,
   mpRegen: 0.1 + level * 0.1 + stats.wisdom * 0.1,
   maxMp: 100 + level * 10 + stats.wisdom * 20 + stats.intelligence * 10,
   sleep: 100,
-  sleepRegen: -10.1, // Certain actions/skills/perks can increase or decrease
+  sleepRegen: -0.1, // Certain actions/skills/perks can increase or decrease
   maxSleep: 100 + level * 10 + stats.vitality * 20,
   energy: 100,
-  energyRegen: -10.1, // Certain actions/skills/perks can increase or decrease
+  energyRegen: -0.1, // Certain actions/skills/perks can increase or decrease
   maxEnergy: 100 + level * 10 + stats.vitality * 20,
   xp: 0,
   nextLevelExperience: 99 + Math.pow(2, level) + 100 * Math.pow(level, 2),
@@ -605,14 +605,16 @@ const handleDeath = (state: CharacterState) => {
     parameters.sleep = parameters.maxSleep * 0.5;
     parameters.energy = parameters.maxEnergy * 0.5;
 
-    const resurrectedStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
+    const resurrectedStatusIndex = state.statuses.findIndex(
+      (status) => status.id === "resurrected"
+    );
     const resurrectedStatus: StatusEffect = {
       id: "resurrected",
       name: "Resurrected",
       description: "Recently resurrected by an unknown power. You feel weak.",
       duration: 600,
       effectType: EffectType.REDUCE_ALL,
-      effectDescription: "All stats reduced by 50%.",
+      effectDescription: ["All stats reduced by 50%."],
       effectAmount: 0.5,
     };
 

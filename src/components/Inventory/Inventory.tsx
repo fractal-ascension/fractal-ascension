@@ -37,7 +37,6 @@ const Inventory = () => {
         return 0;
     }
   });
-  // <img src={stick} alt="Stick" width="30"/>
 
   const handleDelete = (item: Item) => {
     if (window.confirm("Are you sure you want to delete this item?"))

@@ -120,7 +120,7 @@ $padding: 5px;
 #item-tooltip {
   z-index: 1000; // Ensure this is higher than any other element within the same stacking context
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
-  width: 450px;
+  width: 550px;
 }
 
 #item-tooltip hr {
@@ -143,5 +143,5 @@ $padding: 5px;
 
 .item-tooltip-details {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(8, 1fr);
 }

@@ -76,5 +76,4 @@ const inventorySlice = createSlice({
 
 export const { addOrRemoveItem, removeItem, updateItem, setFilter, setSort } =
   inventorySlice.actions;
-export const selectInventory = (state: { inventory: InventoryState }) => state.inventory;
 export default inventorySlice.reducer;

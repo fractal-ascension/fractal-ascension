@@ -162,7 +162,6 @@ $text-color: white;
 
 .status-content {
   display: flex;
-  align-items: center;
   gap: 10px; /* Gap between icon and text */
 }
 
@@ -178,6 +177,14 @@ $text-color: white;
   z-index: 1000; // Ensure this is higher than any other element within the same stacking context
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
   max-width: 500px;
+}
+
+.status-tooltip {
+  z-index: 1000; // Ensure this is higher than any other element within the same stacking context
+  position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
+  max-width: 500px;
+  text-align: start;
+
 }
 
 .panel-button {

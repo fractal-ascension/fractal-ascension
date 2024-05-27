@@ -18,6 +18,8 @@ import {
 import { FishingSkillId } from "../../Data/Skills/FishingSkill";
 import { ForagingSkillId } from "../../Data/Skills/ForagingSkill";
 import { HuntingSkillId } from "../../Data/Skills/HuntingSkill";
+import sturdyStick from "../../../assets/SturdyStick.png";
+import roundRock from "../../../assets/RoundRock.png";
 
 export enum ForestClearingItems {
   SturdyStick = "sturdyStick",
@@ -30,14 +32,14 @@ export enum ForestClearingItems {
 
 export const ForestClearingItem: Item[] = [
   {
-    // WIP still trying to decide on many things
     id: ForestClearingItems.SturdyStick,
     name: "Sturdy Stick",
-    description: "A sturdy stick.",
+    description: "A sturdy stick you found on the ground.",
     value: 0,
     type: ItemType.WPN,
     amount: 1,
     unique: false,
+    img: sturdyStick,
     weapon: {
       weaponType: Club,
       attackSpeed: 2,
@@ -58,6 +60,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: false,
+    img: roundRock,
     weapon: {
       weaponType: Hammer,
       attackSpeed: 4,
