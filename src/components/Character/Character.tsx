@@ -108,6 +108,36 @@ const Character: React.FC = () => {
     );
   };
 
+  const renderSkills = () => {
+    return (
+      <div className="stats-grid">
+        {Object.entries(character.stats).map(([statName, statValue]) => {
+          const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
+          const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
+
+          // Define the tooltip content directly here
+          const tooltipContent = (
+            <div>
+              <strong>{fullName}</strong>
+              {statEffects
+                .find((effect) => effect.id === statName)
+                ?.effects.map((effect) => (
+                  <div key={effect}>• {effect}</div>
+                ))}
+            </div>
+          );
+
+          return (
+            <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
+              {abbreviation}: {statValue}
+            </div>
+          );
+        })}
+        <Tooltip id="stats-tooltip" className="tooltip" />
+      </div>
+    );
+  };
+
   const renderEquipment = () => {
     return (
       <div className="equipment-panel">
@@ -172,6 +202,7 @@ const Character: React.FC = () => {
       case "home":
         return (
           <>
+            <span style={{ fontSize: ".7em", color: "gray" }}>Character</span>
             <div className="info-box">
               <div>
                 <CharacterName />
@@ -182,13 +213,12 @@ const Character: React.FC = () => {
             </div>
 
             {renderBars()}
-
+            <span style={{ fontSize: ".7em", color: "gray" }}>Stats</span>
             <div className="stats-grid">
               {Object.entries(character.stats).map(([statName, statValue]) => {
                 const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
                 const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
 
-                // Define the tooltip content directly here
                 const tooltipContent = (
                   <div>
                     <strong>{fullName}</strong>
@@ -208,7 +238,7 @@ const Character: React.FC = () => {
               })}
               <Tooltip id="stats-tooltip" className="tooltip" />
             </div>
-
+            <span style={{ fontSize: ".7em", color: "gray" }}>Weapons</span>
             <div className="equipment-grid">
               {renderEquipmentSlotMain("R Weapon", character.equipment.rightWeapon)}
               {renderEquipmentSlotMain("L Weapon", character.equipment.leftWeapon)}
@@ -250,6 +280,8 @@ const Character: React.FC = () => {
         return renderEquipment();
       case "stats":
         return renderStats();
+      case "skill":
+        return renderSkills();
       default:
         return null;
     }
@@ -257,17 +289,71 @@ const Character: React.FC = () => {
 
   return (
     <>
-      <button className={`panel-button home-button ${activePanel === "home" ? "active" : ""}`} onClick={() => setActivePanel("home")}>
-        {Icons.Home} Home
-      </button>
-      <button className={`panel-button equipment-button ${activePanel === "equipment" ? "active" : ""}`} onClick={() => setActivePanel("equipment")}>
-        {Icons.Sword} Equipment
-      </button>
-      <button className={`panel-button stats-button ${activePanel === "stats" ? "active" : ""}`} onClick={() => setActivePanel("stats")}>
-        {Icons.Vitality} Stats
-      </button>
-
+      {/* Move buttons out to App.tsx so I can also change the other panels */}
       <div className={`character-container ${browser}`}>{renderContent()}</div>
+      <button
+        className={`panel-button home-button ${activePanel === "home" ? "active" : ""}`}
+        onClick={() => setActivePanel("home")}
+        data-tooltip-id={`home-tooltip`}
+        data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Home</span>)}
+      >
+        {Icons.Home}
+        <Tooltip id={`home-tooltip`} className="home-tooltip" />
+      </button>
+      <button
+        className={`panel-button equipment-button ${activePanel === "equipment" ? "active" : ""}`}
+        onClick={() => setActivePanel("equipment")}
+        data-tooltip-id={`equipment-tooltip`}
+        data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Equipment</span>)}
+      >
+        {Icons.Sword}
+        <Tooltip id={`equipment-tooltip`} className="equipment-tooltip" />
+      </button>
+      <button
+        className={`panel-button tool-button ${activePanel === "tool" ? "active" : ""}`}
+        onClick={() => setActivePanel("tool")}
+        data-tooltip-id={`tool-tooltip`}
+        data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Tools</span>)}
+      >
+        {Icons.Pickaxe}
+        <Tooltip id={`tool-tooltip`} className="tool-tooltip" />
+      </button>
+      <button
+        className={`panel-button stats-button ${activePanel === "stats" ? "active" : ""}`}
+        onClick={() => setActivePanel("stats")}
+        data-tooltip-id={`stats-tooltip`}
+        data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Stats</span>)}
+      >
+        {Icons.Vitality}
+        <Tooltip id={`stats-tooltip`} className="stats-tooltip" />
+      </button>
+      <button
+        className={`panel-button skill-button ${activePanel === "skill" ? "active" : ""}`}
+        onClick={() => setActivePanel("skill")}
+        data-tooltip-id={`skill-tooltip`}
+        data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Skills</span>)}
+      >
+        {Icons.Book}
+        <Tooltip id={`skill-tooltip`} className="skill-tooltip" />
+      </button>
+      <button
+        className={`panel-button skill-button ${activePanel === "skill" ? "active" : ""}`}
+        onClick={() => setActivePanel("skill")}
+        data-tooltip-id={`skill-tooltip`}
+        data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Skills</span>)}
+      >
+        {Icons.Book}
+        <Tooltip id={`skill-tooltip`} className="skill-tooltip" />
+      </button>
+      <button
+        className={`panel-button profession-button ${activePanel === "profession" ? "active" : ""}`}
+        onClick={() => setActivePanel("profession")}
+        data-tooltip-id={`profession-tooltip`}
+        data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Professions</span>)}
+      >
+        {Icons.XP}
+        <Tooltip id={`profession-tooltip`} className="profession-tooltip" />
+      </button>
     </>
   );
 };

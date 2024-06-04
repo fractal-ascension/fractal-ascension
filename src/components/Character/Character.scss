@@ -19,12 +19,12 @@ $text-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   color: white;
   margin-bottom: 10px; // Container margin, matching main
-  padding: 10px;
   text-shadow: 1.5px 1px #000;
   width: 600px;
-  height: 582px;
+  height: 602px;
   position: relative; /* Ensure this is set */
   z-index: 10; /* Ensure this is higher than the button's z-index */
+  padding: 0 10px;
 }
 
 // .character-container.chrome {
@@ -195,22 +195,34 @@ $text-color: white;
   font: 1em MS Gothic;
   padding: $padding $padding;
   position: absolute;
-  z-index: 1;
-  transition: margin-left 0.3s ease; /* Add transition for smooth animation */
-  margin-left: -40px;
+  z-index: 100;
+  top: 572px;
+  width: 105px;
 }
 
-/* Position each button using top property */
 .home-button {
-  top: 10px;
+  left: 259px;
 }
 
 .equipment-button {
-  top: 51px;
+  left: 363px;
+}
+
+.tool-button {
+  left: 467px;
 }
 
 .stats-button {
-  top: 92px;
+  left: 571px;
+}
+
+.skill-button {
+  left: 675px;
+}
+
+.profession-button {
+  left: 776px;
+  border-bottom-right-radius: 8px;
 }
 
 /* Add hover effect for all buttons */
@@ -218,21 +230,6 @@ $text-color: white;
   background: $button-hover-bg-color;
 }
 
-.home-button:hover {
-  margin-left: -90px;
-}
-
-.equipment-button:hover {
-  margin-left: -150px;
-}
-
-.stats-button:hover {
-  margin-left: -110px;
-}
-
-.character-container {
-  position: relative;
-}
 .equipment-panel {
   display: grid;
   grid-template-columns: 1fr 1fr; /* Allocate more space to the middle column */
@@ -249,7 +246,7 @@ $text-color: white;
   height: 100%;
   background: url("../../assets/Man.png") no-repeat center center;
   background-size: cover;
-  background-color:  #3c415e;
+  background-color: #3c415e;
 }
 
 .equipment-slot {
@@ -324,9 +321,4 @@ $text-color: white;
 .right-foot-slot {
   top: 500px;
   left: 150px;
-}
-
-.character-container {
-  position: relative;
-  padding: 20px;
 }
