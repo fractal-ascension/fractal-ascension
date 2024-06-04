@@ -1,27 +1,39 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import { CombatDamageParameters, BaseParameters, Stats } from "../../Utils/Data/Stats";
+import { CombatDamageParameters, BaseParameters, Stats, CombatStats } from "../../Utils/Data/Stats";
 
 export interface Equipment {
-  weapon: string | null;
-  offhand: string | null;
   head: string | null;
+  amulet: string | null;
   body: string | null;
-  arms: string | null;
-  legs: string | null;
-  feet: string | null;
-  accessory: string | null;
+  leftArm: string | null;
+  rightArm: string | null;
+  leftRing: string | null;
+  rightRing: string | null;
+  leftWeapon: string | null;
+  rightWeapon: string | null;
+  belt: string | null;
+  leftLeg: string | null;
+  rightLeg: string | null;
+  leftFoot: string | null;
+  rightFoot: string | null;
 }
 
 export enum EquipmentSlot {
-  WEAPON = "weapon",
-  OFFHAND = "offhand",
-  HEAD = "head",
-  BODY = "body",
-  ARMS = "arms",
-  LEGS = "legs",
-  FEET = "feet",
-  ACCESSORY = "accessory",
+  Head = "head",
+  Amulet = "amulet",
+  Body = "body",
+  LeftArm = "leftArm",
+  RightArm = "rightArm",
+  LeftRing = "leftRing",
+  RightRing = "rightRing",
+  LeftWeapon = "leftWeapon",
+  RightWeapon = "rightWeapon",
+  Belt = "belt",
+  LeftLeg = "leftLeg",
+  RightLeg = "rightLeg",
+  LeftFoot = "leftFoot",
+  RightFoot = "rightFoot",
 }
 
 // Combination elements would combine and add based on player's base element values.
@@ -49,6 +61,8 @@ export interface CharacterState {
   level: number;
   stats: Stats;
   originalStats: Stats;
+  combatStats: CombatStats;
+  originalCombatStats: CombatStats;
   equipment: Equipment;
   combatDamageParameters: CombatDamageParameters;
   statuses: StatusEffect[];
@@ -67,6 +81,21 @@ const initialStats: Stats = {
   wisdom: 0,
   perception: 0,
   luck: 0,
+};
+
+const initialCombatStats: CombatStats = {
+  physicalDamage: 0,
+  magicalDamage: 0,
+  armor: 0,
+  magicResistance: 0,
+  blockChance: 0,
+  dodgeChance: 0,
+  criticalChance: 0,
+  criticalMultiplier: 0,
+  hitChance: 0,
+  attackSpeed: 0,
+  armorPenetration: 0,
+  magicPenetration: 0,
 };
 
 // Warriors use strength and vitality for survival stats.
@@ -105,6 +134,8 @@ export const initialState: CharacterState = {
   parameters: calculateBaseParameters(0, initialStats),
   stats: initialStats,
   originalStats: { ...initialStats },
+  combatStats: initialCombatStats,
+  originalCombatStats: { ...initialCombatStats },
   equipment: {
     weapon: null,
     offhand: null,
@@ -121,41 +152,6 @@ export const initialState: CharacterState = {
   // If different type, apply both.
   // For example, physical multiplies with slashing, multiplies with feather.
   combatDamageParameters: {
-    combatType: {
-      meleeDamage: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      rangedDamage: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      magicDamage: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-    },
     overallDamageType: {
       physical: {
         damage: 0,
@@ -281,63 +277,6 @@ export const initialState: CharacterState = {
         magicPenetration: 0,
       },
       dark: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-    },
-    weightType: {
-      feather: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      light: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      medium: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      heavy: {
-        damage: 0,
-        attackSpeed: 0,
-        cooldown: 0,
-        criticalChance: 0,
-        criticalMultiplier: 0,
-        hitChance: 0,
-        range: 0,
-        armorPenetration: 0,
-        magicPenetration: 0,
-      },
-      titanic: {
         damage: 0,
         attackSpeed: 0,
         cooldown: 0,

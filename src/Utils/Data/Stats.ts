@@ -35,6 +35,21 @@ export interface Stats {
   luck: number;
 }
 
+export interface CombatStats {
+  physicalDamage: number;
+  magicalDamage: number;
+  armor: number;
+  magicResistance: number;
+  blockChance: number;
+  dodgeChance: number;
+  criticalChance: number;
+  criticalMultiplier: number;
+  hitChance: number;
+  attackSpeed: number;
+  armorPenetration: number;
+  magicPenetration: number;
+}
+
 export const enum StatId {
   Strength = "strength",
   Vitality = "vitality",
@@ -62,6 +77,21 @@ export const statAbbreviations: Record<keyof Stats, keyof typeof fullStatNames> 
   luck: "LCK",
 };
 
+export const combatStatAbbreviations: Record<keyof CombatStats, keyof typeof fullCombatStatNames> = {
+  physicalDamage: "PD",
+  magicalDamage: "MD",
+  armor: "AR",
+  magicResistance: "MR",
+  blockChance: "BCh",
+  dodgeChance: "DCh",
+  criticalChance: "CCh",
+  criticalMultiplier: "CMult",
+  hitChance: "HCh",
+  attackSpeed: "AtkSpd",
+  armorPenetration: "AP",
+  magicPenetration: "MP",
+};
+
 export const fullStatNames = {
   STR: "Strength",
   VIT: "Vitality",
@@ -71,6 +101,21 @@ export const fullStatNames = {
   WIS: "Wisdom",
   PER: "Perception",
   LCK: "Luck",
+};
+
+export const fullCombatStatNames = {
+  PD: "Physical Damage",
+  MD: "Magical Damage",
+  AR: "Armor",
+  MR: "Magic Resistance",
+  BCh: "Block Chance",
+  DCh: "Dodge Chance",
+  CCh: "Critical Chance",
+  CMult: "Critical Multiplier",
+  HCh: "Hit Chance",
+  AtkSpd: "Attack Speed",
+  AP: "Armor Penetration",
+  MP: "Magic Penetration",
 };
 
 export const statEffects = [
@@ -109,12 +154,6 @@ export const statEffects = [
 ];
 
 export interface CombatDamageParameters {
-  combatType: {
-    meleeDamage: DamageDetails;
-    rangedDamage: DamageDetails;
-    magicDamage: DamageDetails;
-  };
-
   overallDamageType: {
     physical: DamageDetails; // Multiplies with Slash, Pierce, Blunt
     magical: DamageDetails; // Multiplies with Fire, Water, Earth, Air, Arcane
@@ -138,14 +177,6 @@ export interface CombatDamageParameters {
 
     // Divine
     // Future Damage Type: Holy/Unholy/Spiritual/Demonic/Undead (Clerical style)
-  };
-
-  weightType: {
-    feather: DamageDetails;
-    light: DamageDetails;
-    medium: DamageDetails;
-    heavy: DamageDetails;
-    titanic: DamageDetails;
   };
 
   weaponType: {

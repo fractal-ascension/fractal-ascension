@@ -23,6 +23,8 @@ $text-color: white;
   text-shadow: 1.5px 1px #000;
   width: 600px;
   height: 582px;
+  position: relative; /* Ensure this is set */
+  z-index: 10; /* Ensure this is higher than the button's z-index */
 }
 
 // .character-container.chrome {
@@ -39,6 +41,8 @@ $text-color: white;
   margin-bottom: $margin-bottom;
   text-align: center;
   height: 55px;
+  z-index: 11; /* Ensure this is higher than the button's z-index */
+  position: relative;
 }
 
 .editable-text {
@@ -120,7 +124,7 @@ $text-color: white;
   margin-bottom: $margin-bottom;
 }
 
-.equipment-slot {
+.equipment-slot-main {
   background: var(--slot-background, lighten($secondary-bg-color, 10%));
   border: 1px solid $detail-border-color;
   border-radius: $border-radius;
@@ -140,6 +144,7 @@ $text-color: white;
   padding: $padding;
   scrollbar-width: thin; /* Makes the scrollbar thinner */
   height: auto; /* Allows height to adjust based on content */
+  min-height: 78px; /* Sets a minimum height for the grid */
 }
 
 .status-box {
@@ -189,9 +194,139 @@ $text-color: white;
   color: $text-color;
   font: 1em MS Gothic;
   padding: $padding $padding;
-  margin-top: 10px;
-  width: 85px;
-  &:hover {
-    background: $button-hover-bg-color;
-  }
+  position: absolute;
+  z-index: 1;
+  transition: margin-left 0.3s ease; /* Add transition for smooth animation */
+  margin-left: -40px;
+}
+
+/* Position each button using top property */
+.home-button {
+  top: 10px;
+}
+
+.equipment-button {
+  top: 51px;
+}
+
+.stats-button {
+  top: 92px;
+}
+
+/* Add hover effect for all buttons */
+.panel-button:hover {
+  background: $button-hover-bg-color;
+}
+
+.home-button:hover {
+  margin-left: -90px;
+}
+
+.equipment-button:hover {
+  margin-left: -150px;
+}
+
+.stats-button:hover {
+  margin-left: -110px;
+}
+
+.character-container {
+  position: relative;
+}
+.equipment-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Allocate more space to the middle column */
+  gap: 10px; /* Keeps a fixed gap between the columns */
+  justify-content: center; /* Centers the columns if there is extra space */
+  background-color: #50577d;
+  height: 100%;
+  border: 1px solid $border-color;
+}
+
+.equipment-silhouette {
+  position: relative;
+  width: 300px;
+  height: 100%;
+  background: url("../../assets/Man.png") no-repeat center center;
+  background-size: cover;
+  background-color:  #3c415e;
+}
+
+.equipment-slot {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--slot-background, lighten($secondary-bg-color, 10%));
+  background: url("../../assets/Background.png") no-repeat center center;
+  border: 1px solid $detail-border-color;
+  border-radius: $border-radius;
+  color: var(--slot-color, white);
+  opacity: var(--slot-opacity, 1);
+  font-size: 0.8em;
+  text-align: center;
+}
+
+.head-slot {
+  top: 30px;
+  left: 117px;
+}
+.amulet-slot {
+  top: 90px;
+  left: 117px;
+}
+.body-slot {
+  top: 150px;
+  left: 117px;
+}
+.left-arm-slot {
+  top: 150px;
+  left: 57px;
+}
+.right-arm-slot {
+  top: 150px;
+  left: 177px;
+}
+.left-ring-slot {
+  top: 240px;
+  left: 30px;
+}
+.right-ring-slot {
+  top: 240px;
+  left: 210px;
+}
+.left-weapon-slot {
+  top: 300px;
+  left: 30px;
+}
+.right-weapon-slot {
+  top: 300px;
+  left: 210px;
+}
+.belt-slot {
+  top: 240px;
+  left: 117px;
+}
+.left-leg-slot {
+  top: 330px;
+  left: 90px;
+}
+.right-leg-slot {
+  top: 330px;
+  left: 150px;
+}
+.left-foot-slot {
+  top: 500px;
+  left: 90px;
+}
+.right-foot-slot {
+  top: 500px;
+  left: 150px;
+}
+
+.character-container {
+  position: relative;
+  padding: 20px;
 }

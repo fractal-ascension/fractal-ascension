@@ -5,7 +5,7 @@ import { RootState } from "../../store";
 import CharacterName from "./CharacterName";
 import { detectBrowser } from "../../Utils/Functions/browserUtil";
 import { Tooltip } from "react-tooltip";
-import { fullStatNames, statAbbreviations, statEffects } from "../../Utils/Data/Stats";
+import { combatStatAbbreviations, fullCombatStatNames, fullStatNames, statAbbreviations, statEffects } from "../../Utils/Data/Stats";
 import ReactDOMServer from "react-dom/server";
 import { Icons } from "../../Utils/Data/Icons";
 
@@ -16,8 +16,18 @@ type ExtendedCSSProperties = React.CSSProperties & {
 };
 
 const Character: React.FC = () => {
+  const [activePanel, setActivePanel] = React.useState("home");
   const browser = React.useMemo(() => detectBrowser(), []);
   const character = useSelector((state: RootState) => state.character);
+
+  const renderEquipmentSlotMain = (label: string, item: string | null) => {
+    const isEmpty = !item;
+    return (
+      <div className={"equipment-slot-main"} key={label}>
+        {isEmpty ? label : item}
+      </div>
+    );
+  };
 
   const renderEquipmentSlot = (label: string, item: string | null) => {
     const isEmpty = !item;
@@ -68,19 +78,8 @@ const Character: React.FC = () => {
     );
   };
 
-  return (
-    <div className={`character-container ${browser}`}>
-      <div className="info-box">
-        <div>
-          <CharacterName />
-          <div className="text">
-            Lvl: {character.level} '{character.title}'
-          </div>
-        </div>
-      </div>
-
-      {renderBars()}
-
+  const renderStats = () => {
+    return (
       <div className="stats-grid">
         {Object.entries(character.stats).map(([statName, statValue]) => {
           const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
@@ -106,19 +105,35 @@ const Character: React.FC = () => {
         })}
         <Tooltip id="stats-tooltip" className="tooltip" />
       </div>
+    );
+  };
 
-      {/* Display equipment */}
-      <div className="equipment-grid">
-        {renderEquipmentSlot("Weapon", character.equipment.weapon)}
-        {renderEquipmentSlot("Offhand", character.equipment.offhand)}
-        {renderEquipmentSlot("Head", character.equipment.head)}
-        {renderEquipmentSlot("Body", character.equipment.body)}
-        {renderEquipmentSlot("Arms", character.equipment.arms)}
-        {renderEquipmentSlot("Legs", character.equipment.legs)}
-        {renderEquipmentSlot("Feet", character.equipment.feet)}
-        {renderEquipmentSlot("Accessory", character.equipment.accessory)}
+  const renderEquipment = () => {
+    return (
+      <div className="equipment-panel">
+        <div className="equipment-silhouette">
+          <div className="equipment-slot head-slot">{renderEquipmentSlot("Head", character.equipment.head)}</div>
+          <div className="equipment-slot amulet-slot">{renderEquipmentSlot("Amulet", character.equipment.amulet)}</div>
+          <div className="equipment-slot body-slot">{renderEquipmentSlot("Body", character.equipment.body)}</div>
+          <div className="equipment-slot left-arm-slot">{renderEquipmentSlot("L Arm", character.equipment.leftArm)}</div>
+          <div className="equipment-slot right-arm-slot">{renderEquipmentSlot("R Arm", character.equipment.rightArm)}</div>
+          <div className="equipment-slot left-ring-slot">{renderEquipmentSlot("L Ring", character.equipment.leftRing)}</div>
+          <div className="equipment-slot right-ring-slot">{renderEquipmentSlot("R Ring", character.equipment.rightRing)}</div>
+          <div className="equipment-slot left-weapon-slot">{renderEquipmentSlot("L Weapon", character.equipment.leftWeapon)}</div>
+          <div className="equipment-slot right-weapon-slot">{renderEquipmentSlot("R Weapon", character.equipment.rightWeapon)}</div>
+          <div className="equipment-slot belt-slot">{renderEquipmentSlot("Belt", character.equipment.belt)}</div>
+          <div className="equipment-slot left-leg-slot">{renderEquipmentSlot("L Leg", character.equipment.leftLeg)}</div>
+          <div className="equipment-slot right-leg-slot">{renderEquipmentSlot("R Leg", character.equipment.rightLeg)}</div>
+          <div className="equipment-slot left-foot-slot">{renderEquipmentSlot("L Foot", character.equipment.leftFoot)}</div>
+          <div className="equipment-slot right-foot-slot">{renderEquipmentSlot("R Foot", character.equipment.rightFoot)}</div>
+        </div>
+        <div>test</div>
       </div>
-      <span style={{ fontSize: ".7em", color: "gray" }}>Status</span>
+    );
+  };
+
+  const renderStatus = () => {
+    return (
       <div className="status-grid">
         {character.statuses?.map((status) => (
           <div
@@ -149,7 +164,111 @@ const Character: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+    );
+  };
+
+  const renderContent = () => {
+    switch (activePanel) {
+      case "home":
+        return (
+          <>
+            <div className="info-box">
+              <div>
+                <CharacterName />
+                <div className="text">
+                  Lvl: {character.level} '{character.title}'
+                </div>
+              </div>
+            </div>
+
+            {renderBars()}
+
+            <div className="stats-grid">
+              {Object.entries(character.stats).map(([statName, statValue]) => {
+                const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
+                const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
+
+                // Define the tooltip content directly here
+                const tooltipContent = (
+                  <div>
+                    <strong>{fullName}</strong>
+                    {statEffects
+                      .find((effect) => effect.id === statName)
+                      ?.effects.map((effect) => (
+                        <div key={effect}>• {effect}</div>
+                      ))}
+                  </div>
+                );
+
+                return (
+                  <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
+                    {abbreviation}: {statValue}
+                  </div>
+                );
+              })}
+              <Tooltip id="stats-tooltip" className="tooltip" />
+            </div>
+
+            <div className="equipment-grid">
+              {renderEquipmentSlotMain("R Weapon", character.equipment.rightWeapon)}
+              {renderEquipmentSlotMain("L Weapon", character.equipment.leftWeapon)}
+            </div>
+            <span style={{ fontSize: ".7em", color: "gray" }}>Status</span>
+            <div className="status-grid">
+              {character.statuses?.map((status) => (
+                <div
+                  key={status.id}
+                  className="status-box"
+                  data-tooltip-id={`status-tooltip-${status.id}`}
+                  data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
+                    <span style={{ fontSize: "0.8em" }}>
+                      {status.description}
+                      <br />
+                      {status.effectDescription.map((desc, index) => (
+                        <span key={index}>
+                          • {desc}
+                          <br />
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                >
+                  <div className="status-content">
+                    <span className="status-text">
+                      {Icons.Skull}
+                      <br /> {status.name}
+                    </span>
+                  </div>
+                  <div className="status-duration">{status.duration > 0 ? `${status.duration} ticks` : "Permanent"}</div>
+                  <Tooltip id={`status-tooltip-${status.id}`} className="status-tooltip" />
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      case "equipment":
+        return renderEquipment();
+      case "stats":
+        return renderStats();
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <button className={`panel-button home-button ${activePanel === "home" ? "active" : ""}`} onClick={() => setActivePanel("home")}>
+        {Icons.Home} Home
+      </button>
+      <button className={`panel-button equipment-button ${activePanel === "equipment" ? "active" : ""}`} onClick={() => setActivePanel("equipment")}>
+        {Icons.Sword} Equipment
+      </button>
+      <button className={`panel-button stats-button ${activePanel === "stats" ? "active" : ""}`} onClick={() => setActivePanel("stats")}>
+        {Icons.Vitality} Stats
+      </button>
+
+      <div className={`character-container ${browser}`}>{renderContent()}</div>
+    </>
   );
 };
 

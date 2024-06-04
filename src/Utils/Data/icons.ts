@@ -21,6 +21,7 @@ export enum Icons {
   Bow = "🏹",
   Nature = "🌿",
   Skull = "💀",
+  Home = "🏠",
 }
 
 export const getStarRepresentation = (rank: number) => {
