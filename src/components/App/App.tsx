@@ -19,6 +19,12 @@ const App: React.FC = () => {
   const [saveIntervalId, setSaveIntervalId] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
 
+  const [activePanel, setActivePanel] = React.useState("home");
+
+  const handlePanelChange = (newPanel: string) => {
+    setActivePanel(newPanel);
+  };
+
   const enum SaveStates {
     CharacterState = "characterState",
     InventoryState = "inventoryState",
@@ -182,7 +188,7 @@ const App: React.FC = () => {
     <div className="app">
       <div id="main">
         <div className="column">
-          <Character />
+          <Character activePanel={activePanel} onPanelChange={handlePanelChange}/>
           <Inventory />
         </div>
         <div className="column">

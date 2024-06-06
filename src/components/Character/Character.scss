@@ -196,33 +196,37 @@ $text-color: white;
   padding: $padding $padding;
   position: absolute;
   z-index: 100;
-  top: 572px;
+  top: 561px;
   width: 105px;
 }
 
 .home-button {
-  left: 259px;
+  left: -1px;
+  border-bottom-left-radius: 5px;
 }
 
 .equipment-button {
-  left: 363px;
+  left: calc(104px * 1 - 2px);
 }
 
 .tool-button {
-  left: 467px;
+  left: calc(104px * 2 - 3px);
+
 }
 
 .stats-button {
-  left: 571px;
+  left: calc(104px * 3 - 4px);
+
 }
 
 .skill-button {
-  left: 675px;
+  left: calc(104px * 4 - 4px);
+
 }
 
 .profession-button {
-  left: 776px;
-  border-bottom-right-radius: 8px;
+  left: calc(104px * 5 - 4px);
+  border-bottom-right-radius: 5px;
 }
 
 /* Add hover effect for all buttons */
