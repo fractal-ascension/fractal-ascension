@@ -6,7 +6,7 @@ import "./Inventory.scss";
 import { Tooltip } from "react-tooltip";
 import { Item, ItemType } from "../../Utils/Data/Items";
 import { ItemTooltipUtil } from "../../Utils/Functions/ItemTooltipUtil";
-import { equipItem } from "../Character/characterSlice";
+import { equipEquipment, equipTool } from "../Character/characterSlice";
 
 const Inventory = () => {
   const dispatch = useDispatch();
@@ -71,7 +71,12 @@ const Inventory = () => {
       <ul className="inventory-list">
         {sortedFilteredItems.map((item, index) => (
           <li className="item" key={index} data-tooltip-id="item-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(item.weapon || item.tool ? ItemTooltipUtil(item) : null)}>
-            <span className="inventory-label" {...(item.slot ? { onClick: () => dispatch(equipItem({ slot: item.slot!, item: item.name })) } : {})}>
+            <span
+              className="inventory-label"
+              {...(item.equipmentSlot
+                ? { onClick: () => dispatch(equipEquipment({ slot: item.equipmentSlot!, item: item.name })) }
+                : { onClick: () => dispatch(equipTool({ slot: item.toolSlot!, item: item.name })) })}
+            >
               <span className={`item-type-label item-type-${item.type}`}>[{item.type}] </span>
               {item.name}
             </span>

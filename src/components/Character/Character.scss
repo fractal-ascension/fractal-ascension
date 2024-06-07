@@ -11,6 +11,7 @@ $button-bg-color: #333366;
 $button-hover-bg-color: #555599;
 $button-border-color: #555599;
 $text-color: white;
+$base-height: 602px;
 
 .character-container {
   background-color: $primary-bg-color;
@@ -21,7 +22,7 @@ $text-color: white;
   margin-bottom: 10px; // Container margin, matching main
   text-shadow: 1.5px 1px #000;
   width: 600px;
-  height: 602px;
+  height: $base-height;
   position: relative; /* Ensure this is set */
   z-index: 10; /* Ensure this is higher than the button's z-index */
   padding: 0 10px;
@@ -114,6 +115,29 @@ $text-color: white;
   text-align: center;
 }
 
+.full-stats-grid {
+  position: relative; // This establishes a new stacking context
+  z-index: 1; // You might adjust this based on other elements in your layout
+  background-color: $secondary-bg-color;
+  border-radius: $border-radius;
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: $margin-bottom;
+  padding: $padding;
+}
+
+.full-stat-box {
+  background-color: lighten($secondary-bg-color, 10%);
+  border: 1px solid $detail-border-color;
+  border-radius: $border-radius;
+  color: white;
+  padding: $padding;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 0.7em;
+}
+
 .equipment-grid {
   background-color: $secondary-bg-color;
   border-radius: $border-radius;
@@ -132,6 +156,12 @@ $text-color: white;
   opacity: var(--slot-opacity, 1);
   padding: $padding;
   text-align: center;
+}
+
+.equipment-effects {
+  font-size: 0.7em;
+  margin-left: 15px;
+  margin-top: 5px;
 }
 
 .status-grid {
@@ -196,7 +226,7 @@ $text-color: white;
   padding: $padding $padding;
   position: absolute;
   z-index: 100;
-  top: 561px;
+  top: calc($base-height - 41px);
   width: 105px;
 }
 
@@ -211,17 +241,14 @@ $text-color: white;
 
 .tool-button {
   left: calc(104px * 2 - 3px);
-
 }
 
 .stats-button {
   left: calc(104px * 3 - 4px);
-
 }
 
 .skill-button {
   left: calc(104px * 4 - 4px);
-
 }
 
 .profession-button {
@@ -240,7 +267,7 @@ $text-color: white;
   gap: 10px; /* Keeps a fixed gap between the columns */
   justify-content: center; /* Centers the columns if there is extra space */
   background-color: #50577d;
-  height: 100%;
+  height: 522px;
   border: 1px solid $border-color;
 }
 
@@ -271,43 +298,43 @@ $text-color: white;
 }
 
 .head-slot {
-  top: 30px;
+  top: 25px;
   left: 117px;
 }
 .amulet-slot {
-  top: 90px;
+  top: 85px;
   left: 117px;
 }
 .body-slot {
-  top: 150px;
+  top: 145px;
   left: 117px;
 }
 .left-arm-slot {
-  top: 150px;
+  top: 145px;
   left: 57px;
 }
 .right-arm-slot {
-  top: 150px;
+  top: 145px;
   left: 177px;
 }
 .left-ring-slot {
-  top: 240px;
-  left: 30px;
+  top: 235px;
+  left: 40px;
 }
 .right-ring-slot {
-  top: 240px;
-  left: 210px;
+  top: 235px;
+  left: 200px;
 }
 .left-weapon-slot {
-  top: 300px;
+  top: 295px;
   left: 30px;
 }
 .right-weapon-slot {
-  top: 300px;
+  top: 295px;
   left: 210px;
 }
 .belt-slot {
-  top: 240px;
+  top: 235px;
   left: 117px;
 }
 .left-leg-slot {
@@ -319,10 +346,40 @@ $text-color: white;
   left: 150px;
 }
 .left-foot-slot {
-  top: 500px;
+  top: 450px;
   left: 90px;
 }
 .right-foot-slot {
-  top: 500px;
+  top: 450px;
   left: 150px;
+}
+
+.tool-area {
+  background-color: $secondary-bg-color;
+  border-radius: $border-radius;
+  padding: $padding;
+}
+
+.tool-grid {
+  background-color: $secondary-bg-color;
+  border-radius: $border-radius;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: $padding;
+  gap: 10px;
+}
+
+.tool-slot {
+  height: 135px;
+  width: 135px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--slot-background, lighten($secondary-bg-color, 10%));
+  border: 1px solid $detail-border-color;
+  border-radius: $border-radius;
+  color: var(--slot-color, white);
+  opacity: var(--slot-opacity, 1);
+  font-size: 0.8em;
+  text-align: center;
 }

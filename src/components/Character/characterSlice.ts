@@ -36,6 +36,37 @@ export enum EquipmentSlot {
   RightFoot = "rightFoot",
 }
 
+export interface Tool {
+  // Harvesting
+  pickaxe: string | null;
+  axe: string | null;
+  sickle: string | null;
+  shovel: string | null;
+
+  // Capture
+  net: string | null;
+  bugNet: string | null;
+  fishingRod: string | null;
+  cage: string | null;
+
+  // Survival
+  manual: string | null;
+}
+
+export enum ToolSlot {
+  Pickaxe = "pickaxe",
+  Axe = "axe",
+  Sickle = "sickle",
+  Shovel = "shovel",
+
+  Net = "net",
+  BugNet = "bugNet",
+  FishingRod = "fishingRod",
+  Cage = "cage",
+
+  Manual = "manual",
+}
+
 // Combination elements would combine and add based on player's base element values.
 // Like, Steam would be Water * Fire, so if player has 10 Water and 5 Fire, Steam would be 15 damage.
 
@@ -64,6 +95,7 @@ export interface CharacterState {
   combatStats: CombatStats;
   originalCombatStats: CombatStats;
   equipment: Equipment;
+  tool: Tool;
   combatDamageParameters: CombatDamageParameters;
   statuses: StatusEffect[];
   hasHungerDecay: boolean;
@@ -137,14 +169,31 @@ export const initialState: CharacterState = {
   combatStats: initialCombatStats,
   originalCombatStats: { ...initialCombatStats },
   equipment: {
-    weapon: null,
-    offhand: null,
     head: null,
+    amulet: null,
     body: null,
-    arms: null,
-    legs: null,
-    feet: null,
-    accessory: null,
+    leftArm: null,
+    rightArm: null,
+    leftRing: null,
+    rightRing: null,
+    leftWeapon: null,
+    rightWeapon: null,
+    belt: null,
+    leftLeg: null,
+    rightLeg: null,
+    leftFoot: null,
+    rightFoot: null,
+  },
+  tool: {
+    pickaxe: null,
+    axe: null,
+    sickle: null,
+    shovel: null,
+    net: null,
+    bugNet: null,
+    fishingRod: null,
+    cage: null,
+    manual: null,
   },
   // If the same type of damage is applied, sum and divide by overlap.
   // For example, if both physical and magic, sum and divide by 2.
@@ -602,13 +651,21 @@ export const characterSlice = createSlice({
       state.originalStats[statName] += value; // Update originalStats as well
       updateCharacterParameters(state);
     },
-    equipItem: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
+    equipEquipment: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
       const { slot, item } = action.payload;
       state.equipment[slot] = item;
     },
-    unequipItem: (state, action: PayloadAction<{ slot: keyof Equipment }>) => {
+    unequipEquipment: (state, action: PayloadAction<{ slot: keyof Equipment }>) => {
       const { slot } = action.payload;
       state.equipment[slot] = null;
+    },
+    equipTool: (state, action: PayloadAction<{ slot: keyof Tool; item: string }>) => {
+      const { slot, item } = action.payload;
+      state.tool[slot] = item;
+    },
+    unequipTool: (state, action: PayloadAction<{ slot: keyof Tool }>) => {
+      const { slot } = action.payload;
+      state.tool[slot] = null;
     },
     updateCharacterName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
@@ -691,6 +748,7 @@ export const characterSlice = createSlice({
   },
 });
 
-export const { takeDamage, heal, gainExperience, modifyStat, equipItem, unequipItem, updateCharacterName, addStatus, removeStatus, updateStatuses, regenAndDecay } = characterSlice.actions;
+export const { takeDamage, heal, gainExperience, modifyStat, equipEquipment, unequipEquipment, equipTool, unequipTool, updateCharacterName, addStatus, removeStatus, updateStatuses, regenAndDecay } =
+  characterSlice.actions;
 
 export default characterSlice.reducer;

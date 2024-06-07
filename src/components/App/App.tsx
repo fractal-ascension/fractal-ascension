@@ -128,7 +128,8 @@ const App: React.FC = () => {
       globalTime: loadState(SaveStates.GlobalTimeState, store.getState().globalTime),
       progress: loadState(SaveStates.ProgressState, store.getState().progress),
     };
-    const encodedState = btoa(JSON.stringify(state));
+    const encodedState = JSON.stringify(state);
+    // const encodedState = btoa(JSON.stringify(state));
     const blob = new Blob([encodedState], { type: "text/plain;charset=utf-8" });
 
     // Generate the timestamp
@@ -150,7 +151,8 @@ const App: React.FC = () => {
       reader.onload = async (e) => {
         const text = e.target?.result?.toString();
         if (text) {
-          const decodedState = JSON.parse(atob(text));
+          const decodedState = JSON.parse(text);
+          // const decodedState = JSON.parse(atob(text));
           // STATEMARKER
           saveState(SaveStates.CharacterState, decodedState.character);
           saveState(SaveStates.InventoryState, decodedState.inventory);
@@ -188,7 +190,7 @@ const App: React.FC = () => {
     <div className="app">
       <div id="main">
         <div className="column">
-          <Character activePanel={activePanel} onPanelChange={handlePanelChange}/>
+          <Character activePanel={activePanel} onPanelChange={handlePanelChange} />
           <Inventory />
         </div>
         <div className="column">

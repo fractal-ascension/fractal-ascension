@@ -1,4 +1,4 @@
-import { EquipmentSlot } from "../../components/Character/characterSlice";
+import { EquipmentSlot, ToolSlot } from "../../components/Character/characterSlice";
 import { SkillId } from "./Skills";
 import { Stats } from "./Stats";
 
@@ -20,13 +20,15 @@ export enum AttackType {
 export enum OverallDamageType {
   Physical = "Physical",
   Magical = "Magical",
-  Divine = "Divine",
 }
 
-export enum DamageType {
+export enum PhysicalDamageType {
   Slashing = "Slashing",
   Piercing = "Piercing",
   Blunt = "Blunt",
+}
+
+export enum MagicalDamageType {
   Arcane = "Arcane",
   Fire = "Fire",
   Water = "Water",
@@ -57,7 +59,8 @@ export interface Item {
   amount: number;
   unique: boolean;
   img?: string;
-  slot?: EquipmentSlot;
+  equipmentSlot?: EquipmentSlot;
+  toolSlot?: ToolSlot;
   weapon?: {
     weaponType: Weapon;
     rank: number; // Rank 0 1-5, 1 3-9, 2 6-15, 3 10-23, 4 15-33, 5 21-45, 6 28-59, 7 36-75, 8 45-91, 9 55-111, 10 66-133
@@ -74,7 +77,8 @@ export interface Item {
     damage: {
       minDamage: number;
       maxDamage: number;
-    };
+      type: PhysicalDamageType | MagicalDamageType;
+    }[];
     critical: {
       criticalChance: number;
       criticalMultiplier: number;
@@ -107,7 +111,7 @@ export interface Weapon {
   name: string;
   attackType: AttackType;
   overallDamageType: OverallDamageType;
-  damageType: DamageType;
+  damageType: PhysicalDamageType | MagicalDamageType;
   weightType: WeightType;
 }
 
@@ -127,7 +131,7 @@ export const Axe: Weapon = {
   name: "Axe",
   attackType: AttackType.Melee,
   overallDamageType: OverallDamageType.Physical,
-  damageType: DamageType.Slashing,
+  damageType: PhysicalDamageType.Slashing,
   weightType: WeightType.Medium,
 };
 
@@ -136,7 +140,7 @@ export const Club: Weapon = {
   name: "Club",
   attackType: AttackType.Melee,
   overallDamageType: OverallDamageType.Physical,
-  damageType: DamageType.Blunt,
+  damageType: PhysicalDamageType.Blunt,
   weightType: WeightType.Medium,
 };
 
@@ -145,7 +149,7 @@ export const Hammer: Weapon = {
   name: "Hammer",
   attackType: AttackType.Melee,
   overallDamageType: OverallDamageType.Physical,
-  damageType: DamageType.Blunt,
+  damageType: PhysicalDamageType.Blunt,
   weightType: WeightType.Heavy,
 };
 
@@ -154,7 +158,7 @@ export const Sword: Weapon = {
   name: "Sword",
   attackType: AttackType.Melee,
   overallDamageType: OverallDamageType.Physical,
-  damageType: DamageType.Slashing,
+  damageType: PhysicalDamageType.Slashing,
   weightType: WeightType.Medium,
 };
 
@@ -163,7 +167,7 @@ export const Bow: Weapon = {
   name: "Bow",
   attackType: AttackType.Ranged,
   overallDamageType: OverallDamageType.Physical,
-  damageType: DamageType.Piercing,
+  damageType: PhysicalDamageType.Piercing,
   weightType: WeightType.Medium,
 };
 
@@ -172,7 +176,7 @@ export const ArcaneTome: Weapon = {
   name: "Arcane Tome",
   attackType: AttackType.Magic,
   overallDamageType: OverallDamageType.Magical,
-  damageType: DamageType.Arcane,
+  damageType: MagicalDamageType.Arcane,
   weightType: WeightType.Light,
 };
 

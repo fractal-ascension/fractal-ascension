@@ -1,10 +1,10 @@
-import { ArcaneGem, ArcaneTome, Bow, Club, Hammer, Ink, Iron, IronWood, Item, ItemType, Manual, Paper, ScrapStone, ScrapWood, Sword } from "../../Data/Items";
+import { ArcaneGem, ArcaneTome, Bow, Club, Hammer, Ink, Iron, IronWood, Item, ItemType, MagicalDamageType, Manual, Paper, PhysicalDamageType, ScrapStone, ScrapWood, Sword } from "../../Data/Items";
 import { FishingSkillId } from "../../Data/Skills/FishingSkill";
 import { ForagingSkillId } from "../../Data/Skills/ForagingSkill";
 import { HuntingSkillId } from "../../Data/Skills/HuntingSkill";
 import sturdyStick from "../../../assets/SturdyStick.png";
 import roundRock from "../../../assets/RoundRock.png";
-import { EquipmentSlot } from "../../../components/Character/characterSlice";
+import { EquipmentSlot, ToolSlot } from "../../../components/Character/characterSlice";
 
 export enum ForestClearingItems {
   SturdyStick = "sturdyStick",
@@ -25,7 +25,7 @@ export const ForestClearingItem: Item[] = [
     amount: 1,
     unique: false,
     img: sturdyStick,
-    slot: EquipmentSlot.WEAPON,
+    equipmentSlot: EquipmentSlot.RightWeapon,
     weapon: {
       weaponType: Club,
       attackSpeed: 2,
@@ -33,7 +33,7 @@ export const ForestClearingItem: Item[] = [
       material: [{ material: ScrapWood, amount: 10 }], // 20% per repair (50% of base cost, can be reduced, round up)
       rank: 0,
       quality: 1,
-      damage: { minDamage: 2, maxDamage: 3 },
+      damage: [{ minDamage: 2, maxDamage: 3, type: PhysicalDamageType.Blunt }],
       critical: { criticalChance: 0.01, criticalMultiplier: 1.5 },
       durability: { current: 87, max: 100 },
     },
@@ -47,7 +47,7 @@ export const ForestClearingItem: Item[] = [
     amount: 1,
     unique: false,
     img: roundRock,
-    slot: EquipmentSlot.WEAPON,
+    equipmentSlot: EquipmentSlot.RightWeapon,
     weapon: {
       weaponType: Hammer,
       attackSpeed: 4,
@@ -55,7 +55,7 @@ export const ForestClearingItem: Item[] = [
       material: [{ material: ScrapStone, amount: 10 }],
       rank: 0,
       quality: 1,
-      damage: { minDamage: 1, maxDamage: 6 },
+      damage: [{ minDamage: 1, maxDamage: 6, type: PhysicalDamageType.Blunt }, { minDamage: 1, maxDamage: 6, type: PhysicalDamageType.Slashing }],
       critical: { criticalChance: 0.01, criticalMultiplier: 1.5 },
       durability: { current: 98, max: 100 },
     },
@@ -68,7 +68,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
-    slot: EquipmentSlot.WEAPON,
+    equipmentSlot: EquipmentSlot.RightWeapon,
     weapon: {
       weaponType: Sword,
       attackSpeed: 2,
@@ -76,7 +76,7 @@ export const ForestClearingItem: Item[] = [
       material: [{ material: Iron, amount: 20 }],
       rank: 3,
       quality: 1,
-      damage: { minDamage: 12, maxDamage: 17 },
+      damage: [{ minDamage: 12, maxDamage: 17, type: PhysicalDamageType.Slashing }],
       critical: { criticalChance: 0.05, criticalMultiplier: 2 },
       durability: { current: 548, max: 1000 },
     },
@@ -89,7 +89,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
-    slot: EquipmentSlot.WEAPON,
+    equipmentSlot: EquipmentSlot.RightWeapon,
     weapon: {
       weaponType: Bow,
       attackSpeed: 3,
@@ -97,7 +97,7 @@ export const ForestClearingItem: Item[] = [
       material: [{ material: IronWood, amount: 20 }],
       rank: 3,
       quality: 1,
-      damage: { minDamage: 15, maxDamage: 21 },
+      damage: [{ minDamage: 15, maxDamage: 21, type: PhysicalDamageType.Piercing }],
       critical: { criticalChance: 0.05, criticalMultiplier: 2 },
       durability: { current: 425, max: 1000 },
     },
@@ -110,7 +110,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
-    slot: EquipmentSlot.WEAPON,
+    equipmentSlot: EquipmentSlot.RightWeapon,
     weapon: {
       weaponType: ArcaneTome,
       attackSpeed: 2,
@@ -122,7 +122,7 @@ export const ForestClearingItem: Item[] = [
       ],
       rank: 3,
       quality: 1,
-      damage: { minDamage: 13, maxDamage: 17 },
+      damage: [{ minDamage: 13, maxDamage: 17, type: MagicalDamageType.Arcane }],
       critical: { criticalChance: 0.1, criticalMultiplier: 2 },
       durability: { current: 673, max: 1000 },
     },
@@ -135,7 +135,7 @@ export const ForestClearingItem: Item[] = [
     type: ItemType.TOOL,
     amount: 1,
     unique: true,
-    slot: EquipmentSlot.OFFHAND,
+    toolSlot: ToolSlot.Manual,
     tool: {
       toolType: Manual,
       rank: 3,

@@ -88,8 +88,8 @@ export const combatStatAbbreviations: Record<keyof CombatStats, keyof typeof ful
   criticalMultiplier: "CMult",
   hitChance: "HCh",
   attackSpeed: "AtkSpd",
-  armorPenetration: "AP",
-  magicPenetration: "MP",
+  armorPenetration: "APen",
+  magicPenetration: "MPen",
 };
 
 export const fullStatNames = {
@@ -111,11 +111,11 @@ export const fullCombatStatNames = {
   BCh: "Block Chance",
   DCh: "Dodge Chance",
   CCh: "Critical Chance",
-  CMult: "Critical Multiplier",
+  CMult: "Critical Mult",
   HCh: "Hit Chance",
   AtkSpd: "Attack Speed",
-  AP: "Armor Penetration",
-  MP: "Magic Penetration",
+  APen: "Armor Penetration",
+  MPen: "Magic Penetration",
 };
 
 export const statEffects = [

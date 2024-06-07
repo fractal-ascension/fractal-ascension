@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 export enum Icons {
   Strength = "💪",
   Vitality = "❤️",
@@ -23,6 +24,20 @@ export enum Icons {
   Skull = "💀",
   Home = "🏠",
   Pickaxe = "⛏️",
+
+  // For Combat Stats
+  PD = "⚔️",
+  MD = "🔮",
+  AR = "💿",
+  MR = "🌟",
+  BCh = "🛡️",
+  DCh = "🦶",
+  CCh = "💥",
+  CMult = "🔥",
+  HCh = "🎯",
+  AtkSpd = "⚡",
+  APen = "🏹",
+  MPen = "✨",
 }
 
 export const getStarRepresentation = (rank: number) => {
