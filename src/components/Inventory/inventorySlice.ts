@@ -4,19 +4,19 @@ import { RootState } from "../../store";
 import { Item, ItemType } from "../../Utils/Data/Items";
 
 // Define specific types for item types and filter/sort options
-type FilterType = "ALL" | ItemType;
+export type FilterType = "ALL" | ItemType;
 export type SortCriteria = "AZ" | "09" | "TYPE" | "VAL";
 type SortType = "NONE" | `${SortCriteria}_ASC` | `${SortCriteria}_DESC`;
 
 interface InventoryState {
   items: Item[];
-  filter: FilterType;
+  filter: FilterType[];
   sort: SortType;
 }
 
 export const initialState: InventoryState = {
   items: [],
-  filter: "ALL",
+  filter: ["ALL"],
   sort: "TYPE_DESC",
 };
 
@@ -62,7 +62,18 @@ const inventorySlice = createSlice({
       }
     },
     setFilter: (state, action: PayloadAction<FilterType>) => {
-      state.filter = action.payload;
+      state.filter = [action.payload];
+    },
+    addFilter: (state, action: PayloadAction<FilterType>) => {
+      if (!state.filter.includes(action.payload)) {
+        state.filter.push(action.payload);
+      }
+    },
+    removeFilter: (state, action: PayloadAction<FilterType>) => {
+      state.filter = state.filter.filter((f) => f !== action.payload);
+    },
+    clearFilters: (state) => {
+      state.filter = ["ALL"];
     },
     setSort: (state, action: PayloadAction<SortCriteria>) => {
       const isCurrentSortAsc = state.sort === `${action.payload}_ASC`;
@@ -71,5 +82,5 @@ const inventorySlice = createSlice({
   },
 });
 
-export const { addOrRemoveItem, removeItem, updateItem, setFilter, setSort } = inventorySlice.actions;
+export const { addOrRemoveItem, removeItem, updateItem, setFilter, addFilter, removeFilter, clearFilters, setSort } = inventorySlice.actions;
 export default inventorySlice.reducer;

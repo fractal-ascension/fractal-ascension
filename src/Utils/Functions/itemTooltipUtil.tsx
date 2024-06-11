@@ -26,17 +26,7 @@ export const ItemTooltipUtil = (item: Item) => {
             <b>Damage: </b>
           </span>
           <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>
-            {Array.isArray(item.weapon.damage) ? (
-              item.weapon.damage.map((damage, index) => (
-                <span key={`damage-${damage.type}-${index}`}>
-                  [{damage.minDamage} - {damage.maxDamage} {damage.type}]
-                </span>
-              ))
-            ) : (
-              <span>
-                [{(item.weapon.damage as { minDamage: number; maxDamage: number }).minDamage} - {(item.weapon.damage as { minDamage: number; maxDamage: number }).maxDamage}]
-              </span>
-            )}
+            [{item.weapon.damage.minDamage} - {item.weapon.damage.maxDamage}]
           </span>
           <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
             <b>Atk Speed: </b>

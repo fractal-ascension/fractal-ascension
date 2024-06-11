@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { removeItem, setFilter, setSort, SortCriteria } from "./inventorySlice";
+import { addFilter, FilterType, removeFilter, removeItem, setFilter, setSort, SortCriteria } from "./inventorySlice";
 import { RootState } from "../../store";
 import ReactDOMServer from "react-dom/server";
 import "./Inventory.scss";
@@ -12,7 +12,9 @@ const Inventory = () => {
   const dispatch = useDispatch();
   const { items, filter, sort } = useSelector((state: RootState) => state.inventory);
 
-  const filteredItems = filter === "ALL" ? items : items.filter((item) => item.type === filter);
+  const filteredItems = filter.includes("ALL")
+    ? items // If "ALL" is included in the filter array, return all items
+    : items.filter((item) => filter.includes(item.type)); // Otherwise, filter based on item types included in the filter array
 
   const sortedFilteredItems = [...filteredItems].sort((a, b) => {
     let sortCriteria = "NONE";
@@ -42,29 +44,45 @@ const Inventory = () => {
     }
   };
 
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>, filterType: FilterType) => {
+    if (event.shiftKey) {
+      // Toggle logic: add or remove based on current state
+      if (filter.includes(filterType) && filterType !== "ALL") {
+        dispatch(removeFilter(filterType)); // Remove the filter if already set
+      } else if (filterType === "ALL") {
+        dispatch(setFilter("ALL")); // Set all filters
+      } else {
+        dispatch(removeFilter("ALL")); // Remove all filters
+        dispatch(addFilter(filterType)); // Add the filter if not present
+      }
+    } else {
+      dispatch(setFilter(filterType)); // Set this filter exclusively
+    }
+  };
+
   return (
     <div className="inventory-container">
       <div className="category-filter">
-        <button className="category-button" onClick={() => dispatch(setFilter("ALL"))}>
+        {/* Filter for Atk Type, Overall Damage Type, Damage Type, Weight Type */}
+        <button className={`category-button ${filter.includes("ALL") ? "active" : ""}`} onClick={(event) => handleFilterClick(event, "ALL")}>
           ALL
         </button>
-        {/* Filter for Atk Type, Overall Damage Type, Damage Type, Weight Type */}
-        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.WPN))}>
+        <button className={`category-button ${filter.includes(ItemType.WPN) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.WPN)}>
           WPN
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.EQP))}>
+        <button className={`category-button ${filter.includes(ItemType.EQP) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.EQP)}>
           EQP
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.TOOL))}>
+        <button className={`category-button ${filter.includes(ItemType.TOOL) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.TOOL)}>
           TOOL
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.USE))}>
+        <button className={`category-button ${filter.includes(ItemType.USE) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.USE)}>
           USE
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.CMBT))}>
+        <button className={`category-button ${filter.includes(ItemType.CMBT) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.CMBT)}>
           CMBT
         </button>
-        <button className="category-button" onClick={() => dispatch(setFilter(ItemType.ETC))}>
+        <button className={`category-button ${filter.includes(ItemType.ETC) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.ETC)}>
           ETC
         </button>
       </div>

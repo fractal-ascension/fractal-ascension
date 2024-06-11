@@ -572,11 +572,11 @@ const roundToOneDecimal = (value: number): number => {
 const applyStatusEffect = (status: StatusEffect, stats: Stats) => {
   if (status.effectType === EffectType.REDUCE_ALL && status.duration > 0) {
     const effectAmount = status.effectAmount;
-    const applyEffect = (value: number) => value * effectAmount;
+    const applyEffect = (value: number) => Math.floor(value * effectAmount);
 
     Object.keys(stats).forEach((key) => {
       const statKey = key as keyof Stats;
-      stats[statKey] = Math.floor(applyEffect(stats[statKey]));
+      stats[statKey] = applyEffect(stats[statKey]);
     });
   }
 };
@@ -597,7 +597,6 @@ const handleDeath = (state: CharacterState) => {
     parameters.sleep = parameters.maxSleep * 0.5;
     parameters.energy = parameters.maxEnergy * 0.5;
 
-    const resurrectedStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
     const resurrectedStatus: StatusEffect = {
       id: "resurrected",
       name: "Resurrected",
@@ -608,11 +607,17 @@ const handleDeath = (state: CharacterState) => {
       effectAmount: 0.5,
     };
 
-    if (resurrectedStatusIndex === -1) {
+    // Check if the "resurrected" status is already present
+    const existingStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
+
+    if (existingStatusIndex === -1) {
       state.statuses.push(resurrectedStatus);
       applyStatusEffect(resurrectedStatus, state.stats);
     } else {
-      state.statuses[resurrectedStatusIndex].duration = 600; // Refresh the duration
+      // Refresh the duration and reapply the debuff
+      restoreOriginalStats(state); // Restore stats when status is removed
+      state.statuses[existingStatusIndex].duration = resurrectedStatus.duration;
+      applyStatusEffect(resurrectedStatus, state.stats);
     }
 
     return true;
@@ -686,7 +691,6 @@ export const characterSlice = createSlice({
         }
       });
       state.statuses = state.statuses.filter((status) => status.duration !== 0);
-      restoreOriginalStats(state); // Restore stats after updating statuses
       updateCharacterParameters(state);
     },
     regenAndDecay: (state) => {
@@ -707,7 +711,6 @@ export const characterSlice = createSlice({
         }))
         .filter((status) => status.duration > 0);
 
-      restoreOriginalStats(state); // Restore stats after applying effects
       updateCharacterParameters(state);
 
       const applyDecay = (regenValue: number, decayValue: number) => roundToOneDecimal(regenValue - Math.abs(decayValue));

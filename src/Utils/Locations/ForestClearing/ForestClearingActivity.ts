@@ -1,6 +1,7 @@
 import { Icons } from "../../Data/Icons";
+import { ItemId } from "../../Data/Items/ItemId";
+import { ItemList } from "../../Data/Items/ItemList";
 import { Activities, ActivityTypes } from "../../Data/Locations";
-import { ForestClearingItem, ForestClearingItems } from "./ForestClearingItem";
 
 export const ForestClearingActivity: Activities = {
   activities: [
@@ -14,11 +15,11 @@ export const ForestClearingActivity: Activities = {
           id: ActivityTypes.ItemChange,
           effect: [
             {
-              item: ForestClearingItem.find((item) => item.id === ForestClearingItems.SturdyStick)!,
+              item: ItemList.find((item) => item.id === ItemId.SturdyStick)!,
               value: 1,
             },
             {
-              item: ForestClearingItem.find((item) => item.id === ForestClearingItems.RoundRock)!,
+              item: ItemList.find((item) => item.id === ItemId.RoundRock)!,
               value: 1,
             },
           ],
@@ -129,7 +130,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronSword)!,
+                  item: ItemList.find((item) => item.id === ItemId.TrustyIronSword)!,
                   value: 1,
                 },
               ],
@@ -147,7 +148,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyIronwoodBow)!,
+                  item: ItemList.find((item) => item.id === ItemId.TrustyIronwoodBow)!,
                   value: 1,
                 },
               ],
@@ -165,7 +166,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustyArcaneSpellbook)!,
+                  item: ItemList.find((item) => item.id === ItemId.TrustyArcaneSpellbook)!,
                   value: 1,
                 },
               ],
@@ -183,7 +184,7 @@ export const ForestClearingActivity: Activities = {
               id: ActivityTypes.ItemChange,
               effect: [
                 {
-                  item: ForestClearingItem.find((item) => item.id === ForestClearingItems.TrustForestEncyclopedia)!,
+                  item: ItemList.find((item) => item.id === ItemId.TrustForestEncyclopedia)!,
                   value: 1,
                 },
               ],

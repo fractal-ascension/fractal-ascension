@@ -77,8 +77,7 @@ export interface Item {
     damage: {
       minDamage: number;
       maxDamage: number;
-      type: PhysicalDamageType | MagicalDamageType;
-    }[];
+    };
     critical: {
       criticalChance: number;
       criticalMultiplier: number;
