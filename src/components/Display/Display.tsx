@@ -21,6 +21,7 @@ const Display = () => {
 
   const progress = useSelector((state: RootState) => state.progress);
   const time = useSelector((state: RootState) => state.globalTime);
+  const skill = useSelector((state: RootState) => state.character.skill);
   const activeArea = progress.activeLocation;
   const activeActivity = progress.activeActivity;
 
@@ -64,7 +65,7 @@ const Display = () => {
                           </span>
                         ))
                       : effect.id === ActivityTypes.ItemChange
-                      ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>)
+                      ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item, skill)}</span>)
                       : null
                   )
                 : null}
@@ -97,7 +98,7 @@ const Display = () => {
                         </span>
                       ))
                     : effect.id === ActivityTypes.ItemChange
-                    ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>)
+                    ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item, skill)}</span>)
                     : null
                 )
               : null}

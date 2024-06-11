@@ -11,6 +11,7 @@ import { equipEquipment, equipTool } from "../Character/characterSlice";
 const Inventory = () => {
   const dispatch = useDispatch();
   const { items, filter, sort } = useSelector((state: RootState) => state.inventory);
+  const skill = useSelector((state: RootState) => state.character.skill);
 
   const filteredItems = filter.includes("ALL")
     ? items // If "ALL" is included in the filter array, return all items
@@ -49,6 +50,7 @@ const Inventory = () => {
       // Toggle logic: add or remove based on current state
       if (filter.includes(filterType) && filterType !== "ALL") {
         dispatch(removeFilter(filterType)); // Remove the filter if already set
+        if (filter.length === 1) dispatch(setFilter("ALL")); // If no filters are set, set "ALL"
       } else if (filterType === "ALL") {
         dispatch(setFilter("ALL")); // Set all filters
       } else {
@@ -64,31 +66,31 @@ const Inventory = () => {
     <div className="inventory-container">
       <div className="category-filter">
         {/* Filter for Atk Type, Overall Damage Type, Damage Type, Weight Type */}
-        <button className={`category-button ${filter.includes("ALL") ? "active" : ""}`} onClick={(event) => handleFilterClick(event, "ALL")}>
+        <button className={`inventory-button ${filter.includes("ALL") ? "active" : ""}`} onClick={(event) => handleFilterClick(event, "ALL")}>
           ALL
         </button>
-        <button className={`category-button ${filter.includes(ItemType.WPN) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.WPN)}>
+        <button className={`inventory-button ${filter.includes(ItemType.WPN) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.WPN)}>
           WPN
         </button>
-        <button className={`category-button ${filter.includes(ItemType.EQP) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.EQP)}>
+        <button className={`inventory-button ${filter.includes(ItemType.EQP) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.EQP)}>
           EQP
         </button>
-        <button className={`category-button ${filter.includes(ItemType.TOOL) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.TOOL)}>
+        <button className={`inventory-button ${filter.includes(ItemType.TOOL) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.TOOL)}>
           TOOL
         </button>
-        <button className={`category-button ${filter.includes(ItemType.USE) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.USE)}>
+        <button className={`inventory-button ${filter.includes(ItemType.USE) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.USE)}>
           USE
         </button>
-        <button className={`category-button ${filter.includes(ItemType.CMBT) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.CMBT)}>
+        <button className={`inventory-button ${filter.includes(ItemType.CMBT) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.CMBT)}>
           CMBT
         </button>
-        <button className={`category-button ${filter.includes(ItemType.ETC) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.ETC)}>
+        <button className={`inventory-button ${filter.includes(ItemType.ETC) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.ETC)}>
           ETC
         </button>
       </div>
       <ul className="inventory-list">
         {sortedFilteredItems.map((item, index) => (
-          <li className="item" key={index} data-tooltip-id="item-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(item.weapon || item.tool ? ItemTooltipUtil(item) : null)}>
+          <li className="item" key={index} data-tooltip-id="item-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(item.weapon || item.tool ? ItemTooltipUtil(item, skill) : null)}>
             <span
               className="inventory-label"
               {...(item.equipmentSlot
@@ -111,13 +113,13 @@ const Inventory = () => {
       </ul>
       <div className="sort-buttons">
         {/* If filter weapon, Sort for Atk Type, Overall Damage Type, Damage Type, Weight Type */}
-        <button className="sort-button" onClick={() => dispatch(setSort("AZ"))}>
+        <button className={`inventory-button ${sort === "AZ_ASC" || sort === "AZ_DESC" ? "active" : ""}`} onClick={() => dispatch(setSort("AZ"))}>
           A-Z
         </button>
-        <button className="sort-button" onClick={() => dispatch(setSort("09"))}>
+        <button className={`inventory-button ${sort === "09_ASC" || sort === "09_DESC" ? "active" : ""}`} onClick={() => dispatch(setSort("09"))}>
           0-9
         </button>
-        <button className="sort-button" onClick={() => dispatch(setSort("TYPE"))}>
+        <button className={`inventory-button ${sort === "TYPE_ASC" || sort === "TYPE_DESC" ? "active" : ""}`} onClick={() => dispatch(setSort("TYPE"))}>
           TYPE
         </button>
       </div>

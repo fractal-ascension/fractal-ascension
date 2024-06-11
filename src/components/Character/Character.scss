@@ -230,6 +230,11 @@ $base-height: 602px;
   width: 105px;
 }
 
+.panel-button.active {
+  background-color: lighten(#555599, 5%); // Active background color
+  border: 1px solid $button-border-color;
+}
+
 .home-button {
   left: -1px;
   border-bottom-left-radius: 5px;

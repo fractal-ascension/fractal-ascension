@@ -2,8 +2,9 @@ import { getStarRepresentation } from "../Data/Icons";
 import { Item } from "../Data/Items";
 import { ConvertToCurrency } from "./ConvertCurrencyUtil";
 import nullItem from "../../assets/Background X.png";
+import { Skill } from "../../components/Character/characterSlice";
 
-export const ItemTooltipUtil = (item: Item) => {
+export const ItemTooltipUtil = (item: Item, skill: Skill[]) => {
   return item.weapon ? (
     <div>
       <hr />
@@ -90,7 +91,7 @@ export const ItemTooltipUtil = (item: Item) => {
               </span>
               {item.tool.skillDirectBonus.map((bonus, index) => (
                 <span key={index}>
-                  - {bonus.skill}: {bonus.value} (Cap: {bonus.cap})
+                  - {skill.find((skill: { id: string }) => skill.id) ? bonus.skill : "???"}: {bonus.value} (Cap: {bonus.cap})
                   <br />
                 </span>
               ))}
@@ -105,7 +106,7 @@ export const ItemTooltipUtil = (item: Item) => {
               </span>
               {item.tool.skillMultiplierBonus.map((bonus, index) => (
                 <span key={index}>
-                  - {bonus.skill}: {bonus.value}% (Cap: {bonus.cap})
+                  - {skill.find((skill: { id: string }) => skill.id) ? bonus.skill : "???"}: {bonus.value}% (Cap: {bonus.cap})
                   <br />
                 </span>
               ))}
@@ -120,7 +121,7 @@ export const ItemTooltipUtil = (item: Item) => {
               </span>
               {item.tool.skillLearningBonus.map((bonus, index) => (
                 <span key={index}>
-                  - {bonus.skill}: {bonus.value}% (Cap: {bonus.cap})
+                  - {skill.find((skill: { id: string }) => skill.id) ? bonus.skill : "???"}: {bonus.value}% (Cap: {bonus.cap})
                   <br />
                 </span>
               ))}

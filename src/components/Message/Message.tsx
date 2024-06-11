@@ -12,6 +12,7 @@ import { Tooltip } from "react-tooltip";
 const Message = () => {
   const dispatch = useDispatch();
   const messages = useSelector((state: RootState) => state.message);
+  const skill = useSelector((state: RootState) => state.character.skill);
 
   // Creating a ref for the message body
   const messageEndRef = useRef<HTMLDivElement>(null);
@@ -48,7 +49,7 @@ const Message = () => {
                             </span>
                           ))
                         : effect.id === ActivityTypes.ItemChange
-                        ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item)}</span>)
+                        ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item, skill)}</span>)
                         : null
                     )
                   : null}

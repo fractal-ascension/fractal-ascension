@@ -85,6 +85,12 @@ export interface StatusEffect {
   effectAmount: number;
 }
 
+export interface Skill {
+  id: string;
+  level: number;
+  experience: number;
+}
+
 export interface CharacterState {
   name: string;
   title: string;
@@ -96,6 +102,7 @@ export interface CharacterState {
   originalCombatStats: CombatStats;
   equipment: Equipment;
   tool: Tool;
+  skill: Skill[];
   combatDamageParameters: CombatDamageParameters;
   statuses: StatusEffect[];
   hasHungerDecay: boolean;
@@ -195,6 +202,7 @@ export const initialState: CharacterState = {
     cage: null,
     manual: null,
   },
+  skill: [],
   // If the same type of damage is applied, sum and divide by overlap.
   // For example, if both physical and magic, sum and divide by 2.
   // If both slashing, arcane, and fire, sum and divide by 3.
