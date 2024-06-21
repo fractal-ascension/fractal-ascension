@@ -1,4 +1,4 @@
-import { ArcaneGem, ArcaneTome, Ink, Item, ItemType, Paper } from "../../Items";
+import { ArcaneTome, Item, ItemType } from "../../Items";
 import { EquipmentSlot } from "../../../../components/Character/characterSlice";
 import { ItemId } from "../ItemId";
 
@@ -16,16 +16,10 @@ export const ArcaneTomeList: Item[] = [
       weaponType: ArcaneTome,
       attackSpeed: 2,
       range: 10,
-      material: [
-        { material: Paper, amount: 20 },
-        { material: Ink, amount: 10 },
-        { material: ArcaneGem, amount: 2 },
-      ],
       rank: 3,
       quality: 1,
       damage: { minDamage: 13, maxDamage: 17 },
       critical: { criticalChance: 0.1, criticalMultiplier: 2 },
-      durability: { current: 673, max: 1000 },
     },
   },
 ];

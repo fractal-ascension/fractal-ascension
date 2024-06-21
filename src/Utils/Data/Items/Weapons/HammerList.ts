@@ -1,4 +1,4 @@
-import { Hammer, Item, ItemType, ScrapStone } from "../../Items";
+import { Hammer, Item, ItemType } from "../../Items";
 import roundRock from "../../../../assets/RoundRock.png";
 import { EquipmentSlot } from "../../../../components/Character/characterSlice";
 import { ItemId } from "../ItemId";
@@ -18,12 +18,10 @@ export const HammerList: Item[] = [
       weaponType: Hammer,
       attackSpeed: 4,
       range: 1,
-      material: [{ material: ScrapStone, amount: 10 }],
       rank: 0,
       quality: 1,
       damage: { minDamage: 1, maxDamage: 6 },
       critical: { criticalChance: 0.01, criticalMultiplier: 1.5 },
-      durability: { current: 98, max: 100 },
     },
   },
 ];

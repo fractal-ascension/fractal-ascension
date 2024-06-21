@@ -45,12 +45,6 @@ export const ItemTooltipUtil = (item: Item, skill: Skill[]) => {
             x)]
           </span>
           <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
-            <b>Durability: </b>
-          </span>
-          <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>
-            [{item.weapon.durability.current}/{item.weapon.durability.max}]
-          </span>
-          <span style={{ gridColumn: "4 / span 1", paddingLeft: "10px" }}>
             <b>Value: </b>
           </span>
           <span style={{ gridColumn: "5 / span 3", paddingLeft: "10px" }}>{ConvertToCurrency(item.value)}</span>
@@ -188,13 +182,6 @@ export const ItemTooltipUtil = (item: Item, skill: Skill[]) => {
               <br />
             </>
           )}
-          <span>
-            <b>Durability: </b>
-          </span>
-          <span style={{ gridColumn: "2 / span 2" }}>
-            [{item.tool.durability.current}/{item.tool.durability.max}]
-          </span>
-          <br />
           <span>
             <b>Value: </b>
           </span>

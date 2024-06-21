@@ -65,12 +65,6 @@ export interface Item {
     weaponType: Weapon;
     rank: number; // Rank 0 1-5, 1 3-9, 2 6-15, 3 10-23, 4 15-33, 5 21-45, 6 28-59, 7 36-75, 8 45-91, 9 55-111, 10 66-133
     quality: number; // Multiplies damage, crit, durability, round down
-    material: { material: Material; amount: number }[];
-    durability: {
-      current: number; // Every attack reduces by 1, can be reduced more or less based on skills
-      // Reduces buy/sell value by {current / max} value. Repairing increases by 20% of max value
-      max: number;
-    };
 
     attackSpeed: number;
     range: number;
@@ -88,12 +82,6 @@ export interface Item {
     toolType: Tool;
     rank: number; // Rank 0 1-5, 1 3-9, 2 6-15, 3 10-23, 4 15-33, 5 21-45, 6 28-59, 7 36-75, 8 45-91, 9 55-111, 10 66-133
     quality: number; // Multiplies damage, crit, durability, round down
-    material: { material: Material; amount: number }[];
-    durability: {
-      current: number; // Every attack reduces by 1, can be reduced more or less based on skills
-      // Reduces buy/sell value by {current / max} value. Repairing increases by 20% of max value
-      max: number;
-    };
 
     skillDirectBonus?: { skill: SkillId; value: number; cap: number }[]; // Directly adds to skill level
     skillMultiplierBonus?: { skill: string; value: number; cap: number }[]; // Multiplies skill effect (does not increase level) (continues to apply after cap, but weakened by {effect/(over cap + 1)})
@@ -117,12 +105,6 @@ export interface Weapon {
 export interface Tool {
   id: string;
   name: string;
-}
-
-export interface Material {
-  id: string;
-  name: string;
-  description: string;
 }
 
 export const Axe: Weapon = {
@@ -182,48 +164,6 @@ export const ArcaneTome: Weapon = {
 export const Manual: Tool = {
   id: "manual",
   name: "Manual",
-};
-
-export const ScrapWood: Material = {
-  id: "scrapWood",
-  name: "Scrap Wood",
-  description: "Common wood, can be found anywhere and everywhere.",
-};
-
-export const ScrapStone: Material = {
-  id: "scrapStone",
-  name: "Scrap Stone",
-  description: "Common stone, can be found anywhere and everywhere.",
-};
-
-export const Iron: Material = {
-  id: "iron",
-  name: "Iron",
-  description: "Common metal, created by smelting ore.",
-};
-
-export const IronWood: Material = {
-  id: "ironWood",
-  name: "Iron Wood",
-  description: "Wood infused with iron, incredibly durable and flexible.",
-};
-
-export const Paper: Material = {
-  id: "paper",
-  name: "Paper",
-  description: "Simple material that brings records knowledge and magic.",
-};
-
-export const Ink: Material = {
-  id: "ink",
-  name: "Ink",
-  description: "A dye used to record knowledge and magic.",
-};
-
-export const ArcaneGem: Material = {
-  id: "arcaneGem",
-  name: "Arcane Gem",
-  description: "A gem infused with arcane energy.",
 };
 
 export const currencyBreakdown: Currency[] = [

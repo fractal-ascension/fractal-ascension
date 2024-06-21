@@ -84,11 +84,28 @@ export const ForestClearingActivity: Activities = {
           next: "fc4",
           effect: [
             {
+              id: ActivityTypes.ItemChange,
+              effect: [
+                {
+                  item: ItemList.find((item) => item.id === ItemId.SturdyStick)!,
+                  value: 1,
+                },
+                {
+                  item: ItemList.find((item) => item.id === ItemId.RoundRock)!,
+                  value: 1,
+                },
+              ],
+            },
+            {
               id: ActivityTypes.StatChange,
               effect: [
                 {
-                  stat: "intelligence",
-                  value: 1,
+                  stat: "strength",
+                  value: +1,
+                },
+                {
+                  stat: "perception",
+                  value: +1,
                 },
               ],
             },

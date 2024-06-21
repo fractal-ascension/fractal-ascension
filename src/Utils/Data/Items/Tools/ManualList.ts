@@ -1,4 +1,4 @@
-import { Ink, Item, ItemType, Manual, Paper } from "../../Items";
+import { Item, ItemType, Manual } from "../../Items";
 import { ToolSlot } from "../../../../components/Character/characterSlice";
 import { FishingSkillId } from "../../Skills/FishingSkill";
 import { HuntingSkillId } from "../../Skills/HuntingSkill";
@@ -21,11 +21,6 @@ export const ManualList: Item[] = [
       toolType: Manual,
       rank: 3,
       quality: 1,
-      material: [
-        { material: Paper, amount: 20 },
-        { material: Ink, amount: 10 },
-      ],
-      durability: { current: 896, max: 1000 }, // Goes down when doing an activity boosted by manual
       skillDirectBonus: [
         { skill: FishingSkillId.Fishing, value: 2, cap: 30 },
         { skill: HuntingSkillId.Hunting, value: 2, cap: 30 },

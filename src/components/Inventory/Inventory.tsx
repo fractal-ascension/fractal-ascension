@@ -1,3 +1,4 @@
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addFilter, FilterType, removeFilter, removeItem, setFilter, setSort, SortCriteria } from "./inventorySlice";
 import { RootState } from "../../store";
@@ -7,15 +8,24 @@ import { Tooltip } from "react-tooltip";
 import { Item, ItemType } from "../../Utils/Data/Items";
 import { ItemTooltipUtil } from "../../Utils/Functions/ItemTooltipUtil";
 import { equipEquipment, equipTool } from "../Character/characterSlice";
+import { ItemList } from "../../Utils/Data/Items/ItemList";
 
 const Inventory = () => {
   const dispatch = useDispatch();
   const { items, filter, sort } = useSelector((state: RootState) => state.inventory);
   const skill = useSelector((state: RootState) => state.character.skill);
 
+  // Function to get full item details
+  const getFullItemDetails = (id: string): Item | undefined => {
+    return ItemList.find((item) => item.id === id);
+  };
+
   const filteredItems = filter.includes("ALL")
-    ? items // If "ALL" is included in the filter array, return all items
-    : items.filter((item) => filter.includes(item.type)); // Otherwise, filter based on item types included in the filter array
+    ? items
+    : items.filter((item) => {
+        const fullItem = getFullItemDetails(item.id);
+        return fullItem && filter.includes(fullItem.type);
+      });
 
   const sortedFilteredItems = [...filteredItems].sort((a, b) => {
     let sortCriteria = "NONE";
@@ -24,95 +34,103 @@ const Inventory = () => {
       [sortCriteria, sortDirection] = sort.split("_") as [SortCriteria, "ASC" | "DESC"];
     }
 
+    const itemA = getFullItemDetails(a.id);
+    const itemB = getFullItemDetails(b.id);
+
+    if (!itemA || !itemB) return 0;
+
     switch (sortCriteria) {
       case "AZ":
-        return sortDirection === "DESC" ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
+        return sortDirection === "DESC" ? itemB.name.localeCompare(itemA.name) : itemA.name.localeCompare(itemB.name);
       case "09":
         return sortDirection === "DESC" ? b.amount - a.amount : a.amount - b.amount;
       case "TYPE":
-        return sortDirection === "DESC" ? b.type.localeCompare(a.type) : a.type.localeCompare(b.type);
+        return sortDirection === "DESC" ? itemB.type.localeCompare(itemA.type) : itemA.type.localeCompare(itemB.type);
       case "VAL":
-        return sortDirection === "DESC" ? b.value - a.value : a.value - b.value;
+        return sortDirection === "DESC" ? itemB.value - itemA.value : itemA.value - itemB.value;
       default:
         return 0;
     }
   });
 
-  const handleDelete = (item: Item) => {
-    if (window.confirm("Are you sure you want to delete this item?")) dispatch(removeItem({ item: item }));
-    else if (item.unique) {
-      if (window.confirm(`Are you sure you want to delete this UNIQUE item? You will not be able to get it back.`)) dispatch(removeItem({ item: item }));
+  const handleDelete = (itemId: string) => {
+    const fullItem = getFullItemDetails(itemId);
+    if (!fullItem) return;
+
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      dispatch(removeItem({ id: itemId }));
+    } else if (fullItem.unique) {
+      if (window.confirm(`Are you sure you want to delete this UNIQUE item? You will not be able to get it back.`)) {
+        dispatch(removeItem({ id: itemId }));
+      }
     }
   };
 
   const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>, filterType: FilterType) => {
     if (event.shiftKey) {
-      // Toggle logic: add or remove based on current state
       if (filter.includes(filterType) && filterType !== "ALL") {
-        dispatch(removeFilter(filterType)); // Remove the filter if already set
-        if (filter.length === 1) dispatch(setFilter("ALL")); // If no filters are set, set "ALL"
+        dispatch(removeFilter(filterType));
+        if (filter.length === 1) dispatch(setFilter("ALL"));
       } else if (filterType === "ALL") {
-        dispatch(setFilter("ALL")); // Set all filters
+        dispatch(setFilter("ALL"));
       } else {
-        dispatch(removeFilter("ALL")); // Remove all filters
-        dispatch(addFilter(filterType)); // Add the filter if not present
+        dispatch(removeFilter("ALL"));
+        dispatch(addFilter(filterType));
       }
     } else {
-      dispatch(setFilter(filterType)); // Set this filter exclusively
+      dispatch(setFilter(filterType));
     }
   };
 
   return (
     <div className="inventory-container">
       <div className="category-filter">
-        {/* Filter for Atk Type, Overall Damage Type, Damage Type, Weight Type */}
         <button className={`inventory-button ${filter.includes("ALL") ? "active" : ""}`} onClick={(event) => handleFilterClick(event, "ALL")}>
           ALL
         </button>
-        <button className={`inventory-button ${filter.includes(ItemType.WPN) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.WPN)}>
-          WPN
-        </button>
-        <button className={`inventory-button ${filter.includes(ItemType.EQP) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.EQP)}>
-          EQP
-        </button>
-        <button className={`inventory-button ${filter.includes(ItemType.TOOL) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.TOOL)}>
-          TOOL
-        </button>
-        <button className={`inventory-button ${filter.includes(ItemType.USE) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.USE)}>
-          USE
-        </button>
-        <button className={`inventory-button ${filter.includes(ItemType.CMBT) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.CMBT)}>
-          CMBT
-        </button>
-        <button className={`inventory-button ${filter.includes(ItemType.ETC) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, ItemType.ETC)}>
-          ETC
-        </button>
+        {Object.values(ItemType).map((type) => (
+          <button key={type} className={`inventory-button ${filter.includes(type) ? "active" : ""}`} onClick={(event) => handleFilterClick(event, type)}>
+            {type}
+          </button>
+        ))}
       </div>
       <ul className="inventory-list">
-        {sortedFilteredItems.map((item, index) => (
-          <li className="item" key={index} data-tooltip-id="item-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(item.weapon || item.tool ? ItemTooltipUtil(item, skill) : null)}>
-            <span
-              className="inventory-label"
-              {...(item.equipmentSlot
-                ? { onClick: () => dispatch(equipEquipment({ slot: item.equipmentSlot!, item: item.name })) }
-                : { onClick: () => dispatch(equipTool({ slot: item.toolSlot!, item: item.name })) })}
-            >
-              <span className={`item-type-label item-type-${item.type}`}>[{item.type}] </span>
-              {item.name}
-            </span>
+        {sortedFilteredItems.map((item) => {
+          const fullItem = getFullItemDetails(item.id);
+          if (!fullItem) return null;
 
-            <span>x{item.amount.toLocaleString("en-US")}</span>
-            <span className="delete-button-container">
-              <button className="delete-button" onClick={() => handleDelete(item)}>
-                X
-              </button>
-            </span>
-            <Tooltip id="item-tooltip" className="item-tooltip" />
-          </li>
-        ))}
+          return (
+            <li
+              className="item"
+              key={item.id}
+              data-tooltip-id="item-tooltip"
+              data-tooltip-html={ReactDOMServer.renderToStaticMarkup(fullItem.weapon || fullItem.tool ? ItemTooltipUtil(fullItem, skill) : null)}
+            >
+              <span
+                className="inventory-label"
+                onClick={() => {
+                  if (fullItem.equipmentSlot) {
+                    dispatch(equipEquipment({ slot: fullItem.equipmentSlot, item: fullItem.name }));
+                  } else if (fullItem.toolSlot) {
+                    dispatch(equipTool({ slot: fullItem.toolSlot, item: fullItem.name }));
+                  }
+                }}
+              >
+                <span className={`item-type-label item-type-${fullItem.type}`}>[{fullItem.type}] </span>
+                {fullItem.name}
+              </span>
+              <span>x{item.amount.toLocaleString("en-US")}</span>
+              <span className="delete-button-container">
+                <button className="delete-button" onClick={() => handleDelete(item.id)}>
+                  X
+                </button>
+              </span>
+              <Tooltip id="item-tooltip" />
+            </li>
+          );
+        })}
       </ul>
       <div className="sort-buttons">
-        {/* If filter weapon, Sort for Atk Type, Overall Damage Type, Damage Type, Weight Type */}
         <button className={`inventory-button ${sort === "AZ_ASC" || sort === "AZ_DESC" ? "active" : ""}`} onClick={() => dispatch(setSort("AZ"))}>
           A-Z
         </button>

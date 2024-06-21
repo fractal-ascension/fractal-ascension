@@ -50,30 +50,37 @@ const Display = () => {
           key={branchActivity.id}
           className="display-action"
           onClick={() => clickActivity(branchActivity)}
-          data-tooltip-id="branchActivity-tooltip"
+          data-tooltip-id="item-tooltip"
           data-tooltip-html={ReactDOMServer.renderToStaticMarkup(
             <span>
               {branchActivity.tooltip}
-              {branchActivity.effect
-                ? branchActivity.effect.map((effect) =>
+              {branchActivity.effect ? (
+                <div>
+                  <hr />
+                  <span style={{ color: "gray" }}>
+                    <b>Effect:</b>
+                  </span>
+                  <br />
+                  {branchActivity.effect.map((effect) =>
                     effect.id === ActivityTypes.StatChange
                       ? effect.effect.map((statChange) => (
                           <span key={statChange.stat}>
-                            <hr />
                             {statChange.value > 0 ? "+" : ""}
                             {statChange.value} {fullStatNames[statAbbreviations[statChange.stat]]}
+                            <br />
                           </span>
                         ))
                       : effect.id === ActivityTypes.ItemChange
                       ? effect.effect.map((itemChange) => <span key={itemChange.item.id}>{ItemTooltipUtil(itemChange.item, skill)}</span>)
                       : null
-                  )
-                : null}
+                  )}
+                </div>
+              ) : null}
             </span>
           )}
         >
           {branchActivity.icon} {branchActivity.name}
-          {branchActivity.tooltip ? <Tooltip id="branchActivity-tooltip" ref={tooltipRef} className="branchActivity-tooltip" /> : null}
+          {branchActivity.tooltip ? <Tooltip id="item-tooltip" ref={tooltipRef} /> : null}
         </div>
       ));
     }

@@ -71,8 +71,8 @@ export enum ToolSlot {
 // Like, Steam would be Water * Fire, so if player has 10 Water and 5 Fire, Steam would be 15 damage.
 
 export enum EffectType {
-  REDUCE_HP = "reduceHp",
-  REDUCE_ALL = "reduceAll",
+  SUBTRACT_PARAMETER = "subtractParameter",
+  MULTIPLY_STAT = "multiplyStat",
 }
 
 export interface StatusEffect {
@@ -81,6 +81,7 @@ export interface StatusEffect {
   description: string;
   duration: number;
   effectType: EffectType;
+  effect: string;
   effectDescription: string[];
   effectAmount: number;
 }
@@ -97,9 +98,9 @@ export interface CharacterState {
   parameters: BaseParameters;
   level: number;
   stats: Stats;
-  originalStats: Stats;
+  characterStats: Stats;
+  statEffects: { affectedStat: string; effectAmount: number; effectApplication: string; effectType: string; effectCause: string }[];
   combatStats: CombatStats;
-  originalCombatStats: CombatStats;
   equipment: Equipment;
   tool: Tool;
   skill: Skill[];
@@ -145,7 +146,7 @@ const calculateBaseParameters = (level: number, stats: Stats): BaseParameters =>
   hpRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
   maxHp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
   hunger: 100,
-  hungerRegen: -0.1, // Certain actions/skills/perks can increase or decrease
+  hungerRegen: -10.1, // Certain actions/skills/perks can increase or decrease
   maxHunger: 100 + level * 10 + stats.vitality * 20,
   sp: 100,
   spRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
@@ -172,9 +173,9 @@ export const initialState: CharacterState = {
   level: 0,
   parameters: calculateBaseParameters(0, initialStats),
   stats: initialStats,
-  originalStats: { ...initialStats },
+  characterStats: initialStats,
+  statEffects: [],
   combatStats: initialCombatStats,
-  originalCombatStats: { ...initialCombatStats },
   equipment: {
     head: null,
     amulet: null,
@@ -524,6 +525,17 @@ export const initialState: CharacterState = {
   hasEnergyDecay: false,
 };
 
+const resurrectedStatus: StatusEffect = {
+  id: "resurrected",
+  name: "Resurrected",
+  description: "Recently resurrected by an unknown power. You feel weak.",
+  duration: 4,
+  effectType: EffectType.MULTIPLY_STAT,
+  effect: "all",
+  effectDescription: ["All stats reduced by 50%."],
+  effectAmount: 0.5,
+};
+
 // Async thunks
 export const saveCharacter = createAsyncThunk("character/saveCharacter", async (_, { getState }) => {
   const state = getState() as RootState;
@@ -533,16 +545,6 @@ export const saveCharacter = createAsyncThunk("character/saveCharacter", async (
 export const handleRegenAndDecay = createAsyncThunk("character/handleRegenAndDecay", async (_, { dispatch }) => {
   dispatch(regenAndDecay());
 });
-
-// Utility functions
-const applyEffect = (character: CharacterState, effect: StatusEffect) => {
-  switch (effect.effectType) {
-    case EffectType.REDUCE_HP:
-      character.parameters.hp = Math.max(character.parameters.hp - effect.effectAmount, 0);
-      break;
-    // Add more cases as needed for different types of effects
-  }
-};
 
 const updateCharacterParameters = (state: CharacterState) => {
   const { level, stats } = state;
@@ -577,25 +579,60 @@ const roundToOneDecimal = (value: number): number => {
   return parseFloat(value.toFixed(1));
 };
 
-const applyStatusEffect = (status: StatusEffect, stats: Stats) => {
-  if (status.effectType === EffectType.REDUCE_ALL && status.duration > 0) {
-    const effectAmount = status.effectAmount;
-    const applyEffect = (value: number) => Math.floor(value * effectAmount);
+const applyEffect = (character: CharacterState, effect: StatusEffect): void => {
+  // Add the new effect to the statEffects array
+  character.statEffects.push({
+    affectedStat: effect.effect,
+    effectAmount: effect.effectAmount,
+    effectApplication: effect.effectType === EffectType.SUBTRACT_PARAMETER ? "incrementParameter" : "multiplyStat",
+    effectType: effect.effectType === EffectType.SUBTRACT_PARAMETER ? "timeIncremental" : "active",
+    effectCause: effect.id,
+  });
 
-    Object.keys(stats).forEach((key) => {
-      const statKey = key as keyof Stats;
-      stats[statKey] = applyEffect(stats[statKey]);
-    });
-  }
+  // Immediately apply this new effect
+  reapplyStatEffects(character);
 };
 
-const restoreOriginalStats = (state: CharacterState) => {
-  state.stats = { ...state.originalStats };
+const reapplyStatEffects = (state: CharacterState): void => {
+  // Reset stats to original values
+  state.stats = { ...state.characterStats };
+
+  // Apply all current stat effects
+  state.statEffects.forEach((effect) => {
+    if (effect.effectType === "timeIncremental") {
+      const statKey = effect.affectedStat as keyof typeof state.parameters;
+      state.parameters[statKey] += effect.effectAmount;
+    } else if (effect.effectType === "active") {
+      if (effect.affectedStat === "all") {
+        Object.keys(state.stats).forEach((key) => {
+          const statKey = key as keyof typeof state.stats;
+          state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
+        });
+      } else {
+        const statKey = effect.affectedStat as keyof typeof state.stats;
+        state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
+      }
+    }
+  });
+};
+
+const updateStatusEffects = (state: CharacterState): void => {
+  // Decrement status durations and immediately apply changes
+  state.statuses.forEach((status) => (status.duration -= 1));
+  state.statuses = state.statuses.filter((status) => status.duration > 0);
+
+  // Filter out stat effects that no longer have an active cause
+  const activeStatusIds = new Set(state.statuses.map((status) => status.id));
+  state.statEffects = state.statEffects.filter((effect) => activeStatusIds.has(effect.effectCause));
+
+  // Reapply effects to ensure all modifications are current
+  reapplyStatEffects(state);
 };
 
 const handleDeath = (state: CharacterState) => {
   if (state.parameters.hp <= 0) {
     console.log("You have died.");
+
     const parameters = state.parameters;
     parameters.hp = parameters.maxHp * 0.5;
     parameters.sp = parameters.maxSp * 0.5;
@@ -605,32 +642,15 @@ const handleDeath = (state: CharacterState) => {
     parameters.sleep = parameters.maxSleep * 0.5;
     parameters.energy = parameters.maxEnergy * 0.5;
 
-    const resurrectedStatus: StatusEffect = {
-      id: "resurrected",
-      name: "Resurrected",
-      description: "Recently resurrected by an unknown power. You feel weak.",
-      duration: 600,
-      effectType: EffectType.REDUCE_ALL,
-      effectDescription: ["All stats reduced by 50%."],
-      effectAmount: 0.5,
-    };
-
-    // Check if the "resurrected" status is already present
     const existingStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
 
     if (existingStatusIndex === -1) {
       state.statuses.push(resurrectedStatus);
-      applyStatusEffect(resurrectedStatus, state.stats);
+      applyEffect(state, resurrectedStatus);
     } else {
-      // Refresh the duration and reapply the debuff
-      restoreOriginalStats(state); // Restore stats when status is removed
       state.statuses[existingStatusIndex].duration = resurrectedStatus.duration;
-      applyStatusEffect(resurrectedStatus, state.stats);
     }
-
-    return true;
   }
-  return false;
 };
 
 // Slice
@@ -652,7 +672,7 @@ export const characterSlice = createSlice({
         Object.keys(state.stats).forEach((key) => {
           const statKey = key as keyof Stats;
           state.stats[statKey] += 1;
-          state.originalStats[statKey] += 1; // Update originalStats as well
+          state.characterStats[statKey] += 1;
         });
         state.parameters.nextLevelExperience = calculateNextLevelExperience(state.level);
         updateCharacterParameters(state);
@@ -661,7 +681,7 @@ export const characterSlice = createSlice({
     modifyStat: (state, action: PayloadAction<{ statName: keyof Stats; value: number }>) => {
       const { statName, value } = action.payload;
       state.stats[statName] += value;
-      state.originalStats[statName] += value; // Update originalStats as well
+      state.characterStats[statName] += value;
       updateCharacterParameters(state);
     },
     equipEquipment: (state, action: PayloadAction<{ slot: keyof Equipment; item: string }>) => {
@@ -688,36 +708,14 @@ export const characterSlice = createSlice({
     },
     removeStatus: (state, action: PayloadAction<string>) => {
       state.statuses = state.statuses.filter((status) => status.id !== action.payload);
-      restoreOriginalStats(state); // Restore stats when status is removed
-      updateCharacterParameters(state);
-    },
-    updateStatuses: (state) => {
-      state.statuses.forEach((status) => {
-        if (status.duration > 0) {
-          status.duration -= 1;
-          applyEffect(state, status);
-        }
-      });
-      state.statuses = state.statuses.filter((status) => status.duration !== 0);
       updateCharacterParameters(state);
     },
     regenAndDecay: (state) => {
-      if (handleDeath(state)) return;
+      updateStatusEffects(state);
 
-      // Apply status effects
-      state.statuses.forEach((status) => {
-        if (status.id !== "resurrected") {
-          applyStatusEffect(status, state.stats);
-        }
-      });
-
-      // Decrement status durations and remove expired statuses
-      state.statuses = state.statuses
-        .map((status) => ({
-          ...status,
-          duration: status.duration > 0 ? status.duration - 1 : 0,
-        }))
-        .filter((status) => status.duration > 0);
+      if (state.parameters.hp <= 0) {
+        handleDeath(state);
+      }
 
       updateCharacterParameters(state);
 
@@ -759,7 +757,7 @@ export const characterSlice = createSlice({
   },
 });
 
-export const { takeDamage, heal, gainExperience, modifyStat, equipEquipment, unequipEquipment, equipTool, unequipTool, updateCharacterName, addStatus, removeStatus, updateStatuses, regenAndDecay } =
+export const { takeDamage, heal, gainExperience, modifyStat, equipEquipment, unequipEquipment, equipTool, unequipTool, updateCharacterName, addStatus, removeStatus, regenAndDecay } =
   characterSlice.actions;
 
 export default characterSlice.reducer;
