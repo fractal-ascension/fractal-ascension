@@ -4,7 +4,7 @@ import { Item, ItemType } from "../../Utils/Data/Items";
 
 export type FilterType = "ALL" | ItemType;
 export type SortCriteria = "AZ" | "09" | "TYPE" | "VAL";
-type SortType = "NONE" | `${SortCriteria}_ASC` | `${SortCriteria}_DESC`;
+export type SortType = "NONE" | `${SortCriteria}_ASC` | `${SortCriteria}_DESC`;
 
 interface InventoryItem {
   id: string;
@@ -57,7 +57,7 @@ const inventorySlice = createSlice({
     updateItem: (state, action: PayloadAction<{ id: string; amount: number }>) => {
       const index = state.items.findIndex((i) => i.id === action.payload.id);
       if (index !== -1) {
-        state.items[index] = { ...state.items[index], ...action.payload };
+        state.items[index].amount = action.payload.amount;
       }
     },
     setFilter: (state, action: PayloadAction<FilterType>) => {
@@ -74,9 +74,8 @@ const inventorySlice = createSlice({
     clearFilters: (state) => {
       state.filter = ["ALL"];
     },
-    setSort: (state, action: PayloadAction<SortCriteria>) => {
-      const isCurrentSortAsc = state.sort === `${action.payload}_ASC`;
-      state.sort = isCurrentSortAsc ? `${action.payload}_DESC` : `${action.payload}_ASC`;
+    setSort: (state, action: PayloadAction<SortType>) => {
+      state.sort = action.payload;
     },
   },
 });

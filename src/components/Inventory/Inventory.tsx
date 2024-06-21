@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addFilter, FilterType, removeFilter, removeItem, setFilter, setSort, SortCriteria } from "./inventorySlice";
+import { addFilter, FilterType, removeFilter, removeItem, setFilter, setSort, SortCriteria, SortType } from "./inventorySlice";
 import { RootState } from "../../store";
 import ReactDOMServer from "react-dom/server";
 import "./Inventory.scss";
@@ -28,7 +28,7 @@ const Inventory: React.FC = () => {
       });
 
   const sortedFilteredItems = [...filteredItems].sort((a, b) => {
-    let sortCriteria = "NONE";
+    let sortCriteria: SortCriteria | "NONE" = "NONE";
     let sortDirection: "ASC" | "DESC" = "ASC";
     if (sort !== "NONE") {
       [sortCriteria, sortDirection] = sort.split("_") as [SortCriteria, "ASC" | "DESC"];
@@ -82,6 +82,11 @@ const Inventory: React.FC = () => {
     }
   };
 
+  const handleSortClick = (criteria: SortCriteria) => {
+    const currentSort = sort === `${criteria}_ASC` ? `${criteria}_DESC` : `${criteria}_ASC`;
+    dispatch(setSort(currentSort as SortType));
+  };
+
   return (
     <div className="inventory-container">
       <div className="category-filter">
@@ -131,13 +136,13 @@ const Inventory: React.FC = () => {
         })}
       </ul>
       <div className="sort-buttons">
-        <button className={`inventory-button ${sort === "AZ_ASC" || sort === "AZ_DESC" ? "active" : ""}`} onClick={() => dispatch(setSort("AZ"))}>
+        <button className={`inventory-button ${sort.startsWith("AZ") ? "active" : ""}`} onClick={() => handleSortClick("AZ")}>
           A-Z
         </button>
-        <button className={`inventory-button ${sort === "09_ASC" || sort === "09_DESC" ? "active" : ""}`} onClick={() => dispatch(setSort("09"))}>
+        <button className={`inventory-button ${sort.startsWith("09") ? "active" : ""}`} onClick={() => handleSortClick("09")}>
           0-9
         </button>
-        <button className={`inventory-button ${sort === "TYPE_ASC" || sort === "TYPE_DESC" ? "active" : ""}`} onClick={() => dispatch(setSort("TYPE"))}>
+        <button className={`inventory-button ${sort.startsWith("TYPE") ? "active" : ""}`} onClick={() => handleSortClick("TYPE")}>
           TYPE
         </button>
       </div>
