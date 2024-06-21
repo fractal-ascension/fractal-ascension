@@ -10,7 +10,7 @@ import { ItemTooltipUtil } from "../../Utils/Functions/ItemTooltipUtil";
 import { equipEquipment, equipTool } from "../Character/characterSlice";
 import { ItemList } from "../../Utils/Data/Items/ItemList";
 
-const Inventory = () => {
+const Inventory: React.FC = () => {
   const dispatch = useDispatch();
   const { items, filter, sort } = useSelector((state: RootState) => state.inventory);
   const skill = useSelector((state: RootState) => state.character.skill);

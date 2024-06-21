@@ -44,7 +44,6 @@ const inventorySlice = createSlice({
           state.items.push({
             id: action.payload.item.id,
             amount: action.payload.amount,
-            // Add any other necessary properties here
           });
         }
       }
@@ -61,7 +60,6 @@ const inventorySlice = createSlice({
         state.items[index] = { ...state.items[index], ...action.payload };
       }
     },
-    // Other reducers remain the same
     setFilter: (state, action: PayloadAction<FilterType>) => {
       state.filter = [action.payload];
     },
