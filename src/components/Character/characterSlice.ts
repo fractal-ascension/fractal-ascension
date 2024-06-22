@@ -40,18 +40,16 @@ const updateCharacterParameters = (state: CharacterState) => {
   const { level, stats } = state;
   const baseParameters = calculateBaseParameters(level, stats);
 
-  const parametersToRound: (keyof BaseParameters)[] = ["hpRegen", "spRegen", "mpRegen"];
+  const parametersToRound: (keyof BaseParameters)[] = ["hpRegen", "spRegen", "mpRegen", "hungerRegen", "thirstRegen", "sleepRegen", "energyRegen"];
   parametersToRound.forEach((param) => {
     state.parameters[param] = roundToOneDecimal(baseParameters[param]);
   });
 
-  state.parameters.maxHp = baseParameters.maxHp;
-  state.parameters.maxSp = baseParameters.maxSp;
-  state.parameters.maxMp = baseParameters.maxMp;
-  state.parameters.maxHunger = baseParameters.maxHunger;
-  state.parameters.maxThirst = baseParameters.maxThirst;
-  state.parameters.maxSleep = baseParameters.maxSleep;
-  state.parameters.maxEnergy = baseParameters.maxEnergy;
+  const maxParameters: (keyof BaseParameters)[] = ["maxHp", "maxSp", "maxMp", "maxHunger", "maxThirst", "maxSleep", "maxEnergy"];
+  maxParameters.forEach((param) => {
+    state.parameters[param] = baseParameters[param];
+  });
+
   state.parameters.nextLevelExperience = baseParameters.nextLevelExperience;
 
   state.hasHungerDecay = false;
@@ -704,8 +702,6 @@ export const characterSlice = createSlice({
         handleDeath(state);
       }
 
-      updateCharacterParameters(state);
-
       const applyDecay = (regenValue: number, decayValue: number) => roundToOneDecimal(regenValue - Math.abs(decayValue));
       const removeDecay = (regenValue: number, decayValue: number) => roundToOneDecimal(regenValue + Math.abs(decayValue));
 
@@ -715,7 +711,7 @@ export const characterSlice = createSlice({
         decayFactors: { hp: number; sp: number; mp: number },
         stateFlag: keyof Pick<CharacterState, "hasHungerDecay" | "hasThirstDecay" | "hasSleepDecay" | "hasEnergyDecay">
       ) => {
-        if (resource === 0 && !state[stateFlag]) {
+        if (resource <= 0 && !state[stateFlag]) {
           state.parameters.hpRegen = applyDecay(state.parameters.hpRegen, regenValue * decayFactors.hp);
           state.parameters.spRegen = applyDecay(state.parameters.spRegen, regenValue * decayFactors.sp);
           state.parameters.mpRegen = applyDecay(state.parameters.mpRegen, regenValue * decayFactors.mp);
@@ -744,6 +740,8 @@ export const characterSlice = createSlice({
       updateParameter("thirst", "thirstRegen", "maxThirst");
       updateParameter("sleep", "sleepRegen", "maxSleep");
       updateParameter("energy", "energyRegen", "maxEnergy");
+
+      updateCharacterParameters(state);
     },
   },
 });

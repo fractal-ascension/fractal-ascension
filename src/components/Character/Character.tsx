@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import "./Character.scss";
 import { RootState } from "../../store";
@@ -22,22 +22,13 @@ type CharacterProps = {
 };
 
 const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => {
-  const browser = React.useMemo(() => detectBrowser(), []);
+  const browser = useMemo(() => detectBrowser(), []);
   const character = useSelector((state: RootState) => state.character);
 
-  const renderEquipmentSlotMain = (label: string, item: string | null) => {
+  const renderEquipmentSlot = (label: string, item: string | null, className: string = "equipment-slot") => {
     const isEmpty = !item;
     return (
-      <div className={"equipment-slot-main"} key={label}>
-        {isEmpty ? label : item}
-      </div>
-    );
-  };
-
-  const renderEquipmentSlot = (label: string, item: string | null) => {
-    const isEmpty = !item;
-    return (
-      <div className={"equipment-slot"} key={label}>
+      <div className={className} key={label}>
         {isEmpty ? label : item}
       </div>
     );
@@ -46,7 +37,7 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
   const renderToolSlot = (label: string, item: string | null) => {
     const isEmpty = !item;
     return (
-      <div className={"tool-slot"} key={label}>
+      <div className="tool-slot" key={label}>
         {isEmpty ? label : item}
       </div>
     );
@@ -71,26 +62,41 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
           </span>
         </div>
         <div style={{ textAlign: "right" }}>
-          <span>{regen ? regen + "/s" : ""}</span>
+          <span>{regen ? `${regen}/s` : ""}</span>
         </div>
       </div>
     );
   };
 
   const renderBars = () => {
+    const bars = [
+      { label: "HP", value: character.parameters.hp, maxValue: character.parameters.maxHp, regen: character.parameters.hpRegen, startColor: "#750000", endColor: "#9c0000" },
+      { label: "Hunger", value: character.parameters.hunger, maxValue: character.parameters.maxHunger, regen: character.parameters.hungerRegen, startColor: "#750000", endColor: "#9c0000" },
+      { label: "SP", value: character.parameters.sp, maxValue: character.parameters.maxSp, regen: character.parameters.spRegen, startColor: "#006600", endColor: "#008700" },
+      { label: "Thirst", value: character.parameters.thirst, maxValue: character.parameters.maxThirst, regen: character.parameters.thirstRegen, startColor: "#006600", endColor: "#008700" },
+      { label: "MP", value: character.parameters.mp, maxValue: character.parameters.maxMp, regen: character.parameters.mpRegen, startColor: "#000066", endColor: "#00008c" },
+      { label: "Sleep", value: character.parameters.sleep, maxValue: character.parameters.maxSleep, regen: character.parameters.sleepRegen, startColor: "#000066", endColor: "#00008c" },
+      { label: "XP", value: character.parameters.xp, maxValue: character.parameters.nextLevelExperience, regen: null, startColor: "#660066", endColor: "#880088" },
+      { label: "Energy", value: character.parameters.energy, maxValue: character.parameters.maxEnergy, regen: character.parameters.energyRegen, startColor: "#cc9900", endColor: "#e7ad00" },
+    ];
+
     return (
       <div className="bar-grid">
-        {renderBar("HP", character.parameters.hp, character.parameters.maxHp, character.parameters.hpRegen, "#750000", "#9c0000")}
-        {renderBar("Hunger", character.parameters.hunger, character.parameters.maxHunger, character.parameters.hungerRegen, "#750000", "#9c0000")}
-        {renderBar("SP", character.parameters.sp, character.parameters.maxSp, character.parameters.spRegen, "#006600", "#008700")}
-        {renderBar("Thirst", character.parameters.thirst, character.parameters.maxThirst, character.parameters.thirstRegen, "#006600", "#008700")}
-        {renderBar("MP", character.parameters.mp, character.parameters.maxMp, character.parameters.mpRegen, "#000066", "#00008c")}
-        {renderBar("Sleep ", character.parameters.sleep, character.parameters.maxSleep, character.parameters.sleepRegen, "#000066", "#00008c")}
-        {renderBar("XP", character.parameters.xp, character.parameters.nextLevelExperience, null, "#660066", "#880088")}
-        {renderBar("Energy", character.parameters.energy, character.parameters.maxEnergy, character.parameters.energyRegen, "#cc9900", "#e7ad00")}
+        {bars.map((bar, index) => (
+          <React.Fragment key={index}>{renderBar(bar.label, bar.value, bar.maxValue, bar.regen, bar.startColor, bar.endColor)}</React.Fragment>
+        ))}
       </div>
     );
   };
+
+  const renderTooltipContent = (fullName: string, effects: string[]) => (
+    <div>
+      <strong>{fullName}</strong>
+      {effects.map((effect, index) => (
+        <div key={index}>• {effect}</div>
+      ))}
+    </div>
+  );
 
   const renderHome = () => {
     return (
@@ -111,20 +117,10 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
           {Object.entries(character.stats).map(([statName, statValue]) => {
             const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
             const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
-
-            const tooltipContent = (
-              <div>
-                <strong>{fullName}</strong>
-                {statEffects
-                  .find((effect) => effect.id === statName)
-                  ?.effects.map((effect) => (
-                    <div key={effect}>• {effect}</div>
-                  ))}
-              </div>
-            );
+            const effects = statEffects.find((effect) => effect.id === statName)?.effects || [];
 
             return (
-              <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
+              <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(renderTooltipContent(fullName, effects))}>
                 {abbreviation}: {statValue}
               </div>
             );
@@ -133,8 +129,8 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
         </div>
         <span style={{ fontSize: ".7em", color: "gray" }}>Weapons</span>
         <div className="equipment-grid">
-          {renderEquipmentSlotMain("R Weapon", character.equipment.rightWeapon)}
-          {renderEquipmentSlotMain("L Weapon", character.equipment.leftWeapon)}
+          {renderEquipmentSlot("R Weapon", character.equipment.rightWeapon, "equipment-slot-main")}
+          {renderEquipmentSlot("L Weapon", character.equipment.leftWeapon, "equipment-slot-main")}
         </div>
         <span style={{ fontSize: ".7em", color: "gray" }}>Status</span>
         <div className="status-grid">
@@ -173,25 +169,33 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
   };
 
   const renderEquipment = () => {
+    const equipmentSlots = [
+      { label: "Head", slot: "head" },
+      { label: "Amulet", slot: "amulet" },
+      { label: "Body", slot: "body" },
+      { label: "L Arm", slot: "left-arm" },
+      { label: "R Arm", slot: "right-arm" },
+      { label: "L Ring", slot: "left-ring" },
+      { label: "R Ring", slot: "right-ring" },
+      { label: "L Weapon", slot: "left-weapon" },
+      { label: "R Weapon", slot: "right-weapon" },
+      { label: "Belt", slot: "belt" },
+      { label: "L Leg", slot: "left-leg" },
+      { label: "R Leg", slot: "right-leg" },
+      { label: "L Foot", slot: "left-foot" },
+      { label: "R Foot", slot: "right-foot" },
+    ];
+
     return (
       <div>
         <span style={{ fontSize: ".7em", color: "gray" }}>Equipment</span>
         <div className="equipment-panel">
           <div className="equipment-silhouette">
-            <div className="equipment-slot head-slot">{renderEquipmentSlot("Head", character.equipment.head)}</div>
-            <div className="equipment-slot amulet-slot">{renderEquipmentSlot("Amulet", character.equipment.amulet)}</div>
-            <div className="equipment-slot body-slot">{renderEquipmentSlot("Body", character.equipment.body)}</div>
-            <div className="equipment-slot left-arm-slot">{renderEquipmentSlot("L Arm", character.equipment.leftArm)}</div>
-            <div className="equipment-slot right-arm-slot">{renderEquipmentSlot("R Arm", character.equipment.rightArm)}</div>
-            <div className="equipment-slot left-ring-slot">{renderEquipmentSlot("L Ring", character.equipment.leftRing)}</div>
-            <div className="equipment-slot right-ring-slot">{renderEquipmentSlot("R Ring", character.equipment.rightRing)}</div>
-            <div className="equipment-slot left-weapon-slot">{renderEquipmentSlot("L Weapon", character.equipment.leftWeapon)}</div>
-            <div className="equipment-slot right-weapon-slot">{renderEquipmentSlot("R Weapon", character.equipment.rightWeapon)}</div>
-            <div className="equipment-slot belt-slot">{renderEquipmentSlot("Belt", character.equipment.belt)}</div>
-            <div className="equipment-slot left-leg-slot">{renderEquipmentSlot("L Leg", character.equipment.leftLeg)}</div>
-            <div className="equipment-slot right-leg-slot">{renderEquipmentSlot("R Leg", character.equipment.rightLeg)}</div>
-            <div className="equipment-slot left-foot-slot">{renderEquipmentSlot("L Foot", character.equipment.leftFoot)}</div>
-            <div className="equipment-slot right-foot-slot">{renderEquipmentSlot("R Foot", character.equipment.rightFoot)}</div>
+            {equipmentSlots.map(({ label, slot }) => (
+              <div key={slot} className={`equipment-slot ${slot}-slot`}>
+                {renderEquipmentSlot(label, character.equipment[slot as keyof typeof character.equipment])}
+              </div>
+            ))}
           </div>
           <div>
             <span style={{ fontSize: ".7em" }}>Equipment Effects</span>
@@ -212,30 +216,30 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
         <span style={{ fontSize: ".7em", color: "gray" }}>Harvesting Tools</span>
         <div className="tool-area">
           <div className="tool-grid">
-            <div>{renderToolSlot("Pickaxe", character.equipment.head)}</div>
-            <div>{renderToolSlot("Axe", character.equipment.head)}</div>
-            <div>{renderToolSlot("Sickle", character.equipment.head)}</div>
-            <div>{renderToolSlot("Shovel", character.equipment.head)}</div>
+            <div>{renderToolSlot("Pickaxe", character.tool.pickaxe)}</div>
+            <div>{renderToolSlot("Axe", character.tool.axe)}</div>
+            <div>{renderToolSlot("Sickle", character.tool.sickle)}</div>
+            <div>{renderToolSlot("Shovel", character.tool.shovel)}</div>
           </div>
         </div>
 
         <span style={{ fontSize: ".7em", color: "gray" }}>Hunting Tools</span>
         <div className="tool-area">
           <div className="tool-grid">
-            <div>{renderToolSlot("Net", character.equipment.head)}</div>
-            <div>{renderToolSlot("Bug Net", character.equipment.head)}</div>
-            <div>{renderToolSlot("Fishing Rod", character.equipment.head)}</div>
-            <div>{renderToolSlot("Cage", character.equipment.head)}</div>
+            <div>{renderToolSlot("Net", character.tool.net)}</div>
+            <div>{renderToolSlot("Bug Net", character.tool.bugNet)}</div>
+            <div>{renderToolSlot("Fishing Rod", character.tool.fishingRod)}</div>
+            <div>{renderToolSlot("Cage", character.tool.cage)}</div>
           </div>
         </div>
 
         <span style={{ fontSize: ".7em", color: "gray" }}>Survival Tools</span>
         <div className="tool-area">
           <div className="tool-grid">
-            <div>{renderToolSlot("Manual", character.equipment.head)}</div>
-            <div>{renderToolSlot("Bug Net", character.equipment.head)}</div>
-            <div>{renderToolSlot("Fishing Rod", character.equipment.head)}</div>
-            <div>{renderToolSlot("Cage", character.equipment.head)}</div>
+            <div>{renderToolSlot("Manual", character.tool.manual)}</div>
+            <div>{renderToolSlot("Bug Net", character.tool.bugNet)}</div>
+            <div>{renderToolSlot("Fishing Rod", character.tool.fishingRod)}</div>
+            <div>{renderToolSlot("Cage", character.tool.cage)}</div>
           </div>
         </div>
         <CharacterPanelButtons activePanel={activePanel} onPanelChange={onPanelChange} />
@@ -243,127 +247,64 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
     );
   };
 
+  const renderStatGrid = (
+    title: string,
+    stats: typeof character.stats | typeof character.combatStats,
+    abbreviations: typeof statAbbreviations | typeof combatStatAbbreviations,
+    fullNames: typeof fullStatNames | typeof fullCombatStatNames,
+    iconSource: "fullName" | "abbreviation"
+  ) => (
+    <>
+      <span style={{ fontSize: ".7em", color: "gray" }}>{title}</span>
+      <div className="full-stats-grid">
+        {Object.entries(stats).map(([statName, statValue]) => {
+          const abbreviation = abbreviations[statName as keyof typeof abbreviations];
+          const fullName = fullNames[abbreviation as keyof typeof fullNames];
+          const iconKey = iconSource === "fullName" ? fullName : abbreviation;
+          const icons = Icons[iconKey as keyof typeof Icons];
+
+          const tooltipContent = renderTooltipContent(fullName, statName);
+
+          return (
+            <div key={statName} className="full-stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
+              <span style={{ gridColumn: "1 / span 1" }}>{icons}</span>
+              <span style={{ gridColumn: "2 / span 4" }}>{fullName}: </span>
+              <span>{statValue}</span>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+
   const renderStats = () => {
     return (
       <>
-        <span style={{ fontSize: ".7em", color: "gray" }}>Main Stats</span>
-        <div className="full-stats-grid">
-          {Object.entries(character.stats).map(([statName, statValue]) => {
-            const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
-            const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
-            const icons = Icons[fullName as keyof typeof Icons];
-
-            // Define the tooltip content directly here
-            const tooltipContent = (
-              <div>
-                <strong>{fullName}</strong>
-                {statEffects
-                  .find((effect) => effect.id === statName)
-                  ?.effects.map((effect) => (
-                    <div key={effect}>• {effect}</div>
-                  ))}
-              </div>
-            );
-
-            return (
-              <div key={statName} className="full-stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
-                <span style={{ gridColumn: "1 / span 1" }}>{icons}</span>
-                <span style={{ gridColumn: "2 / span 4" }}>{fullName}: </span>
-                <span>{statValue}</span>
-              </div>
-            );
-          })}
-          <Tooltip id="stats-tooltip" className="tooltip" />
-        </div>
-        <span style={{ fontSize: ".7em", color: "gray" }}>Combat Stats</span>
-        <div className="full-stats-grid">
-          {Object.entries(character.combatStats).map(([statName, statValue]) => {
-            const abbreviation = combatStatAbbreviations[statName as keyof typeof combatStatAbbreviations];
-            const fullName = fullCombatStatNames[abbreviation as keyof typeof fullCombatStatNames];
-            const icons = Icons[abbreviation as keyof typeof Icons];
-
-            // Define the tooltip content directly here
-            const tooltipContent = (
-              <div>
-                <strong>{fullName}</strong>
-                {statEffects
-                  .find((effect) => effect.id === statName)
-                  ?.effects.map((effect) => (
-                    <div key={effect}>• {effect}</div>
-                  ))}
-              </div>
-            );
-
-            return (
-              <div key={statName} className="full-stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
-                <span style={{ gridColumn: "1 / span 1" }}>{icons}</span>
-                <span style={{ gridColumn: "2 / span 4" }}>{fullName}: </span>
-                <span>{statValue}</span>
-              </div>
-            );
-          })}
-          <Tooltip id="stats-tooltip" className="tooltip" />
-        </div>
+        {renderStatGrid("Main Stats", character.stats, statAbbreviations, fullStatNames, "fullName")}
+        {renderStatGrid("Combat Stats", character.combatStats, combatStatAbbreviations, fullCombatStatNames, "abbreviation")}
+        <Tooltip id="stats-tooltip" className="tooltip" />
         <CharacterPanelButtons activePanel={activePanel} onPanelChange={onPanelChange} />
       </>
     );
   };
 
   const renderSkills = () => {
+    // Placeholder for skills rendering
     return (
       <>
-        <div className="stats-grid">
-          {Object.entries(character.stats).map(([statName, statValue]) => {
-            const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
-            const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
-
-            // Define the tooltip content directly here
-            const tooltipContent = (
-              <div>
-                <strong>{fullName}</strong>
-                {statEffects
-                  .find((effect) => effect.id === statName)
-                  ?.effects.map((effect) => (
-                    <div key={effect}>• {effect}</div>
-                  ))}
-              </div>
-            );
-
-            return (
-              <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
-                {abbreviation}: {statValue}
-              </div>
-            );
-          })}
-          <Tooltip id="stats-tooltip" className="tooltip" />
-        </div>
+        <span style={{ fontSize: ".7em", color: "gray" }}>Skills</span>
+        <div>Skills content goes here</div>
         <CharacterPanelButtons activePanel={activePanel} onPanelChange={onPanelChange} />
       </>
     );
   };
 
   const renderProfessions = () => {
+    // Placeholder for professions rendering
     return (
       <>
-        <div className="equipment-panel">
-          <div className="equipment-silhouette">
-            <div className="equipment-slot head-slot">{renderEquipmentSlot("Head", character.equipment.head)}</div>
-            <div className="equipment-slot amulet-slot">{renderEquipmentSlot("Amulet", character.equipment.amulet)}</div>
-            <div className="equipment-slot body-slot">{renderEquipmentSlot("Body", character.equipment.body)}</div>
-            <div className="equipment-slot left-arm-slot">{renderEquipmentSlot("L Arm", character.equipment.leftArm)}</div>
-            <div className="equipment-slot right-arm-slot">{renderEquipmentSlot("R Arm", character.equipment.rightArm)}</div>
-            <div className="equipment-slot left-ring-slot">{renderEquipmentSlot("L Ring", character.equipment.leftRing)}</div>
-            <div className="equipment-slot right-ring-slot">{renderEquipmentSlot("R Ring", character.equipment.rightRing)}</div>
-            <div className="equipment-slot left-weapon-slot">{renderEquipmentSlot("L Weapon", character.equipment.leftWeapon)}</div>
-            <div className="equipment-slot right-weapon-slot">{renderEquipmentSlot("R Weapon", character.equipment.rightWeapon)}</div>
-            <div className="equipment-slot belt-slot">{renderEquipmentSlot("Belt", character.equipment.belt)}</div>
-            <div className="equipment-slot left-leg-slot">{renderEquipmentSlot("L Leg", character.equipment.leftLeg)}</div>
-            <div className="equipment-slot right-leg-slot">{renderEquipmentSlot("R Leg", character.equipment.rightLeg)}</div>
-            <div className="equipment-slot left-foot-slot">{renderEquipmentSlot("L Foot", character.equipment.leftFoot)}</div>
-            <div className="equipment-slot right-foot-slot">{renderEquipmentSlot("R Foot", character.equipment.rightFoot)}</div>
-          </div>
-          <div>test</div>
-        </div>
+        <span style={{ fontSize: ".7em", color: "gray" }}>Professions</span>
+        <div>Professions content goes here</div>
         <CharacterPanelButtons activePanel={activePanel} onPanelChange={onPanelChange} />
       </>
     );
@@ -388,12 +329,7 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
     }
   };
 
-  return (
-    <>
-      {/* Move buttons out to App.tsx so I can also change the other panels */}
-      <div className={`character-container ${browser}`}>{renderContent()}</div>
-    </>
-  );
+  return <div className={`character-container ${browser}`}>{renderContent()}</div>;
 };
 
 export default Character;
