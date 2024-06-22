@@ -205,10 +205,17 @@ $base-height: 602px;
   font-size: 0.6em; /* Smaller text size for duration */
 }
 
-.tooltip {
-  z-index: 1000; // Ensure this is higher than any other element within the same stacking context
-  position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
+.stats-tooltip {
+  z-index: 1000;
+  position: absolute;
   max-width: 500px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  text-align: left;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
 }
 
 .status-tooltip {
@@ -216,6 +223,12 @@ $base-height: 602px;
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
   max-width: 500px;
   text-align: start;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
 }
 
 .panel-button {

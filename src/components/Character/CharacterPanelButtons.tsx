@@ -30,7 +30,7 @@ const CharacterPanelButtons: React.FC<CharacterPanelButtonsProps> = ({ activePan
         <Tooltip id={`equipment-tooltip`} className="equipment-tooltip" />
       </button>
       <button
-        className={`panel-button tool-button ${activePanel === "tool" ? "active" : ""}`}
+        className={`panel-button tool-button ${activePanel === "tools" ? "active" : ""}`}
         onClick={() => onPanelChange("tools")}
         data-tooltip-id={`tool-tooltip`}
         data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Tools</span>)}
@@ -48,7 +48,7 @@ const CharacterPanelButtons: React.FC<CharacterPanelButtonsProps> = ({ activePan
         <Tooltip id={`stats-tooltip`} className="stats-tooltip" />
       </button>
       <button
-        className={`panel-button skill-button ${activePanel === "skill" ? "active" : ""}`}
+        className={`panel-button skill-button ${activePanel === "skills" ? "active" : ""}`}
         onClick={() => onPanelChange("skills")}
         data-tooltip-id={`skill-tooltip`}
         data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Skills</span>)}
@@ -57,7 +57,7 @@ const CharacterPanelButtons: React.FC<CharacterPanelButtonsProps> = ({ activePan
         <Tooltip id={`skill-tooltip`} className="skill-tooltip" />
       </button>
       <button
-        className={`panel-button profession-button ${activePanel === "profession" ? "active" : ""}`}
+        className={`panel-button profession-button ${activePanel === "professions" ? "active" : ""}`}
         onClick={() => onPanelChange("professions")}
         data-tooltip-id={`profession-tooltip`}
         data-tooltip-html={ReactDOMServer.renderToStaticMarkup(<span>Professions</span>)}

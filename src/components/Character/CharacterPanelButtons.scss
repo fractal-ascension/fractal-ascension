@@ -1,0 +1,72 @@
+.home-tooltip {
+  z-index: 1000;
+  position: absolute;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  text-align: left;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
+}
+.equipment-tooltip {
+  z-index: 1000;
+  position: absolute;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  text-align: left;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
+}
+.tool-tooltip {
+  z-index: 1000;
+  position: absolute;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  text-align: left;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
+}
+.stats-tooltip {
+  z-index: 1000;
+  position: absolute;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  text-align: left;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
+}
+.skill-tooltip {
+  z-index: 1000;
+  position: absolute;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  text-align: left;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
+}
+.profession-tooltip {
+  z-index: 1000;
+  position: absolute;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+  text-align: left;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
+}

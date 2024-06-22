@@ -89,14 +89,17 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
     );
   };
 
-  const renderTooltipContent = (fullName: string, effects: string[]) => (
-    <div>
-      <strong>{fullName}</strong>
-      {effects.map((effect, index) => (
-        <div key={index}>• {effect}</div>
-      ))}
-    </div>
-  );
+  const renderTooltipContent = (fullName: string, statName: string) => {
+    const effects = statEffects.find((effect) => effect.id === statName)?.effects || [];
+    return (
+      <div>
+        <strong>{fullName}</strong>
+        {effects.map((effect, index) => (
+          <div key={index}>• {effect}</div>
+        ))}
+      </div>
+    );
+  };
 
   const renderHome = () => {
     return (
@@ -117,16 +120,16 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
           {Object.entries(character.stats).map(([statName, statValue]) => {
             const abbreviation = statAbbreviations[statName as keyof typeof statAbbreviations];
             const fullName = fullStatNames[abbreviation as keyof typeof fullStatNames];
-            const effects = statEffects.find((effect) => effect.id === statName)?.effects || [];
 
             return (
-              <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(renderTooltipContent(fullName, effects))}>
+              <div key={statName} className="stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(renderTooltipContent(fullName, statName))}>
                 {abbreviation}: {statValue}
               </div>
             );
           })}
-          <Tooltip id="stats-tooltip" className="tooltip" />
         </div>
+        <Tooltip id="stats-tooltip" className="stats-tooltip" />
+        
         <span style={{ fontSize: ".7em", color: "gray" }}>Weapons</span>
         <div className="equipment-grid">
           {renderEquipmentSlot("R Weapon", character.equipment.rightWeapon, "equipment-slot-main")}
@@ -263,10 +266,8 @@ const Character: React.FC<CharacterProps> = ({ activePanel, onPanelChange }) => 
           const iconKey = iconSource === "fullName" ? fullName : abbreviation;
           const icons = Icons[iconKey as keyof typeof Icons];
 
-          const tooltipContent = renderTooltipContent(fullName, statName);
-
           return (
-            <div key={statName} className="full-stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(tooltipContent)}>
+            <div key={statName} className="full-stat-box" data-tooltip-id="stats-tooltip" data-tooltip-html={ReactDOMServer.renderToStaticMarkup(renderTooltipContent(fullName, statName))}>
               <span style={{ gridColumn: "1 / span 1" }}>{icons}</span>
               <span style={{ gridColumn: "2 / span 4" }}>{fullName}: </span>
               <span>{statValue}</span>

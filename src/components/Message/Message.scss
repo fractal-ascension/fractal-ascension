@@ -70,4 +70,10 @@ $alternate-message-bg: #3c415e;
   z-index: 1000; // Ensure this is higher than any other element within the same stacking context
   position: absolute; // This makes sure it's placed relative to the nearest positioned ancestor (which has a relative position)
   max-width: 400px;
+  background-color: rgba(0, 0, 0, 1) !important; // Darker background
+  color: white !important;
+
+  &[data-tooltip-content] {
+    opacity: 1 !important; // Ensure full opacity
+  }
 }
