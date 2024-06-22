@@ -2,6 +2,135 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { CombatDamageParameters, BaseParameters, Stats, CombatStats } from "../../Utils/Data/Stats";
 
+// Helper functions
+const roundToOneDecimal = (value: number): number => Number(value.toFixed(1));
+
+const calculateNextLevelExperience = (level: number): number => 99 + Math.pow(2, level) + 100 * Math.pow(level, 2);
+
+// Warriors use strength and vitality for survival stats.
+// Ranges use skills and perks for survival stats.
+// Mages use spells and mana for survival stats.
+const calculateBaseParameters = (level: number, stats: Stats): BaseParameters => ({
+  hp: 100,
+  hpRegen: roundToOneDecimal(0.1 + level * 0.1 + stats.vitality * 0.1),
+  maxHp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
+  hunger: 100,
+  hungerRegen: -10.1,
+  maxHunger: 100 + level * 10 + stats.vitality * 20,
+  sp: 100,
+  spRegen: roundToOneDecimal(0.1 + level * 0.1 + stats.vitality * 0.1),
+  maxSp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
+  thirst: 100,
+  thirstRegen: -0.1,
+  maxThirst: 100 + level * 10 + stats.vitality * 20,
+  mp: 100,
+  mpRegen: roundToOneDecimal(0.1 + level * 0.1 + stats.wisdom * 0.1),
+  maxMp: 100 + level * 10 + stats.wisdom * 20 + stats.intelligence * 10,
+  sleep: 100,
+  sleepRegen: -0.1,
+  maxSleep: 100 + level * 10 + stats.vitality * 20,
+  energy: 100,
+  energyRegen: -0.1,
+  maxEnergy: 100 + level * 10 + stats.vitality * 20,
+  xp: 0,
+  nextLevelExperience: calculateNextLevelExperience(level),
+});
+
+const updateCharacterParameters = (state: CharacterState) => {
+  const { level, stats } = state;
+  const baseParameters = calculateBaseParameters(level, stats);
+
+  // Update only the necessary properties
+  state.parameters.maxHp = roundToOneDecimal(baseParameters.maxHp);
+  state.parameters.hpRegen = roundToOneDecimal(baseParameters.hpRegen);
+  state.parameters.maxSp = roundToOneDecimal(baseParameters.maxSp);
+  state.parameters.spRegen = roundToOneDecimal(baseParameters.spRegen);
+  state.parameters.maxMp = roundToOneDecimal(baseParameters.maxMp);
+  state.parameters.mpRegen = roundToOneDecimal(baseParameters.mpRegen);
+  state.parameters.maxHunger = roundToOneDecimal(baseParameters.maxHunger);
+  state.parameters.hungerRegen = roundToOneDecimal(baseParameters.hungerRegen);
+  state.parameters.maxThirst = roundToOneDecimal(baseParameters.maxThirst);
+  state.parameters.thirstRegen = roundToOneDecimal(baseParameters.thirstRegen);
+  state.parameters.maxSleep = roundToOneDecimal(baseParameters.maxSleep);
+  state.parameters.sleepRegen = roundToOneDecimal(baseParameters.sleepRegen);
+  state.parameters.maxEnergy = roundToOneDecimal(baseParameters.maxEnergy);
+  state.parameters.energyRegen = roundToOneDecimal(baseParameters.energyRegen);
+  state.parameters.nextLevelExperience = roundToOneDecimal(baseParameters.nextLevelExperience);
+
+  state.hasHungerDecay = false;
+  state.hasThirstDecay = false;
+  state.hasSleepDecay = false;
+  state.hasEnergyDecay = false;
+};
+
+const applyEffect = (character: CharacterState, effect: StatusEffect): void => {
+  character.statEffects.push({
+    affectedStat: effect.effect,
+    effectAmount: effect.effectAmount,
+    effectApplication: effect.effectType === EffectType.SUBTRACT_PARAMETER ? "incrementParameter" : "multiplyStat",
+    effectType: effect.effectType === EffectType.SUBTRACT_PARAMETER ? "timeIncremental" : "active",
+    effectCause: effect.id,
+  });
+
+  reapplyStatEffects(character);
+};
+
+const reapplyStatEffects = (state: CharacterState): void => {
+  state.stats = { ...state.characterStats };
+
+  state.statEffects.forEach((effect) => {
+    if (effect.effectType === "timeIncremental") {
+      const statKey = effect.affectedStat as keyof typeof state.parameters;
+      state.parameters[statKey] += effect.effectAmount;
+    } else if (effect.effectType === "active") {
+      if (effect.affectedStat === "all") {
+        Object.keys(state.stats).forEach((key) => {
+          const statKey = key as keyof typeof state.stats;
+          state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
+        });
+      } else {
+        const statKey = effect.affectedStat as keyof typeof state.stats;
+        state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
+      }
+    }
+  });
+};
+
+const updateStatusEffects = (state: CharacterState): void => {
+  // Decrement status durations and immediately apply changes
+  state.statuses.forEach((status) => (status.duration -= 1));
+  state.statuses = state.statuses.filter((status) => status.duration > 0);
+
+  const activeStatusIds = new Set(state.statuses.map((status) => status.id));
+  state.statEffects = state.statEffects.filter((effect) => activeStatusIds.has(effect.effectCause));
+
+  reapplyStatEffects(state);
+};
+
+const handleDeath = (state: CharacterState) => {
+  if (state.parameters.hp <= 0) {
+    console.log("You have died.");
+
+    const parameters = state.parameters;
+    parameters.hp = parameters.maxHp * 0.5;
+    parameters.sp = parameters.maxSp * 0.5;
+    parameters.mp = parameters.maxMp * 0.5;
+    parameters.hunger = parameters.maxHunger * 0.5;
+    parameters.thirst = parameters.maxThirst * 0.5;
+    parameters.sleep = parameters.maxSleep * 0.5;
+    parameters.energy = parameters.maxEnergy * 0.5;
+
+    const existingStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
+
+    if (existingStatusIndex === -1) {
+      state.statuses.push(resurrectedStatus);
+      applyEffect(state, resurrectedStatus);
+    } else {
+      state.statuses[existingStatusIndex].duration = resurrectedStatus.duration;
+    }
+  }
+};
+
 export interface Equipment {
   head: string | null;
   amulet: string | null;
@@ -137,35 +266,6 @@ const initialCombatStats: CombatStats = {
   armorPenetration: 0,
   magicPenetration: 0,
 };
-
-// Warriors use strength and vitality for survival stats.
-// Ranges use skills and perks for survival stats.
-// Mages use spells and mana for survival stats.
-const calculateBaseParameters = (level: number, stats: Stats): BaseParameters => ({
-  hp: 100,
-  hpRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
-  maxHp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
-  hunger: 100,
-  hungerRegen: -10.1, // Certain actions/skills/perks can increase or decrease
-  maxHunger: 100 + level * 10 + stats.vitality * 20,
-  sp: 100,
-  spRegen: 0.1 + level * 0.1 + stats.vitality * 0.1,
-  maxSp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
-  thirst: 100,
-  thirstRegen: -0.1, // Certain actions/skills/perks can increase or decrease
-  maxThirst: 100 + level * 10 + stats.vitality * 20,
-  mp: 100,
-  mpRegen: 0.1 + level * 0.1 + stats.wisdom * 0.1,
-  maxMp: 100 + level * 10 + stats.wisdom * 20 + stats.intelligence * 10,
-  sleep: 100,
-  sleepRegen: -0.1, // Certain actions/skills/perks can increase or decrease
-  maxSleep: 100 + level * 10 + stats.vitality * 20,
-  energy: 100,
-  energyRegen: -0.1, // Certain actions/skills/perks can increase or decrease
-  maxEnergy: 100 + level * 10 + stats.vitality * 20,
-  xp: 0,
-  nextLevelExperience: 99 + Math.pow(2, level) + 100 * Math.pow(level, 2),
-});
 
 export const initialState: CharacterState = {
   name: "You",
@@ -546,113 +646,6 @@ export const handleRegenAndDecay = createAsyncThunk("character/handleRegenAndDec
   dispatch(regenAndDecay());
 });
 
-const updateCharacterParameters = (state: CharacterState) => {
-  const { level, stats } = state;
-  const baseParameters = calculateBaseParameters(level, stats);
-
-  // Update only the necessary properties
-  state.parameters.maxHp = roundToOneDecimal(baseParameters.maxHp);
-  state.parameters.hpRegen = roundToOneDecimal(baseParameters.hpRegen);
-  state.parameters.maxSp = roundToOneDecimal(baseParameters.maxSp);
-  state.parameters.spRegen = roundToOneDecimal(baseParameters.spRegen);
-  state.parameters.maxMp = roundToOneDecimal(baseParameters.maxMp);
-  state.parameters.mpRegen = roundToOneDecimal(baseParameters.mpRegen);
-  state.parameters.maxHunger = roundToOneDecimal(baseParameters.maxHunger);
-  state.parameters.hungerRegen = roundToOneDecimal(baseParameters.hungerRegen);
-  state.parameters.maxThirst = roundToOneDecimal(baseParameters.maxThirst);
-  state.parameters.thirstRegen = roundToOneDecimal(baseParameters.thirstRegen);
-  state.parameters.maxSleep = roundToOneDecimal(baseParameters.maxSleep);
-  state.parameters.sleepRegen = roundToOneDecimal(baseParameters.sleepRegen);
-  state.parameters.maxEnergy = roundToOneDecimal(baseParameters.maxEnergy);
-  state.parameters.energyRegen = roundToOneDecimal(baseParameters.energyRegen);
-  state.parameters.nextLevelExperience = roundToOneDecimal(baseParameters.nextLevelExperience);
-
-  state.hasHungerDecay = false;
-  state.hasThirstDecay = false;
-  state.hasSleepDecay = false;
-  state.hasEnergyDecay = false;
-};
-
-const calculateNextLevelExperience = (level: number): number => 99 + Math.pow(2, level) + 100 * Math.pow(level, 2);
-
-const roundToOneDecimal = (value: number): number => {
-  return parseFloat(value.toFixed(1));
-};
-
-const applyEffect = (character: CharacterState, effect: StatusEffect): void => {
-  // Add the new effect to the statEffects array
-  character.statEffects.push({
-    affectedStat: effect.effect,
-    effectAmount: effect.effectAmount,
-    effectApplication: effect.effectType === EffectType.SUBTRACT_PARAMETER ? "incrementParameter" : "multiplyStat",
-    effectType: effect.effectType === EffectType.SUBTRACT_PARAMETER ? "timeIncremental" : "active",
-    effectCause: effect.id,
-  });
-
-  // Immediately apply this new effect
-  reapplyStatEffects(character);
-};
-
-const reapplyStatEffects = (state: CharacterState): void => {
-  // Reset stats to original values
-  state.stats = { ...state.characterStats };
-
-  // Apply all current stat effects
-  state.statEffects.forEach((effect) => {
-    if (effect.effectType === "timeIncremental") {
-      const statKey = effect.affectedStat as keyof typeof state.parameters;
-      state.parameters[statKey] += effect.effectAmount;
-    } else if (effect.effectType === "active") {
-      if (effect.affectedStat === "all") {
-        Object.keys(state.stats).forEach((key) => {
-          const statKey = key as keyof typeof state.stats;
-          state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
-        });
-      } else {
-        const statKey = effect.affectedStat as keyof typeof state.stats;
-        state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
-      }
-    }
-  });
-};
-
-const updateStatusEffects = (state: CharacterState): void => {
-  // Decrement status durations and immediately apply changes
-  state.statuses.forEach((status) => (status.duration -= 1));
-  state.statuses = state.statuses.filter((status) => status.duration > 0);
-
-  // Filter out stat effects that no longer have an active cause
-  const activeStatusIds = new Set(state.statuses.map((status) => status.id));
-  state.statEffects = state.statEffects.filter((effect) => activeStatusIds.has(effect.effectCause));
-
-  // Reapply effects to ensure all modifications are current
-  reapplyStatEffects(state);
-};
-
-const handleDeath = (state: CharacterState) => {
-  if (state.parameters.hp <= 0) {
-    console.log("You have died.");
-
-    const parameters = state.parameters;
-    parameters.hp = parameters.maxHp * 0.5;
-    parameters.sp = parameters.maxSp * 0.5;
-    parameters.mp = parameters.maxMp * 0.5;
-    parameters.hunger = parameters.maxHunger * 0.5;
-    parameters.thirst = parameters.maxThirst * 0.5;
-    parameters.sleep = parameters.maxSleep * 0.5;
-    parameters.energy = parameters.maxEnergy * 0.5;
-
-    const existingStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
-
-    if (existingStatusIndex === -1) {
-      state.statuses.push(resurrectedStatus);
-      applyEffect(state, resurrectedStatus);
-    } else {
-      state.statuses[existingStatusIndex].duration = resurrectedStatus.duration;
-    }
-  }
-};
-
 // Slice
 export const characterSlice = createSlice({
   name: "character",
@@ -705,6 +698,7 @@ export const characterSlice = createSlice({
     },
     addStatus: (state, action: PayloadAction<StatusEffect>) => {
       state.statuses.push(action.payload);
+      applyEffect(state, action.payload);
     },
     removeStatus: (state, action: PayloadAction<string>) => {
       state.statuses = state.statuses.filter((status) => status.id !== action.payload);
