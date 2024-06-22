@@ -40,22 +40,19 @@ const updateCharacterParameters = (state: CharacterState) => {
   const { level, stats } = state;
   const baseParameters = calculateBaseParameters(level, stats);
 
-  // Update only the necessary properties
-  state.parameters.maxHp = roundToOneDecimal(baseParameters.maxHp);
-  state.parameters.hpRegen = roundToOneDecimal(baseParameters.hpRegen);
-  state.parameters.maxSp = roundToOneDecimal(baseParameters.maxSp);
-  state.parameters.spRegen = roundToOneDecimal(baseParameters.spRegen);
-  state.parameters.maxMp = roundToOneDecimal(baseParameters.maxMp);
-  state.parameters.mpRegen = roundToOneDecimal(baseParameters.mpRegen);
-  state.parameters.maxHunger = roundToOneDecimal(baseParameters.maxHunger);
-  state.parameters.hungerRegen = roundToOneDecimal(baseParameters.hungerRegen);
-  state.parameters.maxThirst = roundToOneDecimal(baseParameters.maxThirst);
-  state.parameters.thirstRegen = roundToOneDecimal(baseParameters.thirstRegen);
-  state.parameters.maxSleep = roundToOneDecimal(baseParameters.maxSleep);
-  state.parameters.sleepRegen = roundToOneDecimal(baseParameters.sleepRegen);
-  state.parameters.maxEnergy = roundToOneDecimal(baseParameters.maxEnergy);
-  state.parameters.energyRegen = roundToOneDecimal(baseParameters.energyRegen);
-  state.parameters.nextLevelExperience = roundToOneDecimal(baseParameters.nextLevelExperience);
+  const parametersToRound: (keyof BaseParameters)[] = ["hpRegen", "spRegen", "mpRegen"];
+  parametersToRound.forEach((param) => {
+    state.parameters[param] = roundToOneDecimal(baseParameters[param]);
+  });
+
+  state.parameters.maxHp = baseParameters.maxHp;
+  state.parameters.maxSp = baseParameters.maxSp;
+  state.parameters.maxMp = baseParameters.maxMp;
+  state.parameters.maxHunger = baseParameters.maxHunger;
+  state.parameters.maxThirst = baseParameters.maxThirst;
+  state.parameters.maxSleep = baseParameters.maxSleep;
+  state.parameters.maxEnergy = baseParameters.maxEnergy;
+  state.parameters.nextLevelExperience = baseParameters.nextLevelExperience;
 
   state.hasHungerDecay = false;
   state.hasThirstDecay = false;
@@ -80,26 +77,23 @@ const reapplyStatEffects = (state: CharacterState): void => {
 
   state.statEffects.forEach((effect) => {
     if (effect.effectType === "timeIncremental") {
-      const statKey = effect.affectedStat as keyof typeof state.parameters;
+      const statKey = effect.affectedStat as keyof BaseParameters;
       state.parameters[statKey] += effect.effectAmount;
     } else if (effect.effectType === "active") {
-      if (effect.affectedStat === "all") {
-        Object.keys(state.stats).forEach((key) => {
-          const statKey = key as keyof typeof state.stats;
-          state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
-        });
-      } else {
-        const statKey = effect.affectedStat as keyof typeof state.stats;
+      const statKeys = effect.affectedStat === "all" ? Object.keys(state.stats) : [effect.affectedStat];
+      statKeys.forEach((key) => {
+        const statKey = key as keyof Stats;
         state.stats[statKey] = state.characterStats[statKey] * effect.effectAmount;
-      }
+      });
     }
   });
 };
 
 const updateStatusEffects = (state: CharacterState): void => {
-  // Decrement status durations and immediately apply changes
-  state.statuses.forEach((status) => (status.duration -= 1));
-  state.statuses = state.statuses.filter((status) => status.duration > 0);
+  state.statuses = state.statuses.filter((status) => {
+    status.duration -= 1;
+    return status.duration > 0;
+  });
 
   const activeStatusIds = new Set(state.statuses.map((status) => status.id));
   state.statEffects = state.statEffects.filter((effect) => activeStatusIds.has(effect.effectCause));
@@ -111,14 +105,13 @@ const handleDeath = (state: CharacterState) => {
   if (state.parameters.hp <= 0) {
     console.log("You have died.");
 
-    const parameters = state.parameters;
-    parameters.hp = parameters.maxHp * 0.5;
-    parameters.sp = parameters.maxSp * 0.5;
-    parameters.mp = parameters.maxMp * 0.5;
-    parameters.hunger = parameters.maxHunger * 0.5;
-    parameters.thirst = parameters.maxThirst * 0.5;
-    parameters.sleep = parameters.maxSleep * 0.5;
-    parameters.energy = parameters.maxEnergy * 0.5;
+    Object.keys(state.parameters).forEach((key) => {
+      const paramKey = key as keyof BaseParameters;
+      if (paramKey.startsWith("max")) {
+        const baseKey = paramKey.replace("max", "").toLowerCase() as keyof BaseParameters;
+        state.parameters[baseKey] = state.parameters[paramKey] * 0.5;
+      }
+    });
 
     const existingStatusIndex = state.statuses.findIndex((status) => status.id === "resurrected");
 
@@ -740,13 +733,17 @@ export const characterSlice = createSlice({
       handleDecay(state.parameters.sleep, state.parameters.sleepRegen, { hp: 5, sp: 2, mp: 10 }, "hasSleepDecay");
       handleDecay(state.parameters.energy, state.parameters.energyRegen, { hp: 2, sp: 2, mp: 2 }, "hasEnergyDecay");
 
-      state.parameters.hp = roundToOneDecimal(Math.min(state.parameters.hp + state.parameters.hpRegen, state.parameters.maxHp));
-      state.parameters.sp = roundToOneDecimal(Math.min(state.parameters.sp + state.parameters.spRegen, state.parameters.maxSp));
-      state.parameters.mp = roundToOneDecimal(Math.min(state.parameters.mp + state.parameters.mpRegen, state.parameters.maxMp));
-      state.parameters.hunger = roundToOneDecimal(Math.max(state.parameters.hunger + state.parameters.hungerRegen, 0));
-      state.parameters.thirst = roundToOneDecimal(Math.max(state.parameters.thirst + state.parameters.thirstRegen, 0));
-      state.parameters.sleep = roundToOneDecimal(Math.max(state.parameters.sleep + state.parameters.sleepRegen, 0));
-      state.parameters.energy = roundToOneDecimal(Math.max(state.parameters.energy + state.parameters.energyRegen, 0));
+      const updateParameter = (param: keyof BaseParameters, regen: keyof BaseParameters, max: keyof BaseParameters) => {
+        state.parameters[param] = roundToOneDecimal(Math.min(Math.max(state.parameters[param] + state.parameters[regen], 0), state.parameters[max]));
+      };
+
+      updateParameter("hp", "hpRegen", "maxHp");
+      updateParameter("sp", "spRegen", "maxSp");
+      updateParameter("mp", "mpRegen", "maxMp");
+      updateParameter("hunger", "hungerRegen", "maxHunger");
+      updateParameter("thirst", "thirstRegen", "maxThirst");
+      updateParameter("sleep", "sleepRegen", "maxSleep");
+      updateParameter("energy", "energyRegen", "maxEnergy");
     },
   },
 });
