@@ -5,6 +5,7 @@ import { Stats } from "./Stats";
 export enum ActivityTypes {
   StatChange = "StatChange",
   ItemChange = "ItemChange",
+  PerkChange = "PerkChange",
 }
 
 export interface StatChangeEffect {
@@ -23,6 +24,14 @@ export interface ItemChangeEffect {
   }[];
 }
 
+export interface PerkChangeEffect {
+  id: ActivityTypes.PerkChange;
+  effect: {
+    perk: string;
+    value: number;
+  }[];
+}
+
 export interface Activity {
   id: string;
   name?: string;
@@ -30,7 +39,7 @@ export interface Activity {
   next?: string;
   previous?: string;
   tooltip?: string;
-  effect?: (StatChangeEffect | ItemChangeEffect)[];
+  effect?: (StatChangeEffect | ItemChangeEffect | PerkChangeEffect)[];
   branch?: Activity[];
 }
 

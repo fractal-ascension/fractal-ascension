@@ -84,27 +84,10 @@ export const ForestClearingActivity: Activities = {
           next: "fc4",
           effect: [
             {
-              id: ActivityTypes.ItemChange,
-              effect: [
-                {
-                  item: ItemList.find((item) => item.id === ItemId.SturdyStick)!,
-                  value: 1,
-                },
-                {
-                  item: ItemList.find((item) => item.id === ItemId.RoundRock)!,
-                  value: 1,
-                },
-              ],
-            },
-            {
               id: ActivityTypes.StatChange,
               effect: [
                 {
-                  stat: "strength",
-                  value: +1,
-                },
-                {
-                  stat: "perception",
+                  stat: "intelligence",
                   value: +1,
                 },
               ],
@@ -210,12 +193,98 @@ export const ForestClearingActivity: Activities = {
         },
       ],
     },
+    // Forest Clearing 5
     {
       id: "fc5",
-      name: "Examine the book.",
-      icon: Icons.Book,
-      next: "fc6",
       previous: "fc4",
+      branch: [
+        {
+          id: "fc5-1",
+          name: "Knight.",
+          tooltip: "He gave me tips on how to hit hard and hit harder.",
+          icon: Icons.Sword,
+          next: "fc6",
+          effect: [
+            {
+              id: ActivityTypes.ItemChange,
+              effect: [
+                {
+                  item: ItemList.find((item) => item.id === ItemId.TrustyIronSword)!,
+                  value: 1,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "fc5-2",
+          name: "Hunter.",
+          tooltip: "She gave me tips on how to hit things accurately from afar.",
+          icon: Icons.Bow,
+          next: "fc6",
+          effect: [
+            {
+              id: ActivityTypes.ItemChange,
+              effect: [
+                {
+                  item: ItemList.find((item) => item.id === ItemId.TrustyIronwoodBow)!,
+                  value: 1,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "fc5-3",
+          name: "Wizard.",
+          tooltip: "She gave me tips on me how to focus mana.",
+          icon: Icons.Book,
+          next: "fc6",
+          effect: [
+            {
+              id: ActivityTypes.ItemChange,
+              effect: [
+                {
+                  item: ItemList.find((item) => item.id === ItemId.TrustyArcaneSpellbook)!,
+                  value: 1,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "fc5-4",
+          name: "Wanderer.",
+          tooltip: "Taught me how to survive in the wilds.",
+          icon: Icons.Nature,
+          next: "fc6",
+          effect: [
+            {
+              id: ActivityTypes.ItemChange,
+              effect: [
+                {
+                  item: ItemList.find((item) => item.id === ItemId.TrustForestEncyclopedia)!,
+                  value: 1,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "fc6",
+      name: "Look for the latest entry.",
+      icon: Icons.Book,
+      next: "fc7",
+      previous: "fc5",
+    },
+    {
+      id: "fc7",
+      name: "Put down the book.",
+      icon: Icons.Book,
+      next: "fc8",
+      previous: "fc6",
     },
   ],
 };

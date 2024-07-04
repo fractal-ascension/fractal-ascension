@@ -15,7 +15,7 @@ const calculateBaseParameters = (level: number, stats: Stats): BaseParameters =>
   hpRegen: roundToOneDecimal(0.1 + level * 0.1 + stats.vitality * 0.1),
   maxHp: 100 + level * 10 + stats.vitality * 20 + stats.strength * 10,
   hunger: 100,
-  hungerRegen: -10.1,
+  hungerRegen: -0.1,
   maxHunger: 100 + level * 10 + stats.vitality * 20,
   sp: 100,
   spRegen: roundToOneDecimal(0.1 + level * 0.1 + stats.vitality * 0.1),
@@ -741,7 +741,10 @@ export const characterSlice = createSlice({
       updateParameter("sleep", "sleepRegen", "maxSleep");
       updateParameter("energy", "energyRegen", "maxEnergy");
 
-      updateCharacterParameters(state);
+      Object.keys(state.parameters).forEach(key => {
+        const typedKey = key as keyof BaseParameters;
+        state.parameters[typedKey] = roundToOneDecimal(state.parameters[typedKey]);
+      });
     },
   },
 });

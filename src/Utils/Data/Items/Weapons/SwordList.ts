@@ -1,6 +1,7 @@
 import { Item, ItemType, Sword } from "../../Items";
 import { EquipmentSlot } from "../../../../components/Character/characterSlice";
 import { ItemId } from "../ItemId";
+import trustyIronSword from "../../../../assets/TrustyIronSword.png";
 
 export const SwordList: Item[] = [
   {
@@ -11,6 +12,7 @@ export const SwordList: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
+    img: trustyIronSword,
     equipmentSlot: EquipmentSlot.RightWeapon,
     weapon: {
       weaponType: Sword,

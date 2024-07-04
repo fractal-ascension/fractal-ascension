@@ -4,6 +4,7 @@ import { FishingSkillId } from "../../Skills/FishingSkill";
 import { HuntingSkillId } from "../../Skills/HuntingSkill";
 import { ForagingSkillId } from "../../Skills/ForagingSkill";
 import { ItemId } from "../ItemId";
+import trustyForestEncyclopedia from "../../../../assets/TrustForestEncyclopedia.png";
 
 //TODO: Move to single file, randomize stats like damage, durability, add quality feature
 
@@ -16,6 +17,7 @@ export const ManualList: Item[] = [
     type: ItemType.TOOL,
     amount: 1,
     unique: true,
+    img: trustyForestEncyclopedia,
     toolSlot: ToolSlot.Manual,
     tool: {
       toolType: Manual,

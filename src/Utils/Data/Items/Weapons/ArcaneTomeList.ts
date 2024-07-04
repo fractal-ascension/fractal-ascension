@@ -1,6 +1,7 @@
 import { ArcaneTome, Item, ItemType } from "../../Items";
 import { EquipmentSlot } from "../../../../components/Character/characterSlice";
 import { ItemId } from "../ItemId";
+import trustyArcaneSpellbook from "../../../../assets/TrustyArcaneSpellbook.png";
 
 export const ArcaneTomeList: Item[] = [
   {
@@ -11,6 +12,7 @@ export const ArcaneTomeList: Item[] = [
     type: ItemType.WPN,
     amount: 1,
     unique: true,
+    img: trustyArcaneSpellbook,
     equipmentSlot: EquipmentSlot.RightWeapon,
     weapon: {
       weaponType: ArcaneTome,
